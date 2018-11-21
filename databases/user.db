@@ -1,0 +1,3 @@
+$objectdb{"version":1}
+{"userID":"derp1","passCode":"pmIrpXgiupN+mS5ilEFR2/64rKGqce0o\u0015ß#Ø¸4\u0003\u0003Ó«<sï0°lA©.èÝ¸","friends":[],"friend_requests":[],"_id":"5bf23d436c25f97f3fad129f"}
+{"userID":"derp2","passCode":"lwcz/4791u3LvGweIBOzSyl3f1H3u/v2ÀNI>sÞ\u000bt|v¨ÁIa\u0004­ê)&»[g\u0015Ï\tA»\rï","friends":["derp1","derp1","derp1","derp1","derp1","derp1"],"friend_requests":[],"_id":"5bf23d446c25f97f3fad12a0"}

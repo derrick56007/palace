@@ -1,0 +1,30 @@
+enum MessageType {
+  // to client
+  error,
+  loginSuccessful,
+  friendRequest,
+  matchInvite,
+  matchInviteCancel,
+  matchStart,
+  firstDealTowerInfo,
+  secondDealTowerInfo,
+  finalDealInfo,
+  towerCardIDsToHand,
+  setMulliganableCards,
+  setSelectableCards,
+  clearSelectableCards,
+  drawInfo,
+  playFromHandInfo,
+  pickUpPileInfo,
+  bombInfo,
+
+  // to server
+  login,
+  register,
+  addFriend,
+  acceptFriendRequest,
+  sendMatchInvite,
+  matchAccept,
+  matchDecline,
+  userPlay,
+}
