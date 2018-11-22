@@ -2,9 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
+import 'package:protobuf/protobuf.dart' as pb;
+
 import 'common/common_websocket.dart';
-import 'common/encodable/encodable.dart';
-import 'common/message_type.dart';
+import 'common/generated_protos/socket_message.pbenum.dart';
+//import 'common/encodable/encodable.dart';
+//import 'common/message_type.dart';
+//import 'common/generated_protos.dart';
 
 class ClientWebSocket extends CommonWebSocket {
   WebSocket _webSocket;
@@ -67,11 +71,11 @@ class ClientWebSocket extends CommonWebSocket {
   }
 
   @override
-  send(MessageType type, [Encodable encodable]) {
-    if (encodable == null) {
-      _webSocket.send(type.index.toString());
+  send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) {
+    if (generatedMessage == null) {
+      _webSocket.send(type.value.toString());
     } else {
-      _webSocket.send(jsonEncode([type.index, encodable.toJson()]));
+      _webSocket.send(jsonEncode([type.value, generatedMessage.writeToJson()]));
     }
   }
 }

@@ -1,0 +1,32 @@
+syntax = "proto3";
+package palace;
+
+message Card {
+    enum Type {
+        BASIC = 0;
+        REVERSE = 1;
+        BOMB = 2;
+        HIGHER_LOWER = 3;
+        WILD = 4;
+        TOP_SWAP = 5;
+        HAND_SWAP = 6;
+        DISCARD_OR_ROCK = 7;
+    }
+
+    Type type = 1;
+    string id = 2;
+    int32 value = 3;
+    bool hidden = 4;
+}
+
+message Tower {
+    repeated Card cards = 1;
+}
+
+message FirstDeal {
+    repeated Tower topTowers = 1;
+}
+
+message CardIDs {
+    repeated string ids = 1;
+}

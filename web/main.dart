@@ -6,8 +6,10 @@ import 'dart:convert';
 import 'client_websocket.dart';
 
 import 'client_card.dart';
-import 'common/encodable/encodable.dart';
-import 'common/message_type.dart';
+
+
+import 'common/generated_protos.dart';
+import 'common/generated_protos/socket_message.pbenum.dart';
 
 main() async {
   final client = new ClientWebSocket();
@@ -20,13 +22,19 @@ main() async {
   await client2.start();
 
   ///////////////////////////////// TESTING ////////////////////////////////////
-  final loginInfo1 = LoginInfo('derp1', 'merp');
-  final loginInfo2 = LoginInfo('derp2', 'merp');
+  final loginInfo1 = new LoginCredentials()
+    ..userID = 'derp1'
+    ..passCode = 'merp';
+  final loginInfo2 = new LoginCredentials()
+    ..userID = 'derp2'
+    ..passCode = 'merp';
 
-  final friendUserId1 = SimpleInfo('derp1');
-  final friendUserId2 = SimpleInfo('derp2');
+//  final friendUserId1 = SimpleInfo('derp1');
+//  final friendUserId2 = SimpleInfo('derp2');
 
-  client.send(MessageType.login, loginInfo1);
+  final userID = new SimpleInfo()..info = 'derp2';
+
+  client.send(SocketMessage_Type.LOGIN, loginInfo1);
 //  client.send(MessageType.register, loginInfo1);
 //  await new Future.delayed(const Duration(seconds: 1));
 //  client.send(MessageType.login, loginInfo1);
@@ -35,7 +43,7 @@ main() async {
 //  client2.send(MessageType.register, loginInfo2);
 //  await new Future.delayed(const Duration(seconds: 1));
 //  client2.send(MessageType.login, loginInfo1);
-  client2.send(MessageType.login, loginInfo2);
+  client2.send(SocketMessage_Type.LOGIN, loginInfo2);
   await new Future.delayed(const Duration(seconds: 1));
 
 //  client.send(MessageType.addFriend, friendUserId2);
@@ -45,7 +53,7 @@ main() async {
 //  client2.send(MessageType.acceptFriendRequest, friendUserId1);
 //  client2.send(MessageType.addFriend, friendUserId1);
 
-  client.send(MessageType.sendMatchInvite, friendUserId2);
+  client.send(SocketMessage_Type.SEND_MATCH_INVITE, userID);
 //  client.send(MessageType.send_match_invite, friendUserId2);
 //  client2.send(MessageType.send_match_invite, friendUserId1);
 
@@ -63,36 +71,36 @@ setupListeners(ClientWebSocket ws, myPrint) {
   var deckLength = 52;
 
   ws
-    ..on(MessageType.loginSuccessful, () {
+    ..on(SocketMessage_Type.LOGIN_SUCCESSFUL, () {
       myPrint('login successful');
     })
-    ..on(MessageType.error, (var json) {
+    ..on(SocketMessage_Type.ERROR, (var json) {
       final info = jsonDecode(json);
 
       myPrint(info);
     })
-    ..on(MessageType.friendRequest, (var json) {
+    ..on(SocketMessage_Type.FRIEND_REQUEST, (var json) {
       final friendID = jsonDecode(json);
 
       myPrint('friend request from $friendID');
     })
-    ..on(MessageType.matchInvite, (var json) {
-      final matchInvite = MatchInvite.fromJson(json);
-      final matchID = SimpleInfo(matchInvite.matchID);
+    ..on(SocketMessage_Type.MATCH_INVITE, (var json) {
+      final matchInvite = new MatchInvite.fromJson(json);
+      final matchID = new SimpleInfo()..info = matchInvite.matchID;
 
-      ws.send(MessageType.matchAccept, matchID);
+      ws.send(SocketMessage_Type.MATCH_ACCEPT, matchID);
 
       myPrint('match invite id -> ${matchInvite.matchID}');
     })
-    ..on(MessageType.matchInviteCancel, (var json) {
+    ..on(SocketMessage_Type.MATCH_INVITE_CANCEL, (var json) {
       final friendID = jsonDecode(json);
 
       myPrint('match invitation canceled by $friendID');
     })
-    ..on(MessageType.matchStart, () {
+    ..on(SocketMessage_Type.MATCH_START, () {
       myPrint('match started!');
     })
-    ..on(MessageType.firstDealTowerInfo, (var json) {
+    ..on(SocketMessage_Type.FIRST_DEAL_TOWER_INFO, (var json) {
       final dealTowerInfo = new DealTowerInfo.fromJson(json);
       myPrint('deal info: $json');
 
@@ -127,7 +135,7 @@ setupListeners(ClientWebSocket ws, myPrint) {
         }
       }
     })
-    ..on(MessageType.towerCardIDsToHand, (var json) {
+    ..on(SocketMessage_Type.TOWER_CARD_IDS_TO_HAND, (var json) {
       final cardsToHandInfo = new CardsToHandInfo.fromJson(json);
 
       final numPlayers = cardsToHandInfo.hands.length;
@@ -155,7 +163,7 @@ setupListeners(ClientWebSocket ws, myPrint) {
         }
       }
     })
-    ..on(MessageType.secondDealTowerInfo, (var json) {
+    ..on(SocketMessage_Type.SECOND_DEAL_TOWER_INFO, (var json) {
       myPrint('second deal info: $json');
 
       final secondDealTowerInfo = new SecondDealTowerInfo.fromJson(json);
@@ -181,7 +189,7 @@ setupListeners(ClientWebSocket ws, myPrint) {
         }
       }
     })
-    ..on(MessageType.finalDealInfo, (var json) {
+    ..on(SocketMessage_Type.FINAL_DEAL_INFO, (var json) {
       myPrint('final deal info: $json');
       final finalDealInfo = new FinalDealInfo.fromJson(json);
 
@@ -204,10 +212,10 @@ setupListeners(ClientWebSocket ws, myPrint) {
       myPrint(topTowers);
       myPrint(bottomTowers);
     })
-    ..on(MessageType.setMulliganableCards, (var json) {
-      final selectableCards = new UserPlay.fromJson(json);
+    ..on(SocketMessage_Type.SET_MULLIGANABLE_CARDS, (var json) {
+      final selectableCards = new CardIDs.fromJson(json);
 
-      for (var cardID in selectableCards.cardIDs) {
+      for (var cardID in selectableCards.ids) {
         final card = cardRegistry['$cardID'];
         card.selectable = true;
 
@@ -224,16 +232,16 @@ setupListeners(ClientWebSocket ws, myPrint) {
         }
       }
 
-      final userPlay = UserPlay(cardsMulliganed);
+      final userPlay = CardIDs()..ids.addAll(cardsMulliganed);
 
-      ws.send(MessageType.userPlay, userPlay);
+      ws.send(SocketMessage_Type.USER_PLAY, userPlay);
     })
-    ..on(MessageType.setSelectableCards, (var json) {
-      final selectableCards = new UserPlay.fromJson(json);
+    ..on(SocketMessage_Type.SET_SELECTABLE_CARDS, (var json) {
+      final selectableCards = new CardIDs.fromJson(json);
 
-      final cards = <Card>[];
+      final cards = <ClientCard>[];
 
-      for (var cardID in selectableCards.cardIDs) {
+      for (var cardID in selectableCards.ids) {
         final card = cardRegistry['$cardID'];
         card.selectable = true;
         cards.add(card);
@@ -244,7 +252,7 @@ setupListeners(ClientWebSocket ws, myPrint) {
       // bot
       var lowestTypeIndex = 0;
       for (var i = 0; i < cards.length; i++) {
-        if (cards[i].type.index <= cards[lowestTypeIndex].type.index) {
+        if (cards[i].type.value <= cards[lowestTypeIndex].type.value) {
           lowestTypeIndex = i;
         }
       }
@@ -260,19 +268,19 @@ setupListeners(ClientWebSocket ws, myPrint) {
         }
       }
 
-      final selectedCards = new UserPlay(cardIDs);
+      final selectedCards = new CardIDs()..ids.addAll(cardIDs);
 
       myPrint('selected $cardIDs');
 
-      ws.send(MessageType.userPlay, selectedCards);
+      ws.send(SocketMessage_Type.USER_PLAY, selectedCards);
     })
-    ..on(MessageType.clearSelectableCards, () {
+    ..on(SocketMessage_Type.CLEAR_SELECTABLE_CARDS, () {
       for (var card in cardRegistry.values.toList()) {
         card.selectable = false;
       }
       myPrint('clear selectables');
     })
-    ..on(MessageType.drawInfo, (var json) {
+    ..on(SocketMessage_Type.DRAW_INFO, (var json) {
       final drawInfo = new DrawInfo.fromJson(json);
 
       for (var cardInfo in drawInfo.cardInfos) {
@@ -288,7 +296,7 @@ setupListeners(ClientWebSocket ws, myPrint) {
       myPrint('hand ${drawInfo.userIndex}: ${hands[drawInfo.userIndex]}');
       myPrint('deck length $deckLength');
     })
-    ..on(MessageType.playFromHandInfo, (var json) {
+    ..on(SocketMessage_Type.PLAY_FROM_HAND_INFO, (var json) {
       final playFromHandInfo = new PlayFromHandInfo.fromJson(json);
 
       for (var cardInfo in playFromHandInfo.cardInfos) {
@@ -309,7 +317,7 @@ setupListeners(ClientWebSocket ws, myPrint) {
       myPrint(
           'hand ${playFromHandInfo.userIndex}: ${hands[playFromHandInfo.userIndex]}');
     })
-    ..on(MessageType.pickUpPileInfo, (var json) {
+    ..on(SocketMessage_Type.PICK_UP_PILE_INFO, (var json) {
       final pickUpPileInfo = new PickUpPileInfo.fromJson(json);
 
       for (var cardInfo in pickUpPileInfo.cardInfos) {
@@ -327,8 +335,8 @@ setupListeners(ClientWebSocket ws, myPrint) {
       myPrint(
           'hand ${pickUpPileInfo.userIndex}: ${hands[pickUpPileInfo.userIndex]}');
     })
-    ..on(MessageType.bombInfo, (var json) {
-      final bombInfo = new BombInfo.fromJson(json);
+    ..on(SocketMessage_Type.DISCARD_INFO, (var json) {
+      final bombInfo = new DiscardInfo.fromJson(json);
 
       for (var cardID in bombInfo.cardIDs) {
         cardRegistry.remove('$cardID');
@@ -337,5 +345,8 @@ setupListeners(ClientWebSocket ws, myPrint) {
       playedCards.clear();
 
       myPrint('bombed pile: $playedCards');
-    });
+    })
+    ..on(SocketMessage_Type.REQUEST_HANDSWAP_CHOICE, (var json) {})
+    ..on(SocketMessage_Type.REQUEST_TOPSWAP_CHOICE, (var json) {})
+    ..on(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE, (var json) {});
 }

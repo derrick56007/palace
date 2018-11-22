@@ -1,0 +1,6 @@
+syntax = "proto3";
+package palace;
+
+message MatchInvite {
+    string matchID = 1;
+}

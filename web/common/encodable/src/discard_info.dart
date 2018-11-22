@@ -1,11 +1,11 @@
 part of encodable;
 
-class BombInfo implements Encodable {
+class DiscardInfo implements Encodable {
   final cardIDs;
 
-  const BombInfo(this.cardIDs);
+  const DiscardInfo(this.cardIDs);
 
-  factory BombInfo.fromJson(var json) {
+  factory DiscardInfo.fromJson(var json) {
     var list;
 
     if (json is List) {
@@ -14,12 +14,11 @@ class BombInfo implements Encodable {
       list = jsonDecode(json) as List;
     }
 
-    return new BombInfo(list[cardsIndex]);
+    return new DiscardInfo(list[cardsIndex]);
   }
 
   static const cardsIndex = 0;
 
   @override
   String toJson() => jsonEncode([cardIDs]);
-
 }

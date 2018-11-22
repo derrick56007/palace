@@ -1,10 +1,26 @@
-import 'dart:convert';
+import 'common/generated_protos/cards.pb.dart';
 
-import 'common/card_type.dart';
-import 'drawable.dart';
-import 'common/encodable/encodable.dart';
+class ClientCard {
+  final Card _card;
 
-class ClientCard extends Card implements Drawable {
+  Card_Type get type => _card.type;
+  set type(Card_Type t) {
+    _card.type = t;
+  }
+
+  String get id => _card.id;
+
+  int get value => _card.value;
+  set value(int v) {
+    _card.value = v;
+  }
+
+  bool get hidden => _card.hidden;
+
+  set hidden(bool h) {
+    _card.hidden = h;
+  }
+
   bool _selectable = false;
 
   set selectable(bool s) {
@@ -13,28 +29,8 @@ class ClientCard extends Card implements Drawable {
 
   bool get selectable => _selectable;
 
-  ClientCard(int id, bool faceDown, [CardType type, int value])
-      : super(id, faceDown, type, value);
+  ClientCard._internal(this._card);
 
-  factory ClientCard.fromJson(var json) {
-    var list;
-
-    if (json is List) {
-      list = json;
-    } else {
-      list = jsonDecode(json) as List;
-    }
-
-    if (list.length == Card.hiddenCardJsonLength) {
-      return new ClientCard(list[Card.idIndex], true);
-    } else {
-      return new ClientCard(list[Card.idIndex], list[Card.faceDownIndex],
-          CardType.values[list[Card.cardTypeIndex]], list[Card.valueIndex]);
-    }
-  }
-
-  @override
-  void draw() {
-    // TODO: implement draw
-  }
+  factory ClientCard.fromJson(var json) =>
+      ClientCard._internal(new Card.fromJson(json));
 }

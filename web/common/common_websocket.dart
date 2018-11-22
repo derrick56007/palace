@@ -1,28 +1,29 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'message_type.dart';
+import 'package:protobuf/protobuf.dart' as pb;
 
-import 'encodable/encodable.dart';
+import 'generated_protos/socket_message.pbenum.dart';
 
 abstract class CommonWebSocket {
   static const messageTypeIndex = 0;
   static const valueIndex = 1;
   static const defaultMessageLength = 2;
 
-  final messageDispatchers = new List<Function>(MessageType.values.length);
+  final messageDispatchers =
+      new List<Function>(SocketMessage_Type.values.length);
 
   Future start();
 
-  void on(MessageType type, Function function) {
-    if (messageDispatchers[type.index] != null) {
-      print("warning: overriding message dispatcher ${type.index}");
+  void on(SocketMessage_Type type, Function function) {
+    if (messageDispatchers[type.value] != null) {
+      print("warning: overriding message dispatcher ${type.name}");
     }
 
-    messageDispatchers[type.index] = function;
+    messageDispatchers[type.value] = function;
   }
 
-  void send(MessageType type, [Encodable encodable]);
+  void send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]);
 
   void onMessageToDispatch(var data) {
     final msg = jsonDecode(data);

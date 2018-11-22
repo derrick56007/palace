@@ -1,0 +1,4 @@
+enum HigherLowerChoices {
+  higher,
+  lower
+}

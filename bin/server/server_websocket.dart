@@ -17,11 +17,11 @@ class ServerWebSocket extends CommonWebSocket {
   }
 
   @override
-  send(MessageType type, [Encodable encodable]) {
-    if (encodable == null) {
-      _webSocket.add(type.index.toString());
+  send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) {
+    if (generatedMessage == null) {
+      _webSocket.add(type.value.toString());
     } else {
-      _webSocket.add(jsonEncode([type.index, encodable.toJson()]));
+      _webSocket.add(jsonEncode([type.value, generatedMessage.writeToJson()]));
     }
   }
 }

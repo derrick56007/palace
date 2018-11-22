@@ -1,0 +1,44 @@
+syntax = "proto3";
+package palace;
+
+message SocketMessage {
+
+    enum Type {
+        ERROR = 0;
+        LOGIN_SUCCESSFUL = 1;
+        FRIEND_REQUEST = 2;
+        MATCH_INVITE = 3;
+        MATCH_INVITE_CANCEL = 4;
+        MATCH_START = 5;
+        FIRST_DEAL_TOWER_INFO = 6;
+        SECOND_DEAL_TOWER_INFO = 7;
+        FINAL_DEAL_INFO = 8;
+        TOWER_CARD_IDS_TO_HAND = 9;
+        SET_MULLIGANABLE_CARDS = 10;
+        SET_SELECTABLE_CARDS = 11;
+        CLEAR_SELECTABLE_CARDS = 12;
+        DRAW_INFO = 13;
+        PLAY_FROM_HAND_INFO = 14;
+        PICK_UP_PILE_INFO = 15;
+        DISCARD_INFO = 16;
+        REQUEST_HANDSWAP_CHOICE = 17;
+        REQUEST_TOPSWAP_CHOICE = 18;
+        REQUEST_HIGHERLOWER_CHOICE = 19;
+
+        // to server
+        LOGIN = 20;
+        REGISTER = 21;
+        ADD_FRIEND = 22;
+        ACCEPT_FRIEND_REQUEST = 23;
+        SEND_MATCH_INVITE = 24;
+        MATCH_ACCEPT = 25;
+        MATCH_DECLINE = 26;
+        USER_PLAY = 27;
+        HANDSWAP_CHOICE = 28;
+        TOPSWAP_CHOICE = 29;
+        HIGHERLOWER_CHOICE = 30;
+    }
+
+    Type type = 1;
+    string json = 2;
+}
