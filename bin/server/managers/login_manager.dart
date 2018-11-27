@@ -8,12 +8,12 @@ class LoginManager {
   static final _pbkdf2 = new PBKDF2();
 
   // default login error string
-  static const _defaultLoginErrorString =
-      SimpleInfo('Invalid username or password');
+  static final _defaultLoginErrorString =
+      SimpleInfo()..info = 'Invalid username or password';
 
   // default userId already exists error string
-  static const _defaultUserIdExistsErrorString =
-      SimpleInfo('Username already exists');
+  static final _defaultUserIdExistsErrorString =
+      SimpleInfo()..info = 'Username already exists';
 
   var _matches = <String, Match>{};
   var _socketForUserID = <ServerWebSocket, String>{};
@@ -55,7 +55,7 @@ class LoginManager {
         userID.trim().isEmpty ||
         userID.toLowerCase() == 'null' ||
         !StringValidator.isValidUsername(userID)) {
-      socket.send(MessageType.error, _defaultLoginErrorString);
+      socket.send(SocketMessage_Type.ERROR, _defaultLoginErrorString);
       return;
     }
 
@@ -64,7 +64,7 @@ class LoginManager {
 
     // check if username already exists
     if (userIdSearchResults.isNotEmpty) {
-      socket.send(MessageType.error, _defaultUserIdExistsErrorString);
+      socket.send(SocketMessage_Type.ERROR, _defaultUserIdExistsErrorString);
       return;
     }
 
@@ -72,7 +72,7 @@ class LoginManager {
     if (passCode == null ||
         passCode.trim().isEmpty ||
         passCode.toLowerCase() == 'null') {
-      socket.send(MessageType.error, _defaultLoginErrorString);
+      socket.send(SocketMessage_Type.ERROR, _defaultLoginErrorString);
       return;
     }
 
@@ -108,7 +108,7 @@ class LoginManager {
         userID.trim().isEmpty ||
         userID.toLowerCase() == 'null' ||
         !StringValidator.isValidUsername(userID)) {
-      socket.send(MessageType.error, _defaultLoginErrorString);
+      socket.send(SocketMessage_Type.ERROR, _defaultLoginErrorString);
       return;
     }
 
@@ -117,7 +117,7 @@ class LoginManager {
 
     // check if username exists
     if (userIdSearchResults.isEmpty) {
-      socket.send(MessageType.error, _defaultLoginErrorString);
+      socket.send(SocketMessage_Type.ERROR, _defaultLoginErrorString);
       return;
     }
 
@@ -125,7 +125,7 @@ class LoginManager {
     if (passCode == null ||
         passCode.trim().isEmpty ||
         passCode.toLowerCase() == 'null') {
-      socket.send(MessageType.error, _defaultLoginErrorString);
+      socket.send(SocketMessage_Type.ERROR, _defaultLoginErrorString);
       return;
     }
 
@@ -139,7 +139,7 @@ class LoginManager {
 
     // check if hashed passCode matches
     if (hashString != hashedPassCode.substring(saltStringLength)) {
-      socket.send(MessageType.error, _defaultLoginErrorString);
+      socket.send(SocketMessage_Type.ERROR, _defaultLoginErrorString);
       return;
     }
 
@@ -148,7 +148,7 @@ class LoginManager {
     _userIDForSocket[userID] = socket;
 
     // alert successful login
-    socket.send(MessageType.loginSuccessful);
+    socket.send(SocketMessage_Type.LOGIN_SUCCESSFUL);
 
     print('logged in $userID');
   }

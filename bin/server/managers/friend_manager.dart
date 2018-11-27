@@ -3,7 +3,8 @@ part of server;
 class FriendManager {
   static final shared = FriendManager._internal();
 
-  static const defaultAddFriendErrorString = SimpleInfo("Invalid userID");
+  static final defaultAddFriendErrorString = SimpleInfo()
+    ..info = "Invalid userID";
 
   FriendManager._internal() {}
 
@@ -13,7 +14,7 @@ class FriendManager {
         friendID.trim().isEmpty ||
         friendID.toLowerCase() == 'null' ||
         !StringValidator.isValidUsername(friendID)) {
-      socket.send(MessageType.error, defaultAddFriendErrorString);
+      socket.send(SocketMessage_Type.ERROR, defaultAddFriendErrorString);
       return;
     }
 
@@ -23,7 +24,7 @@ class FriendManager {
 
     // check if friendID exists
     if (friendIdSearchResults.isEmpty) {
-      socket.send(MessageType.error, defaultAddFriendErrorString);
+      socket.send(SocketMessage_Type.ERROR, defaultAddFriendErrorString);
       return;
     }
 
@@ -43,7 +44,7 @@ class FriendManager {
     // check if friend is online
     if (LoginManager.shared.userIDLoggedIn(friendID)) {
       final friendSocket = LoginManager.shared.socketFromUserID(friendID);
-      friendSocket.send(MessageType.friendRequest, SimpleInfo(userID));
+      friendSocket.send(SocketMessage_Type.FRIEND_REQUEST, SimpleInfo()..info = userID);
     } else {
       final existingFriendRequests =
           friendIdSearchResults.first['friend_requests'] as List;

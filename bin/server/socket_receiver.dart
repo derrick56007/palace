@@ -61,33 +61,33 @@ class SocketReceiver {
   }
 
   _addFriend(String json) {
-    final friendID = jsonDecode(json);
+    final friendID = new SimpleInfo.fromJson(json);
 
-    _friendManager.addFriend(_socket, friendID);
+    _friendManager.addFriend(_socket, friendID.info);
   }
 
   _acceptFriendRequest(String json) {
-    final friendID = jsonDecode(json);
+    final friendID = new SimpleInfo.fromJson(json);
 
-    _friendManager.acceptFriendRequest(_socket, friendID);
+    _friendManager.acceptFriendRequest(_socket, friendID.info);
   }
 
   _sendMatchInvite(String json) {
-    final friendID = jsonDecode(json);
+    final friendID = new SimpleInfo.fromJson(json);
 
-    _matchManager.sendMatchInvite(_socket, friendID);
+    _matchManager.sendMatchInvite(_socket, friendID.info);
   }
 
   _matchAccept(String json) {
-    final matchID = jsonDecode(json);
+    final matchID = new SimpleInfo.fromJson(json);
 
-    _matchManager.matchAccept(_socket, matchID);
+    _matchManager.matchAccept(_socket, matchID.info);
   }
 
   _matchDecline(String json) {
-    final matchID = jsonDecode(json);
+    final matchID = new SimpleInfo.fromJson(json);
 
-    _matchManager.matchDecline(_socket, matchID);
+    _matchManager.matchDecline(_socket, matchID.info);
   }
 
   _userPlay(String json) {
@@ -121,12 +121,12 @@ class SocketReceiver {
   }
 
   _higherLowerChoice(String json) {
-    final higherLowerChoiceInfo = new HigherLowerChoiceInfo.fromJson(json);
+    final higherLowerChoice = new HigherLowerChoice.fromJson(json);
 
     if (_matchManager.socketInMatch(_socket)) {
       final match = _matchManager.matchFromSocket(_socket);
 
-      match.onHigherLowerChoice(_socket, higherLowerChoiceInfo);
+      match.onHigherLowerChoice(_socket, higherLowerChoice);
     }
   }
 }

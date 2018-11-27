@@ -7,7 +7,8 @@
 const MatchInvite$json = const {
   '1': 'MatchInvite',
   '2': const [
-    const {'1': 'matchID', '3': 1, '4': 1, '5': 9, '10': 'matchID'},
+    const {'1': 'msg', '3': 1, '4': 1, '5': 9, '10': 'msg'},
+    const {'1': 'matchID', '3': 2, '4': 1, '5': 9, '10': 'matchID'},
   ],
 };
 

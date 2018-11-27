@@ -23,10 +23,55 @@ message Tower {
     repeated Card cards = 1;
 }
 
-message FirstDeal {
+message CardIDs {
+    repeated string ids = 1;
+}
+
+message HigherLowerChoice {
+    enum Type {
+        HIGHER = 0;
+        LOWER = 1;
+    }
+
+    Type choice = 1;
+}
+
+message DealTowerInfo {
+    repeated Tower topTowers = 1;
+    repeated Tower bottomTowers = 2;
+}
+
+message SecondDealTowerInfo {
     repeated Tower topTowers = 1;
 }
 
-message CardIDs {
-    repeated string ids = 1;
+message PlayFromHandInfo {
+    int32 userIndex = 1;
+    repeated Card cards = 2;
+}
+
+message DiscardInfo {
+    repeated string cardIDs = 1;
+}
+
+message DrawInfo {
+    int32 userIndex = 1;
+    repeated Card cards = 2;
+}
+
+message PickUpPileInfo {
+    int32 userIndex = 1;
+    repeated Card cards = 2;
+}
+
+message Hand {
+    repeated Card cards = 1;
+}
+
+message TowerCardsToHandsInfo {
+    repeated CardIDs hands = 1;
+}
+
+message FinalDealInfo {
+    repeated Hand hands = 1;
 }

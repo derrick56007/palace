@@ -4,6 +4,7 @@ class ClientCard {
   final Card _card;
 
   Card_Type get type => _card.type;
+
   set type(Card_Type t) {
     _card.type = t;
   }
@@ -29,8 +30,8 @@ class ClientCard {
 
   bool get selectable => _selectable;
 
-  ClientCard._internal(this._card);
+  ClientCard(this._card);
 
-  factory ClientCard.fromJson(var json) =>
-      ClientCard._internal(new Card.fromJson(json));
+  @override
+  String toString() => _card.toString();
 }

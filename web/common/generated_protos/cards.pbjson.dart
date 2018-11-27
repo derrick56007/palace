@@ -36,17 +36,93 @@ const Tower$json = const {
   ],
 };
 
-const FirstDeal$json = const {
-  '1': 'FirstDeal',
+const CardIDs$json = const {
+  '1': 'CardIDs',
+  '2': const [
+    const {'1': 'ids', '3': 1, '4': 3, '5': 9, '10': 'ids'},
+  ],
+};
+
+const HigherLowerChoice$json = const {
+  '1': 'HigherLowerChoice',
+  '2': const [
+    const {'1': 'choice', '3': 1, '4': 1, '5': 14, '6': '.palace.HigherLowerChoice.Type', '10': 'choice'},
+  ],
+  '4': const [HigherLowerChoice_Type$json],
+};
+
+const HigherLowerChoice_Type$json = const {
+  '1': 'Type',
+  '2': const [
+    const {'1': 'HIGHER', '2': 0},
+    const {'1': 'LOWER', '2': 1},
+  ],
+};
+
+const DealTowerInfo$json = const {
+  '1': 'DealTowerInfo',
+  '2': const [
+    const {'1': 'topTowers', '3': 1, '4': 3, '5': 11, '6': '.palace.Tower', '10': 'topTowers'},
+    const {'1': 'bottomTowers', '3': 2, '4': 3, '5': 11, '6': '.palace.Tower', '10': 'bottomTowers'},
+  ],
+};
+
+const SecondDealTowerInfo$json = const {
+  '1': 'SecondDealTowerInfo',
   '2': const [
     const {'1': 'topTowers', '3': 1, '4': 3, '5': 11, '6': '.palace.Tower', '10': 'topTowers'},
   ],
 };
 
-const CardIDs$json = const {
-  '1': 'CardIDs',
+const PlayFromHandInfo$json = const {
+  '1': 'PlayFromHandInfo',
   '2': const [
-    const {'1': 'ids', '3': 1, '4': 3, '5': 9, '10': 'ids'},
+    const {'1': 'userIndex', '3': 1, '4': 1, '5': 5, '10': 'userIndex'},
+    const {'1': 'cards', '3': 2, '4': 3, '5': 11, '6': '.palace.Card', '10': 'cards'},
+  ],
+};
+
+const DiscardInfo$json = const {
+  '1': 'DiscardInfo',
+  '2': const [
+    const {'1': 'cardIDs', '3': 1, '4': 3, '5': 9, '10': 'cardIDs'},
+  ],
+};
+
+const DrawInfo$json = const {
+  '1': 'DrawInfo',
+  '2': const [
+    const {'1': 'userIndex', '3': 1, '4': 1, '5': 5, '10': 'userIndex'},
+    const {'1': 'cards', '3': 2, '4': 3, '5': 11, '6': '.palace.Card', '10': 'cards'},
+  ],
+};
+
+const PickUpPileInfo$json = const {
+  '1': 'PickUpPileInfo',
+  '2': const [
+    const {'1': 'userIndex', '3': 1, '4': 1, '5': 5, '10': 'userIndex'},
+    const {'1': 'cards', '3': 2, '4': 3, '5': 11, '6': '.palace.Card', '10': 'cards'},
+  ],
+};
+
+const Hand$json = const {
+  '1': 'Hand',
+  '2': const [
+    const {'1': 'cards', '3': 1, '4': 3, '5': 11, '6': '.palace.Card', '10': 'cards'},
+  ],
+};
+
+const TowerCardsToHandsInfo$json = const {
+  '1': 'TowerCardsToHandsInfo',
+  '2': const [
+    const {'1': 'hands', '3': 1, '4': 3, '5': 11, '6': '.palace.CardIDs', '10': 'hands'},
+  ],
+};
+
+const FinalDealInfo$json = const {
+  '1': 'FinalDealInfo',
+  '2': const [
+    const {'1': 'hands', '3': 1, '4': 3, '5': 11, '6': '.palace.Hand', '10': 'hands'},
   ],
 };
 

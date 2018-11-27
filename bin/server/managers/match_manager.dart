@@ -38,7 +38,7 @@ class MatchManager {
 
   MatchManager._internal();
 
-  sendMatchInvite(ServerWebSocket socket, friendID) {
+  sendMatchInvite(ServerWebSocket socket, String friendID) {
     // check for existing invitations
     if (socketInvited(socket)) {
       clearInvites(socket);
@@ -63,11 +63,15 @@ class MatchManager {
     // TODO create diff method of generating match IDs
     final matchID = '$userID$friendID';
 
-    final friendMatchInvite = new MatchInvite('Play with $userID?', matchID);
-    friendSocket.send(MessageType.matchInvite, friendMatchInvite);
+    final friendMatchInvite = new MatchInvite()
+      ..msg = 'Play with $userID?'
+      ..matchID = matchID;
+    friendSocket.send(SocketMessage_Type.MATCH_INVITE, friendMatchInvite);
 
-    final userMatchInvite = new MatchInvite('Play with $friendID?', matchID);
-    socket.send(MessageType.matchInvite, userMatchInvite);
+    final userMatchInvite = new MatchInvite()
+      ..msg = 'Play with $friendID?'
+      ..matchID = matchID;
+    socket.send(SocketMessage_Type.MATCH_INVITE, userMatchInvite);
 
     _matchInvitePlayers[matchID] = [socket, friendSocket];
     _matchInvites[socket] = matchID;
@@ -99,7 +103,7 @@ class MatchManager {
     for (var socket in players) {
       _matches[socket] = match;
 
-      socket.send(MessageType.matchStart);
+      socket.send(SocketMessage_Type.MATCH_START);
     }
 
     _matchesByID[matchID] = match;
@@ -116,7 +120,8 @@ class MatchManager {
     final userID = LoginManager.shared.userIDFromSocket(socket);
 
     for (var sws in matchInvite) {
-      sws.send(MessageType.matchInviteCancel, SimpleInfo(userID));
+      sws.send(
+          SocketMessage_Type.MATCH_INVITE_CANCEL, SimpleInfo()..info = userID);
       _matchInvites.remove(sws);
     }
 

@@ -7,7 +7,6 @@ import 'client_websocket.dart';
 
 import 'client_card.dart';
 
-
 import 'common/generated_protos.dart';
 import 'common/generated_protos/socket_message.pbenum.dart';
 
@@ -117,8 +116,7 @@ setupListeners(ClientWebSocket ws, myPrint) {
 
       for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
         for (var playerIndex = 0; playerIndex < numPlayers; playerIndex++) {
-          final botCard =
-              new ClientCard.fromJson(bTowers[playerIndex][cardIndex]);
+          final botCard = new ClientCard(bTowers[playerIndex].cards[cardIndex]);
           bottomTowers[playerIndex][cardIndex] = botCard;
           cardRegistry['${botCard.id}'] = botCard;
           myPrint('deal bottom $botCard -> $playerIndex');
@@ -127,8 +125,7 @@ setupListeners(ClientWebSocket ws, myPrint) {
 
       for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
         for (var playerIndex = 0; playerIndex < numPlayers; playerIndex++) {
-          final topCard =
-              new ClientCard.fromJson(tTowers[playerIndex][cardIndex]);
+          final topCard = new ClientCard(tTowers[playerIndex].cards[cardIndex]);
           topTowers[playerIndex][cardIndex] = topCard;
           cardRegistry['${topCard.id}'] = topCard;
           myPrint('deal top $topCard -> $playerIndex');
@@ -136,16 +133,16 @@ setupListeners(ClientWebSocket ws, myPrint) {
       }
     })
     ..on(SocketMessage_Type.TOWER_CARD_IDS_TO_HAND, (var json) {
-      final cardsToHandInfo = new CardsToHandInfo.fromJson(json);
+      final cardsToHandInfo = new TowerCardsToHandsInfo.fromJson(json);
 
       final numPlayers = cardsToHandInfo.hands.length;
 
       for (var playerIndex = 0; playerIndex < numPlayers; playerIndex++) {
-        final newHand = cardsToHandInfo.hands[playerIndex];
+        final newHandIDs = cardsToHandInfo.hands[playerIndex];
         final topTower = topTowers[playerIndex];
         final hand = hands[playerIndex];
 
-        for (var cardID in newHand) {
+        for (var cardID in newHandIDs.ids) {
           final card = cardRegistry['$cardID'];
 
           if (playerIndex != 0) {
@@ -172,9 +169,10 @@ setupListeners(ClientWebSocket ws, myPrint) {
 
       for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
         for (var playerIndex = 0; playerIndex < numPlayers; playerIndex++) {
-          if (cardIndex < secondDealTowerInfo.topTowers[playerIndex].length) {
-            final topCard = new ClientCard.fromJson(
-                secondDealTowerInfo.topTowers[playerIndex][cardIndex]);
+          if (cardIndex <
+              secondDealTowerInfo.topTowers[playerIndex].cards.length) {
+            final topCard = new ClientCard(
+                secondDealTowerInfo.topTowers[playerIndex].cards[cardIndex]);
 
             for (var index = 0; index < towerLength; index++) {
               if (topTowers[playerIndex][index] == null) {
@@ -197,9 +195,9 @@ setupListeners(ClientWebSocket ws, myPrint) {
 
       for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
         for (var playerIndex = 0; playerIndex < numPlayers; playerIndex++) {
-          if (cardIndex < finalDealInfo.hands[playerIndex].length) {
-            final topCard = new ClientCard.fromJson(
-                finalDealInfo.hands[playerIndex][cardIndex]);
+          if (cardIndex < finalDealInfo.hands[playerIndex].cards.length) {
+            final topCard = new ClientCard(
+                finalDealInfo.hands[playerIndex].cards[cardIndex]);
             hands[playerIndex].add(topCard);
             cardRegistry['${topCard.id}'] = topCard;
             myPrint('deal $topCard -> $playerIndex');
@@ -283,12 +281,12 @@ setupListeners(ClientWebSocket ws, myPrint) {
     ..on(SocketMessage_Type.DRAW_INFO, (var json) {
       final drawInfo = new DrawInfo.fromJson(json);
 
-      for (var cardInfo in drawInfo.cardInfos) {
-        final card = new ClientCard.fromJson(cardInfo);
+      for (var card in drawInfo.cards) {
+        final clientCard = new ClientCard(card);
 
-        cardRegistry['${card.id}'] = card;
+        cardRegistry['${card.id}'] = clientCard;
 
-        hands[drawInfo.userIndex].add(card);
+        hands[drawInfo.userIndex].add(clientCard);
         myPrint('draw card $card -> ${drawInfo.userIndex}');
 
         deckLength--;
@@ -299,19 +297,20 @@ setupListeners(ClientWebSocket ws, myPrint) {
     ..on(SocketMessage_Type.PLAY_FROM_HAND_INFO, (var json) {
       final playFromHandInfo = new PlayFromHandInfo.fromJson(json);
 
-      for (var cardInfo in playFromHandInfo.cardInfos) {
-        final tempCard = new ClientCard.fromJson(cardInfo);
+      for (var card in playFromHandInfo.cards) {
+        final tempCard = new ClientCard(card);
 
-        final card = cardRegistry['${tempCard.id}'];
-        card.type = tempCard.type;
-        card.value = tempCard.value;
-        card.hidden = false;
+        final clientCard = cardRegistry['${tempCard.id}'];
+        clientCard.type = tempCard.type;
+        clientCard.value = tempCard.value;
+        clientCard.hidden = false;
 
-        hands[playFromHandInfo.userIndex].remove(card);
+        hands[playFromHandInfo.userIndex].remove(clientCard);
 
-        playedCards.add(card);
+        playedCards.add(clientCard);
 
-        myPrint('play card from hand ${playFromHandInfo.userIndex} -> $card');
+        myPrint(
+            'play card from hand ${playFromHandInfo.userIndex} -> $clientCard');
       }
 
       myPrint(
@@ -320,14 +319,14 @@ setupListeners(ClientWebSocket ws, myPrint) {
     ..on(SocketMessage_Type.PICK_UP_PILE_INFO, (var json) {
       final pickUpPileInfo = new PickUpPileInfo.fromJson(json);
 
-      for (var cardInfo in pickUpPileInfo.cardInfos) {
-        final tempCard = new ClientCard.fromJson(cardInfo);
+      for (var card in pickUpPileInfo.cards) {
+        final tempCard = new ClientCard(card);
 
-        final card = cardRegistry['${tempCard.id}'];
-        card.hidden = tempCard.hidden;
+        final clientCard = cardRegistry['${tempCard.id}'];
+        clientCard.hidden = tempCard.hidden;
 
-        hands[pickUpPileInfo.userIndex].add(card);
-        myPrint('pick up from pile $card -> ${pickUpPileInfo.userIndex}');
+        hands[pickUpPileInfo.userIndex].add(clientCard);
+        myPrint('pick up from pile $clientCard -> ${pickUpPileInfo.userIndex}');
       }
 
       playedCards.clear();

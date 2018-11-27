@@ -11,7 +11,8 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 class MatchInvite extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('MatchInvite', package: const $pb.PackageName('palace'))
-    ..aOS(1, 'matchID')
+    ..aOS(1, 'msg')
+    ..aOS(2, 'matchID')
     ..hasRequiredFields = false
   ;
 
@@ -29,9 +30,14 @@ class MatchInvite extends $pb.GeneratedMessage {
     if (v is! MatchInvite) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  String get matchID => $_getS(0, '');
-  set matchID(String v) { $_setString(0, v); }
-  bool hasMatchID() => $_has(0);
-  void clearMatchID() => clearField(1);
+  String get msg => $_getS(0, '');
+  set msg(String v) { $_setString(0, v); }
+  bool hasMsg() => $_has(0);
+  void clearMsg() => clearField(1);
+
+  String get matchID => $_getS(1, '');
+  set matchID(String v) { $_setString(1, v); }
+  bool hasMatchID() => $_has(1);
+  void clearMatchID() => clearField(2);
 }
 

@@ -11,9 +11,7 @@ import 'package:quiver/async.dart';
 import 'package:protobuf/protobuf.dart' as pb;
 
 import '../../web/common/common_websocket.dart';
-import '../../web/common/card_type.dart';
 import '../../web/common/regex_rules.dart';
-import '../../web/common/higher_lower_choices.dart';
 import '../../web/common/generated_protos.dart';
 
 part 'logic/match.dart';

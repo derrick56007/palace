@@ -38,3 +38,21 @@ class Card_Type extends $pb.ProtobufEnum {
   const Card_Type._(int v, String n) : super(v, n);
 }
 
+class HigherLowerChoice_Type extends $pb.ProtobufEnum {
+  static const HigherLowerChoice_Type HIGHER = const HigherLowerChoice_Type._(0, 'HIGHER');
+  static const HigherLowerChoice_Type LOWER = const HigherLowerChoice_Type._(1, 'LOWER');
+
+  static const List<HigherLowerChoice_Type> values = const <HigherLowerChoice_Type> [
+    HIGHER,
+    LOWER,
+  ];
+
+  static final Map<int, HigherLowerChoice_Type> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static HigherLowerChoice_Type valueOf(int value) => _byValue[value];
+  static void $checkItem(HigherLowerChoice_Type v) {
+    if (v is! HigherLowerChoice_Type) $pb.checkItemFailed(v, 'HigherLowerChoice_Type');
+  }
+
+  const HigherLowerChoice_Type._(int v, String n) : super(v, n);
+}
+

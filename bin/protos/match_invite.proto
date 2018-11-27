@@ -2,5 +2,6 @@ syntax = "proto3";
 package palace;
 
 message MatchInvite {
-    string matchID = 1;
+    string msg = 1;
+    string matchID = 2;
 }
