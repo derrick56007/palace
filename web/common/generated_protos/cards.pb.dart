@@ -180,8 +180,7 @@ class SecondDealTowerInfo extends $pb.GeneratedMessage {
 
 class PlayFromHandInfo extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('PlayFromHandInfo', package: const $pb.PackageName('palace'))
-    ..a<int>(1, 'userIndex', $pb.PbFieldType.O3)
-    ..pp<Card>(2, 'cards', $pb.PbFieldType.PM, Card.$checkItem, Card.create)
+    ..pp<Card>(1, 'cards', $pb.PbFieldType.PM, Card.$checkItem, Card.create)
     ..hasRequiredFields = false
   ;
 
@@ -199,17 +198,12 @@ class PlayFromHandInfo extends $pb.GeneratedMessage {
     if (v is! PlayFromHandInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  int get userIndex => $_get(0, 0);
-  set userIndex(int v) { $_setSignedInt32(0, v); }
-  bool hasUserIndex() => $_has(0);
-  void clearUserIndex() => clearField(1);
-
-  List<Card> get cards => $_getList(1);
+  List<Card> get cards => $_getList(0);
 }
 
 class DiscardInfo extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('DiscardInfo', package: const $pb.PackageName('palace'))
-    ..pPS(1, 'cardIDs')
+    ..pp<Card>(1, 'cards', $pb.PbFieldType.PM, Card.$checkItem, Card.create)
     ..hasRequiredFields = false
   ;
 
@@ -227,7 +221,7 @@ class DiscardInfo extends $pb.GeneratedMessage {
     if (v is! DiscardInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  List<String> get cardIDs => $_getList(0);
+  List<Card> get cards => $_getList(0);
 }
 
 class DrawInfo extends $pb.GeneratedMessage {

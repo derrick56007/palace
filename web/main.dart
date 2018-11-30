@@ -119,26 +119,26 @@ setupListeners(ClientWebSocket ws, myPrint) async {
     })
     ..on(SocketMessage_Type.SET_SELECTABLE_CARDS, (var json) {
       final cardIDs = new CardIDs.fromJson(json);
-
+      game.setSelectableCards(cardIDs);
     })
     ..on(SocketMessage_Type.CLEAR_SELECTABLE_CARDS, () {
-
+      game.clearSelectableCards();
     })
     ..on(SocketMessage_Type.DRAW_INFO, (var json) {
-      final drawInfo = new DrawInfo.fromJson(json);
-
+      final info = new DrawInfo.fromJson(json);
+      game.onDrawInfo(info);
     })
     ..on(SocketMessage_Type.PLAY_FROM_HAND_INFO, (var json) {
-      final playFromHandInfo = new PlayFromHandInfo.fromJson(json);
-
+      final info = new PlayFromHandInfo.fromJson(json);
+      game.onPlayFromHandInfo(info);
     })
     ..on(SocketMessage_Type.PICK_UP_PILE_INFO, (var json) {
-      final pickUpPileInfo = new PickUpPileInfo.fromJson(json);
-
+      final info = new PickUpPileInfo.fromJson(json);
+      game.onPickUpPileInfo(info);
     })
     ..on(SocketMessage_Type.DISCARD_INFO, (var json) {
-      final discardInfo = new DiscardInfo.fromJson(json);
-
+      final info = new DiscardInfo.fromJson(json);
+      game.onDiscardInfo(info);
     })
     ..on(SocketMessage_Type.REQUEST_HANDSWAP_CHOICE, (var json) {
 

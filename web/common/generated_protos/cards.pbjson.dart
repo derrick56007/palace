@@ -77,15 +77,14 @@ const SecondDealTowerInfo$json = const {
 const PlayFromHandInfo$json = const {
   '1': 'PlayFromHandInfo',
   '2': const [
-    const {'1': 'userIndex', '3': 1, '4': 1, '5': 5, '10': 'userIndex'},
-    const {'1': 'cards', '3': 2, '4': 3, '5': 11, '6': '.palace.Card', '10': 'cards'},
+    const {'1': 'cards', '3': 1, '4': 3, '5': 11, '6': '.palace.Card', '10': 'cards'},
   ],
 };
 
 const DiscardInfo$json = const {
   '1': 'DiscardInfo',
   '2': const [
-    const {'1': 'cardIDs', '3': 1, '4': 3, '5': 9, '10': 'cardIDs'},
+    const {'1': 'cards', '3': 1, '4': 3, '5': 11, '6': '.palace.Card', '10': 'cards'},
   ],
 };
 

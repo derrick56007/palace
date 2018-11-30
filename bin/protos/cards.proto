@@ -46,12 +46,11 @@ message SecondDealTowerInfo {
 }
 
 message PlayFromHandInfo {
-    int32 userIndex = 1;
-    repeated Card cards = 2;
+    repeated Card cards = 1;
 }
 
 message DiscardInfo {
-    repeated string cardIDs = 1;
+    repeated Card cards = 1;
 }
 
 message DrawInfo {

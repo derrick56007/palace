@@ -148,19 +148,12 @@ class Match {
 
     print('applying played $cards');
 
-    // send play info
-    final socketIndex = players.indexOf(socket);
-
     cards.forEach((card) {
       card.hidden = false;
     });
 
+    final playFromHandInfo = new PlayFromHandInfo()..cards.addAll(cards);
     for (var socketToSendTo in players) {
-      final socketToSendToIndex = players.indexOf(socketToSendTo);
-
-      final playFromHandInfo = new PlayFromHandInfo()
-        ..userIndex = (socketIndex - socketToSendToIndex) % players.length
-        ..cards.addAll(cards);
       socketToSendTo.send(
           SocketMessage_Type.PLAY_FROM_HAND_INFO, playFromHandInfo);
     }
@@ -342,19 +335,15 @@ class Match {
   }
 
   discardCards(List<Card> cards) {
-    final discardedCardIDs = <String>[];
-
     for (var card in cards) {
-      discardedCardIDs.add(card.id);
-
       cardRegistry.remove('${card.id}');
     }
 
-    if (discardedCardIDs.isNotEmpty) {
-      final bombInfo = new DiscardInfo()..cardIDs.addAll(discardedCardIDs);
+    if (cards.isNotEmpty) {
+      final discardInfo = new DiscardInfo()..cards.addAll(cards);
 
       for (var socket in players) {
-        socket.send(SocketMessage_Type.DISCARD_INFO, bombInfo);
+        socket.send(SocketMessage_Type.DISCARD_INFO, discardInfo);
       }
     }
 

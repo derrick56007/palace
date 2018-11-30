@@ -72,7 +72,7 @@ class GameUI {
     for (var i = 0; i < defaultDeckLength; i++) {
       final cardSprite = new ClientCard();
       cardSprite.filters = [new DropShadowFilter(1)];
-      cardSprite.x = gameWidth / 2;
+      cardSprite.x = gameWidth / 2 - cardWidth - 50;
       cardSprite.y = gameHeight / 2;
 
       stage.children.add(cardSprite);
@@ -240,6 +240,40 @@ class GameUI {
     }
   }
 
+  onPlayFromHandInfo(PlayFromHandInfo info) {
+    for (var card in info.cards) {
+      final revealedCard = cardRegistry[card.id];
+      revealedCard.cardInfo = card;
+
+      final tween = stage.juggler
+          .addTween(revealedCard, .75, Transition.easeOutQuintic);
+
+      tween.animate.x.to(midPoint.x);
+      tween.animate.y.to(midPoint.y);
+    }
+  }
+
+  onPickUpPileInfo(PickUpPileInfo info) {
+    for (var cardInfo in info.cards) {
+      final pickedUpCard = cardRegistry[cardInfo.id];
+      pickedUpCard.cardInfo = cardInfo;
+
+      animateCardToHand(pickedUpCard, info.userIndex, .5);
+    }
+  }
+
+  onDiscardInfo(DiscardInfo info) {
+    for (var cardInfo in info.cards) {
+      final discardedCard = cardRegistry[cardInfo.id];
+      discardedCard.cardInfo = cardInfo;
+
+      final tween = stage.juggler
+          .addTween(discardedCard, .75, Transition.easeOutQuintic);
+
+      tween.animate.alpha.to(0);
+    }
+  }
+
   clearSelectableCards() {
     for (var cardID in selectableCardIDs) {
       if (cardRegistry.containsKey(cardID)) {
@@ -258,6 +292,15 @@ class GameUI {
         card.selectable = true;
         selectableCardIDs.add(id);
       }
+    }
+  }
+
+  onDrawInfo(DrawInfo info) async {
+    for (var cardInfo in info.cards) {
+      final newCard = drawFromDeck(cardInfo);
+
+      animateCardToHand(newCard, info.userIndex, .5);
+      await new Future.delayed(const Duration(milliseconds: 100));
     }
   }
 
