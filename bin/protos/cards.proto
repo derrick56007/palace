@@ -67,8 +67,9 @@ message Hand {
     repeated Card cards = 1;
 }
 
-message TowerCardsToHandsInfo {
-    repeated CardIDs hands = 1;
+message TowerCardsToHandInfo {
+    int32 userIndex = 1;
+    repeated string cardIDs = 2;
 }
 
 message FinalDealInfo {

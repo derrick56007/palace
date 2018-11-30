@@ -19,9 +19,12 @@ class ServerWebSocket extends CommonWebSocket {
   @override
   send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) {
     if (generatedMessage == null) {
-      _webSocket.add(type.value.toString());
+      _webSocket.add(SocketMessage_Type.values.indexOf(type).toString());
     } else {
-      _webSocket.add(jsonEncode([type.value, generatedMessage.writeToJson()]));
+      _webSocket.add(jsonEncode([
+        SocketMessage_Type.values.indexOf(type),
+        generatedMessage.writeToJson()
+      ]));
     }
   }
 }

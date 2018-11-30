@@ -19,7 +19,9 @@ class GameUI {
 
   static const defaultDeckLength = 56;
 
-  GameUI();
+  final ClientWebSocket socket;
+
+  GameUI(this.socket);
 
   final resourceManager = new ResourceManager();
   final options = new StageOptions()
@@ -78,23 +80,6 @@ class GameUI {
       stage.children.add(cardSprite);
       deck.add(cardSprite);
     }
-
-    // TODO move to game start
-//    createServerCards();
-//
-//    setSelectableCards(
-//        topTowers.first.map((ccard) => ccard.cardInfo.id).toList());
-
-//    for (int j = 0; j < 7; j++) {
-//      for (var i = 0; i < 4; i++) {
-//        drawCardAnim(i, "derp", .75);
-//        await new Future.delayed(const Duration(milliseconds: 500));
-//      }
-//    }
-
-    /////////////////////////////////////
-
-//    final hand = hands.first;
 
     stage.onMouseMove.listen((MouseEvent e) {
       final objects = stage.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
@@ -161,11 +146,10 @@ class GameUI {
   }
 
   sendSelectedCards() {
-    final cardIDs = SelectableManager.shared.selectedIDs;
+    final cardIDs = new CardIDs()
+      ..ids.addAll(SelectableManager.shared.selectedIDs);
 
-//    //TODO remove test
-//    onTowerCardsToHand(new TowerCardsToHandsInfo()
-//      ..hands.add(new CardIDs()..ids.addAll(cardIDs)));
+    socket.send(SocketMessage_Type.USER_PLAY, cardIDs);
     print('sent $cardIDs');
 
     clearSelectableCards();
@@ -196,19 +180,21 @@ class GameUI {
         await new Future.delayed(const Duration(milliseconds: 100));
       }
     }
+
+    final cardIDs = new CardIDs()
+      ..ids.addAll(topTowers.first.map((cCard) => cCard._card.id));
+    setSelectableCards(cardIDs);
   }
 
-  onTowerCardsToHand(TowerCardsToHandsInfo info) {
-    for (var towerIndex = 0; towerIndex < info.hands.length; towerIndex++) {
-      for (var cardID in info.hands[towerIndex].ids)
-        if (cardRegistry.containsKey(cardID)) {
-          final card = cardRegistry[cardID];
-          animateCardToHand(card, towerIndex, .5);
+  onTowerCardsToHand(TowerCardsToHandInfo info) {
+    for (var cardID in info.cardIDs)
+      if (cardRegistry.containsKey(cardID)) {
+        final card = cardRegistry[cardID];
+        animateCardToHand(card, info.userIndex, .5);
 
-          final tower = topTowers[towerIndex];
-          tower[tower.indexOf(card)] = null;
-        }
-    }
+        final tower = topTowers[info.userIndex];
+        tower[tower.indexOf(card)] = null;
+      }
   }
 
   secondTowerDealInfo(SecondDealTowerInfo info) {
@@ -221,7 +207,7 @@ class GameUI {
 
         final emptyCardIndex =
             topTowers[userIndex].indexWhere((cCard) => cCard == null);
-        dealTowerAnim(newCard, topTowers, emptyCardIndex, cardIndex, .5);
+        dealTowerAnim(newCard, topTowers, userIndex, emptyCardIndex, .5);
       }
     }
   }
@@ -245,8 +231,8 @@ class GameUI {
       final revealedCard = cardRegistry[card.id];
       revealedCard.cardInfo = card;
 
-      final tween = stage.juggler
-          .addTween(revealedCard, .75, Transition.easeOutQuintic);
+      final tween =
+          stage.juggler.addTween(revealedCard, .75, Transition.easeOutQuintic);
 
       tween.animate.x.to(midPoint.x);
       tween.animate.y.to(midPoint.y);
@@ -267,8 +253,8 @@ class GameUI {
       final discardedCard = cardRegistry[cardInfo.id];
       discardedCard.cardInfo = cardInfo;
 
-      final tween = stage.juggler
-          .addTween(discardedCard, .75, Transition.easeOutQuintic);
+      final tween =
+          stage.juggler.addTween(discardedCard, .75, Transition.easeOutQuintic);
 
       tween.animate.alpha.to(0);
     }
@@ -283,6 +269,16 @@ class GameUI {
     }
 
     selectableCardIDs.clear();
+  }
+
+  setMulliganableCards(CardIDs cardIDs) {
+    for (var id in cardIDs.ids) {
+      if (cardRegistry.containsKey(id)) {
+        final card = cardRegistry[id];
+        card.selectable = true;
+        selectableCardIDs.add(id);
+      }
+    }
   }
 
   setSelectableCards(CardIDs cardIDs) {

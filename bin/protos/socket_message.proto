@@ -14,7 +14,8 @@ message SocketMessage {
         SECOND_DEAL_TOWER_INFO = 7;
         FINAL_DEAL_INFO = 8;
         TOWER_CARD_IDS_TO_HAND = 9;
-        SET_SELECTABLE_CARDS = 11;
+        SET_SELECTABLE_CARDS = 10;
+        SET_MULLIGANABLE_CARDS = 11;
         CLEAR_SELECTABLE_CARDS = 12;
         DRAW_INFO = 13;
         PLAY_FROM_HAND_INFO = 14;

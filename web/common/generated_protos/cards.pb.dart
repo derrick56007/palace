@@ -305,27 +305,33 @@ class Hand extends $pb.GeneratedMessage {
   List<Card> get cards => $_getList(0);
 }
 
-class TowerCardsToHandsInfo extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('TowerCardsToHandsInfo', package: const $pb.PackageName('palace'))
-    ..pp<CardIDs>(1, 'hands', $pb.PbFieldType.PM, CardIDs.$checkItem, CardIDs.create)
+class TowerCardsToHandInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('TowerCardsToHandInfo', package: const $pb.PackageName('palace'))
+    ..a<int>(1, 'userIndex', $pb.PbFieldType.O3)
+    ..pPS(2, 'cardIDs')
     ..hasRequiredFields = false
   ;
 
-  TowerCardsToHandsInfo() : super();
-  TowerCardsToHandsInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  TowerCardsToHandsInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  TowerCardsToHandsInfo clone() => new TowerCardsToHandsInfo()..mergeFromMessage(this);
-  TowerCardsToHandsInfo copyWith(void Function(TowerCardsToHandsInfo) updates) => super.copyWith((message) => updates(message as TowerCardsToHandsInfo));
+  TowerCardsToHandInfo() : super();
+  TowerCardsToHandInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  TowerCardsToHandInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  TowerCardsToHandInfo clone() => new TowerCardsToHandInfo()..mergeFromMessage(this);
+  TowerCardsToHandInfo copyWith(void Function(TowerCardsToHandInfo) updates) => super.copyWith((message) => updates(message as TowerCardsToHandInfo));
   $pb.BuilderInfo get info_ => _i;
-  static TowerCardsToHandsInfo create() => new TowerCardsToHandsInfo();
-  static $pb.PbList<TowerCardsToHandsInfo> createRepeated() => new $pb.PbList<TowerCardsToHandsInfo>();
-  static TowerCardsToHandsInfo getDefault() => _defaultInstance ??= create()..freeze();
-  static TowerCardsToHandsInfo _defaultInstance;
-  static void $checkItem(TowerCardsToHandsInfo v) {
-    if (v is! TowerCardsToHandsInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  static TowerCardsToHandInfo create() => new TowerCardsToHandInfo();
+  static $pb.PbList<TowerCardsToHandInfo> createRepeated() => new $pb.PbList<TowerCardsToHandInfo>();
+  static TowerCardsToHandInfo getDefault() => _defaultInstance ??= create()..freeze();
+  static TowerCardsToHandInfo _defaultInstance;
+  static void $checkItem(TowerCardsToHandInfo v) {
+    if (v is! TowerCardsToHandInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  List<CardIDs> get hands => $_getList(0);
+  int get userIndex => $_get(0, 0);
+  set userIndex(int v) { $_setSignedInt32(0, v); }
+  bool hasUserIndex() => $_has(0);
+  void clearUserIndex() => clearField(1);
+
+  List<String> get cardIDs => $_getList(1);
 }
 
 class FinalDealInfo extends $pb.GeneratedMessage {

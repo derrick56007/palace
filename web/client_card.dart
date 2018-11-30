@@ -10,7 +10,8 @@ class ClientCard extends Sprite {
   bool draggable = false;
   ClientCard() {
     crossOut =
-    new Bitmap(new BitmapData(front.width, front.height, Color.Black));
+    new Bitmap(new BitmapData(front.width, front.height, Color.Green));
+    crossOut.alpha = 50;
 //    bd.blendMode = BlendMode.SCREEN;
 
     addChild(crossOut);
@@ -110,12 +111,13 @@ class ClientCard extends Sprite {
         // deselect
         if (SelectableManager.shared.selectedIDs.contains(_card.id)) {
           SelectableManager.shared.selectedIDs.remove(_card.id);
-          filters.remove(blurFilter);
+
+
           children.remove(crossOut);
         } else {
           // select
           SelectableManager.shared.selectedIDs.add(_card.id);
-          filters.add(blurFilter);
+
           children.add(crossOut);
         }
 
@@ -127,12 +129,7 @@ class ClientCard extends Sprite {
   set cardInfo(Card card) {
     _card = card;
 
-    children.removeLast();
-    if (card.hidden) {
-      children.add(back);
-    } else {
-      children.add(front);
-    }
+    this.hidden = card.hidden;
   }
 
   Card get cardInfo => _card;
@@ -141,12 +138,18 @@ class ClientCard extends Sprite {
 
   set hidden(bool h) {
     _card.hidden = h;
+
+    children.removeLast();
+    if (this.hidden) {
+      children.add(back);
+    } else {
+      children.add(front);
+    }
   }
 
   bool _selectable = false;
 
   final glowFilter = new GlowFilter(Color.Gold, 20, 20);
-  final blurFilter = new BlurFilter(4, 4, 1);
 
   set selectable(bool s) {
     _selectable = s;
@@ -159,7 +162,6 @@ class ClientCard extends Sprite {
       mouseCursor = MouseCursor.DEFAULT;
     }
 
-    filters.remove(blurFilter);
     children.remove(crossOut);
   }
 

@@ -16,11 +16,11 @@ abstract class CommonWebSocket {
   Future start();
 
   void on(SocketMessage_Type type, Function function) {
-    if (messageDispatchers[type.value] != null) {
+    if (messageDispatchers[SocketMessage_Type.values.indexOf(type)] != null) {
       print("warning: overriding message dispatcher ${type.name}");
     }
 
-    messageDispatchers[type.value] = function;
+    messageDispatchers[SocketMessage_Type.values.indexOf(type)] = function;
   }
 
   void send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]);

@@ -401,8 +401,20 @@ class Match {
     for (var card in cards) {
       if (tower.cards.contains(card)) {
         hand.cards.add(card);
-        tower.cards.remove(card);
+        tower.cards[tower.cards.indexOf(card)] = _emptyCard;
       }
+    }
+
+    final socketIndex = players.indexOf(socket);
+
+    for (var socketToSendTo in players) {
+      final socketToSendToIndex = players.indexOf(socketToSendTo);
+
+      final info = new TowerCardsToHandInfo()
+        ..userIndex = (socketIndex - socketToSendToIndex) % players.length
+        ..cardIDs.addAll(cards.map((card) => card.id));
+      socketToSendTo.send(
+          SocketMessage_Type.TOWER_CARD_IDS_TO_HAND, info);
     }
 
     final userID = LoginManager.shared.userIDFromSocket(socket);
@@ -411,6 +423,8 @@ class Match {
     print('top $userID -> ${topTowers[socket]}');
   }
 
+  static const mulliganDuration = Duration(seconds: 10);
+
   startMulliganWindow() async {
     mulliganWindowActive = true;
 
@@ -418,8 +432,8 @@ class Match {
     print('open mulligan window');
 
     final completer = new Completer();
-    new CountdownTimer(const Duration(seconds: 5), const Duration(seconds: 1))
-        .listen((CountdownTimer timer) {
+    new CountdownTimer(mulliganDuration, const Duration(seconds: 1)).listen(
+        (CountdownTimer timer) {
       print('${timer.remaining.inSeconds} seconds left to mulligan');
 
       //
@@ -605,11 +619,9 @@ class Match {
         ..cards.addAll(pickedUpCards);
       socketToSendTo.send(SocketMessage_Type.PICK_UP_PILE_INFO, pickUpPileInfo);
 
-      if (socketToSendTo == socket) {
-        pickedUpCards.forEach((card) {
-          card.hidden = false;
-        });
-      }
+      pickedUpCards.forEach((card) {
+        card.hidden = true;
+      });
     }
 
     // clear pile and add to hand
@@ -801,34 +813,11 @@ class Match {
     for (var socket in players) {
       final cardIDs = new CardIDs()
         ..ids.addAll(topTowers[socket].cards.map((card) => card.id));
-      socket.send(SocketMessage_Type.SET_SELECTABLE_CARDS, cardIDs);
+      socket.send(SocketMessage_Type.SET_MULLIGANABLE_CARDS, cardIDs);
     }
   }
 
   secondTowerDeal() {
-    // send cards to hand alert
-    for (var socket in players) {
-      final handIDs = <CardIDs>[];
-      for (var hand in hands.values) {
-        final cardIDs = new CardIDs()
-          ..ids.addAll(hand.cards.map((card) => card.id).toList());
-
-        handIDs.add(cardIDs);
-      }
-
-      final List<CardIDs> shiftedHandCardIDs =
-          shiftListRespectiveToSocketIndex(socket, handIDs);
-
-      final cardsToHandInfo = new TowerCardsToHandsInfo()
-        ..hands.addAll(shiftedHandCardIDs);
-
-      for (var card in hands[socket].cards) {
-        card.hidden = true;
-      }
-
-      socket.send(SocketMessage_Type.TOWER_CARD_IDS_TO_HAND, cardsToHandInfo);
-    }
-
     final newTopCards = new List<Tower>(players.length);
 
     for (var playerIndex = 0; playerIndex < players.length; playerIndex++) {
@@ -837,10 +826,13 @@ class Match {
 
       final newTower = new Tower();
 
-      while (tower.cards.length < towerLength) {
+      while (tower.cards.contains(_emptyCard)) {
         final newCard = deckDraw();
         newCard.hidden = !newCard.hidden;
-        tower.cards.add(newCard);
+
+        final indexOfEmptyCard = tower.cards.indexOf(_emptyCard);
+
+        tower.cards[indexOfEmptyCard] = newCard;
         newTower.cards.add(newCard);
       }
 

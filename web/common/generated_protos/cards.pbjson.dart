@@ -111,10 +111,11 @@ const Hand$json = const {
   ],
 };
 
-const TowerCardsToHandsInfo$json = const {
-  '1': 'TowerCardsToHandsInfo',
+const TowerCardsToHandInfo$json = const {
+  '1': 'TowerCardsToHandInfo',
   '2': const [
-    const {'1': 'hands', '3': 1, '4': 3, '5': 11, '6': '.palace.CardIDs', '10': 'hands'},
+    const {'1': 'userIndex', '3': 1, '4': 1, '5': 5, '10': 'userIndex'},
+    const {'1': 'cardIDs', '3': 2, '4': 3, '5': 9, '10': 'cardIDs'},
   ],
 };
 

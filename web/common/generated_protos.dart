@@ -16,7 +16,7 @@ export 'generated_protos/cards.pb.dart' show PlayFromHandInfo;
 export 'generated_protos/cards.pb.dart' show DiscardInfo;
 export 'generated_protos/cards.pb.dart' show DrawInfo;
 export 'generated_protos/cards.pb.dart' show PickUpPileInfo;
-export 'generated_protos/cards.pb.dart' show TowerCardsToHandsInfo;
+export 'generated_protos/cards.pb.dart' show TowerCardsToHandInfo;
 export 'generated_protos/cards.pb.dart' show Tower;
 export 'generated_protos/cards.pb.dart' show Hand;
 export 'generated_protos/cards.pb.dart' show FinalDealInfo;
