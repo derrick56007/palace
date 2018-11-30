@@ -19,7 +19,6 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
   static const SocketMessage_Type SECOND_DEAL_TOWER_INFO = const SocketMessage_Type._(7, 'SECOND_DEAL_TOWER_INFO');
   static const SocketMessage_Type FINAL_DEAL_INFO = const SocketMessage_Type._(8, 'FINAL_DEAL_INFO');
   static const SocketMessage_Type TOWER_CARD_IDS_TO_HAND = const SocketMessage_Type._(9, 'TOWER_CARD_IDS_TO_HAND');
-  static const SocketMessage_Type SET_MULLIGANABLE_CARDS = const SocketMessage_Type._(10, 'SET_MULLIGANABLE_CARDS');
   static const SocketMessage_Type SET_SELECTABLE_CARDS = const SocketMessage_Type._(11, 'SET_SELECTABLE_CARDS');
   static const SocketMessage_Type CLEAR_SELECTABLE_CARDS = const SocketMessage_Type._(12, 'CLEAR_SELECTABLE_CARDS');
   static const SocketMessage_Type DRAW_INFO = const SocketMessage_Type._(13, 'DRAW_INFO');
@@ -52,7 +51,6 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     SECOND_DEAL_TOWER_INFO,
     FINAL_DEAL_INFO,
     TOWER_CARD_IDS_TO_HAND,
-    SET_MULLIGANABLE_CARDS,
     SET_SELECTABLE_CARDS,
     CLEAR_SELECTABLE_CARDS,
     DRAW_INFO,

@@ -72,6 +72,14 @@ class Match {
     if (mulliganWindowActive) {
       final chosenCards = cardListFromCardIDList(userPlay.ids);
 
+      // check if card is in your tower
+      for (var card in chosenCards) {
+        if (!topTowers[socket].cards.contains(card)) {
+          // TODO error
+          return;
+        }
+      }
+
       if (chosenCards.contains(null)) {
         // TODO error missing cards
         return;
@@ -416,14 +424,6 @@ class Match {
 
   startMulliganWindow() async {
     mulliganWindowActive = true;
-
-    for (var socket in players) {
-      final cardIDs = topTowers[socket].cards.map((card) => card.id).toList();
-
-      final selectableCards = new CardIDs()..ids.addAll(cardIDs);
-
-      socket.send(SocketMessage_Type.SET_MULLIGANABLE_CARDS, selectableCards);
-    }
 
     // send respective cards to mulligan
     print('open mulligan window');
