@@ -807,6 +807,13 @@ class Match {
 
       socket.send(SocketMessage_Type.FIRST_DEAL_TOWER_INFO, dealTowerInfo);
     }
+
+    // send selectable cards to mulligan
+    for (var socket in players) {
+      final cardIDs = new CardIDs()
+        ..ids.addAll(topTowers[socket].cards.map((card) => card.id));
+      socket.send(SocketMessage_Type.SET_SELECTABLE_CARDS, cardIDs);
+    }
   }
 
   secondTowerDeal() {

@@ -103,21 +103,19 @@ setupListeners(ClientWebSocket ws, myPrint) async {
     })
     ..on(SocketMessage_Type.FIRST_DEAL_TOWER_INFO, (var json) {
       final info = new DealTowerInfo.fromJson(json);
-
-    
+      game.onDealTowerInfo(info);
     })
     ..on(SocketMessage_Type.TOWER_CARD_IDS_TO_HAND, (var json) {
       final info = new TowerCardsToHandsInfo.fromJson(json);
-
-
+      game.onTowerCardsToHand(info);
     })
     ..on(SocketMessage_Type.SECOND_DEAL_TOWER_INFO, (var json) {
       final info = new SecondDealTowerInfo.fromJson(json);
-
+      game.secondTowerDealInfo(info);
     })
     ..on(SocketMessage_Type.FINAL_DEAL_INFO, (var json) {
       final info = new FinalDealInfo.fromJson(json);
-
+      game.onFinalDealInfo(info);
     })
     ..on(SocketMessage_Type.SET_SELECTABLE_CARDS, (var json) {
       final cardIDs = new CardIDs.fromJson(json);

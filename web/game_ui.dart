@@ -49,7 +49,7 @@ class GameUI {
     cardBackData = resourceManager.getBitmapData("back");
 
     final sendButton =
-    new TextField("Send", new TextFormat('Arial', 50, Color.Black));
+        new TextField("Send", new TextFormat('Arial', 50, Color.Black));
     sendButton
       ..x = midPoint.x + 300
       ..y = midPoint.y
@@ -149,7 +149,7 @@ class GameUI {
     }
 
     final rotatedPoint =
-    rotate_point(midPoint.x, midPoint.y, x, y, towerIndex * 90);
+        rotate_point(midPoint.x, midPoint.y, x, y, towerIndex * 90);
 
     tween.animate.x.to(rotatedPoint.x);
     tween.animate.y.to(rotatedPoint.y);
@@ -182,7 +182,7 @@ class GameUI {
     for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
       for (var userIndex = 0; userIndex < usersLength; userIndex++) {
         final newCard =
-        drawFromDeck(info.bottomTowers[userIndex].cards[cardIndex]);
+            drawFromDeck(info.bottomTowers[userIndex].cards[cardIndex]);
         dealTowerAnim(newCard, botTowers, userIndex, cardIndex, .5);
         await new Future.delayed(const Duration(milliseconds: 100));
       }
@@ -191,7 +191,7 @@ class GameUI {
     for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
       for (var userIndex = 0; userIndex < usersLength; userIndex++) {
         final newCard =
-        drawFromDeck(info.topTowers[userIndex].cards[cardIndex]);
+            drawFromDeck(info.topTowers[userIndex].cards[cardIndex]);
         dealTowerAnim(newCard, topTowers, userIndex, cardIndex, .5);
         await new Future.delayed(const Duration(milliseconds: 100));
       }
@@ -220,8 +220,22 @@ class GameUI {
         final newCard = drawFromDeck(cardInfo);
 
         final emptyCardIndex =
-        topTowers[userIndex].indexWhere((cCard) => cCard == null);
+            topTowers[userIndex].indexWhere((cCard) => cCard == null);
         dealTowerAnim(newCard, topTowers, emptyCardIndex, cardIndex, .5);
+      }
+    }
+  }
+
+  onFinalDealInfo(FinalDealInfo info) async {
+    for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
+      for (var userIndex = 0; userIndex < info.hands.length; userIndex++) {
+        if (info.hands[userIndex].cards.isEmpty) continue;
+
+        final cardInfo = info.hands[userIndex].cards.removeAt(0);
+        final newCard = drawFromDeck(cardInfo);
+
+        animateCardToHand(newCard, userIndex, .5);
+        await new Future.delayed(const Duration(milliseconds: 100));
       }
     }
   }
@@ -237,12 +251,12 @@ class GameUI {
     selectableCardIDs.clear();
   }
 
-  setSelectableCards(List<String> cardIDs) {
-    for (var cardID in cardIDs) {
-      if (cardRegistry.containsKey(cardID)) {
-        final card = cardRegistry[cardID];
+  setSelectableCards(CardIDs cardIDs) {
+    for (var id in cardIDs.ids) {
+      if (cardRegistry.containsKey(id)) {
+        final card = cardRegistry[id];
         card.selectable = true;
-        selectableCardIDs.add(cardID);
+        selectableCardIDs.add(id);
       }
     }
   }
@@ -275,7 +289,7 @@ class GameUI {
       }
 
       final rotatedPoint =
-      rotate_point(midPoint.x, midPoint.y, x, y, handIndex * 90);
+          rotate_point(midPoint.x, midPoint.y, x, y, handIndex * 90);
 
       tween.animate.x.to(rotatedPoint.x);
       tween.animate.y.to(rotatedPoint.y);
