@@ -24,21 +24,26 @@ message SocketMessage {
         REQUEST_HANDSWAP_CHOICE = 17;
         REQUEST_TOPSWAP_CHOICE = 18;
         REQUEST_HIGHERLOWER_CHOICE = 19;
+        ACTIVE_PLAYER_INDEX = 20;
 
         // to server
-        LOGIN = 20;
-        REGISTER = 21;
-        ADD_FRIEND = 22;
-        ACCEPT_FRIEND_REQUEST = 23;
-        SEND_MATCH_INVITE = 24;
-        MATCH_ACCEPT = 25;
-        MATCH_DECLINE = 26;
-        USER_PLAY = 27;
-        HANDSWAP_CHOICE = 28;
-        TOPSWAP_CHOICE = 29;
-        HIGHERLOWER_CHOICE = 30;
+        LOGIN = 21;
+        REGISTER = 22;
+        ADD_FRIEND = 23;
+        ACCEPT_FRIEND_REQUEST = 24;
+        SEND_MATCH_INVITE = 25;
+        MATCH_ACCEPT = 26;
+        MATCH_DECLINE = 27;
+        USER_PLAY = 28;
+        HANDSWAP_CHOICE = 29;
+        TOPSWAP_CHOICE = 30;
+        HIGHERLOWER_CHOICE = 31;
     }
 
     Type type = 1;
     string json = 2;
+}
+
+message ActivePlayerIndex {
+    int32 index = 1;
 }

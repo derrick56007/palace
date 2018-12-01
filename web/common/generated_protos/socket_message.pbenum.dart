@@ -29,17 +29,18 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
   static const SocketMessage_Type REQUEST_HANDSWAP_CHOICE = const SocketMessage_Type._(17, 'REQUEST_HANDSWAP_CHOICE');
   static const SocketMessage_Type REQUEST_TOPSWAP_CHOICE = const SocketMessage_Type._(18, 'REQUEST_TOPSWAP_CHOICE');
   static const SocketMessage_Type REQUEST_HIGHERLOWER_CHOICE = const SocketMessage_Type._(19, 'REQUEST_HIGHERLOWER_CHOICE');
-  static const SocketMessage_Type LOGIN = const SocketMessage_Type._(20, 'LOGIN');
-  static const SocketMessage_Type REGISTER = const SocketMessage_Type._(21, 'REGISTER');
-  static const SocketMessage_Type ADD_FRIEND = const SocketMessage_Type._(22, 'ADD_FRIEND');
-  static const SocketMessage_Type ACCEPT_FRIEND_REQUEST = const SocketMessage_Type._(23, 'ACCEPT_FRIEND_REQUEST');
-  static const SocketMessage_Type SEND_MATCH_INVITE = const SocketMessage_Type._(24, 'SEND_MATCH_INVITE');
-  static const SocketMessage_Type MATCH_ACCEPT = const SocketMessage_Type._(25, 'MATCH_ACCEPT');
-  static const SocketMessage_Type MATCH_DECLINE = const SocketMessage_Type._(26, 'MATCH_DECLINE');
-  static const SocketMessage_Type USER_PLAY = const SocketMessage_Type._(27, 'USER_PLAY');
-  static const SocketMessage_Type HANDSWAP_CHOICE = const SocketMessage_Type._(28, 'HANDSWAP_CHOICE');
-  static const SocketMessage_Type TOPSWAP_CHOICE = const SocketMessage_Type._(29, 'TOPSWAP_CHOICE');
-  static const SocketMessage_Type HIGHERLOWER_CHOICE = const SocketMessage_Type._(30, 'HIGHERLOWER_CHOICE');
+  static const SocketMessage_Type ACTIVE_PLAYER_INDEX = const SocketMessage_Type._(20, 'ACTIVE_PLAYER_INDEX');
+  static const SocketMessage_Type LOGIN = const SocketMessage_Type._(21, 'LOGIN');
+  static const SocketMessage_Type REGISTER = const SocketMessage_Type._(22, 'REGISTER');
+  static const SocketMessage_Type ADD_FRIEND = const SocketMessage_Type._(23, 'ADD_FRIEND');
+  static const SocketMessage_Type ACCEPT_FRIEND_REQUEST = const SocketMessage_Type._(24, 'ACCEPT_FRIEND_REQUEST');
+  static const SocketMessage_Type SEND_MATCH_INVITE = const SocketMessage_Type._(25, 'SEND_MATCH_INVITE');
+  static const SocketMessage_Type MATCH_ACCEPT = const SocketMessage_Type._(26, 'MATCH_ACCEPT');
+  static const SocketMessage_Type MATCH_DECLINE = const SocketMessage_Type._(27, 'MATCH_DECLINE');
+  static const SocketMessage_Type USER_PLAY = const SocketMessage_Type._(28, 'USER_PLAY');
+  static const SocketMessage_Type HANDSWAP_CHOICE = const SocketMessage_Type._(29, 'HANDSWAP_CHOICE');
+  static const SocketMessage_Type TOPSWAP_CHOICE = const SocketMessage_Type._(30, 'TOPSWAP_CHOICE');
+  static const SocketMessage_Type HIGHERLOWER_CHOICE = const SocketMessage_Type._(31, 'HIGHERLOWER_CHOICE');
 
   static const List<SocketMessage_Type> values = const <SocketMessage_Type> [
     ERROR,
@@ -62,6 +63,7 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     REQUEST_HANDSWAP_CHOICE,
     REQUEST_TOPSWAP_CHOICE,
     REQUEST_HIGHERLOWER_CHOICE,
+    ACTIVE_PLAYER_INDEX,
     LOGIN,
     REGISTER,
     ADD_FRIEND,

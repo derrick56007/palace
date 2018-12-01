@@ -45,3 +45,29 @@ class SocketMessage extends $pb.GeneratedMessage {
   void clearJson() => clearField(2);
 }
 
+class ActivePlayerIndex extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('ActivePlayerIndex', package: const $pb.PackageName('palace'))
+    ..a<int>(1, 'index', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  ActivePlayerIndex() : super();
+  ActivePlayerIndex.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  ActivePlayerIndex.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  ActivePlayerIndex clone() => new ActivePlayerIndex()..mergeFromMessage(this);
+  ActivePlayerIndex copyWith(void Function(ActivePlayerIndex) updates) => super.copyWith((message) => updates(message as ActivePlayerIndex));
+  $pb.BuilderInfo get info_ => _i;
+  static ActivePlayerIndex create() => new ActivePlayerIndex();
+  static $pb.PbList<ActivePlayerIndex> createRepeated() => new $pb.PbList<ActivePlayerIndex>();
+  static ActivePlayerIndex getDefault() => _defaultInstance ??= create()..freeze();
+  static ActivePlayerIndex _defaultInstance;
+  static void $checkItem(ActivePlayerIndex v) {
+    if (v is! ActivePlayerIndex) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  int get index => $_get(0, 0);
+  set index(int v) { $_setSignedInt32(0, v); }
+  bool hasIndex() => $_has(0);
+  void clearIndex() => clearField(1);
+}
+

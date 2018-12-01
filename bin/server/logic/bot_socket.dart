@@ -21,7 +21,7 @@ class BotSocket extends CommonWebSocket {
         break;
 
       case SocketMessage_Type.SET_MULLIGANABLE_CARDS:
-        await new Future.delayed(const Duration(seconds: 5));
+        await new Future.delayed(const Duration(seconds: 8));
 
         final match = MatchManager.shared.matchFromSocket(this);
 
@@ -37,7 +37,7 @@ class BotSocket extends CommonWebSocket {
 
         break;
       case SocketMessage_Type.SET_SELECTABLE_CARDS:
-        await new Future.delayed(const Duration(seconds: 1));
+        await new Future.delayed(const Duration(seconds: 2));
 
         final match = MatchManager.shared.matchFromSocket(this);
 

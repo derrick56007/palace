@@ -36,17 +36,25 @@ const SocketMessage_Type$json = const {
     const {'1': 'REQUEST_HANDSWAP_CHOICE', '2': 17},
     const {'1': 'REQUEST_TOPSWAP_CHOICE', '2': 18},
     const {'1': 'REQUEST_HIGHERLOWER_CHOICE', '2': 19},
-    const {'1': 'LOGIN', '2': 20},
-    const {'1': 'REGISTER', '2': 21},
-    const {'1': 'ADD_FRIEND', '2': 22},
-    const {'1': 'ACCEPT_FRIEND_REQUEST', '2': 23},
-    const {'1': 'SEND_MATCH_INVITE', '2': 24},
-    const {'1': 'MATCH_ACCEPT', '2': 25},
-    const {'1': 'MATCH_DECLINE', '2': 26},
-    const {'1': 'USER_PLAY', '2': 27},
-    const {'1': 'HANDSWAP_CHOICE', '2': 28},
-    const {'1': 'TOPSWAP_CHOICE', '2': 29},
-    const {'1': 'HIGHERLOWER_CHOICE', '2': 30},
+    const {'1': 'ACTIVE_PLAYER_INDEX', '2': 20},
+    const {'1': 'LOGIN', '2': 21},
+    const {'1': 'REGISTER', '2': 22},
+    const {'1': 'ADD_FRIEND', '2': 23},
+    const {'1': 'ACCEPT_FRIEND_REQUEST', '2': 24},
+    const {'1': 'SEND_MATCH_INVITE', '2': 25},
+    const {'1': 'MATCH_ACCEPT', '2': 26},
+    const {'1': 'MATCH_DECLINE', '2': 27},
+    const {'1': 'USER_PLAY', '2': 28},
+    const {'1': 'HANDSWAP_CHOICE', '2': 29},
+    const {'1': 'TOPSWAP_CHOICE', '2': 30},
+    const {'1': 'HIGHERLOWER_CHOICE', '2': 31},
+  ],
+};
+
+const ActivePlayerIndex$json = const {
+  '1': 'ActivePlayerIndex',
+  '2': const [
+    const {'1': 'index', '3': 1, '4': 1, '5': 5, '10': 'index'},
   ],
 };
 

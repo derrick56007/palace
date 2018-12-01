@@ -6,10 +6,10 @@ class Match {
   final bottomTowers = <CommonWebSocket, Tower>{};
   final topTowers = <CommonWebSocket, Tower>{};
 
-  static const fullDeckLength = 45; // 56;
+  static const fullDeckLength = 44; // 56;
   static const towerLength = 3;
   static const basicCardLength = 9;
-  static const suitLength = 5;
+  static const suitLength = 4;
   static const specialDefaultCardValue = 10;
 
   final cardRegistry = <String, Card>{};
@@ -63,13 +63,15 @@ class Match {
     return lst;
   }
 
-  userPlay(CommonWebSocket socket, CardIDs userPlay) {
+  userPlay(CommonWebSocket socket, CardIDs userPlay) async {
     if (!gameStarted || gameEnded) {
       // TODO send error
       return;
     }
 
     if (mulliganWindowActive) {
+      if (userPlay.ids.isEmpty) return;
+
       final chosenCards = cardListFromCardIDList(userPlay.ids);
 
       // check if card is in your tower
@@ -94,6 +96,13 @@ class Match {
       return;
     }
 
+    // ending turn without playing picks up the pile
+    if (userPlay.ids.isEmpty) {
+      pickUpPile(socket);
+      endPlayerTurn(socket);
+      return;
+    }
+
     final chosenCards = cardListFromCardIDList(userPlay.ids);
 
     if (chosenCards.contains(null)) {
@@ -102,6 +111,45 @@ class Match {
     }
 
     final playableCards = getSelectableCardIDs(socket);
+
+    // check if bottom tower play
+    if (chosenCards.length == 1 && hands[socket].cards.isEmpty) {
+      final card = chosenCards.first;
+
+      if (bottomTowers[socket].cards.contains(card)) {
+        card.hidden = false;
+        // check if card flip succeeded
+        if (isSelectableCard(card)) {
+          applyCardEffect(socket, [card]);
+        } else {
+          // did not
+          final playFromHandInfo = new PlayFromHandInfo()..cards.add(card);
+
+          final socketIndex = players.indexOf(socket);
+          for (var socketToSendTo in players) {
+            final socketToSendToIndex = players.indexOf(socketToSendTo);
+
+            playFromHandInfo.userIndex =
+                (socketIndex - socketToSendToIndex) % players.length;
+            socketToSendTo.send(
+                SocketMessage_Type.PLAY_FROM_HAND_INFO, playFromHandInfo);
+          }
+
+          playedCards.add(card);
+
+          bottomTowers[socket].cards[bottomTowers[socket].cards.indexOf(card)] =
+              _emptyCard;
+
+          await new Future.delayed(const Duration(seconds: 2));
+
+          pickUpPile(socket);
+
+          endPlayerTurn(socket);
+        }
+
+        return;
+      }
+    }
 
     // check if chosen cards are playable
     for (var chosenCardID in userPlay.ids) {
@@ -115,21 +163,22 @@ class Match {
     if (chosenCards.length > 1) {
       // error if chosen cards contains single play cards
       for (var chosenCard in chosenCards) {
-        if (chosenCard.type == Card_Type.TOP_SWAP) {
-          return;
-        } else if (chosenCard.type == Card_Type.HAND_SWAP) {
-          return;
-        } else if (chosenCard.type == Card_Type.DISCARD_OR_ROCK) {
+        if (chosenCard.type == Card_Type.TOP_SWAP ||
+            chosenCard.type == Card_Type.HAND_SWAP ||
+            chosenCard.type == Card_Type.DISCARD_OR_ROCK) {
+          sendSelectableCards(socket);
           return;
         }
       }
 
       final type = chosenCards.first.type;
+      final value = chosenCards.first.value;
 
       // check if all types same
       for (var chosenCard in chosenCards) {
-        if (chosenCard.type != type) {
+        if (chosenCard.type != type || chosenCard.value != value) {
           print('types not same');
+          sendSelectableCards(socket);
           return;
         }
       }
@@ -138,7 +187,7 @@ class Match {
     applyCardEffect(socket, chosenCards);
   }
 
-  applyCardEffect(CommonWebSocket socket, List<Card> cards) {
+  applyCardEffect(CommonWebSocket socket, List<Card> cards) async {
     for (var socket in players) {
       socket.send(SocketMessage_Type.CLEAR_SELECTABLE_CARDS);
     }
@@ -222,7 +271,16 @@ class Match {
     }
 
     if (card.type == Card_Type.BOMB) {
-      discardCards(playedCards.where((e) => e is Card));
+      await new Future.delayed(const Duration(seconds: 1));
+
+      final cards = <Card>[];
+      for (var card in playedCards) {
+        if (card is Card) {
+          cards.add(card);
+        }
+      }
+
+      discardCards(cards);
       playedCards.clear();
       endPlayerTurn(socket);
       return;
@@ -245,7 +303,6 @@ class Match {
       final selectableCards = new CardIDs()..ids.addAll(playableCardIDs);
       socket.send(SocketMessage_Type.SET_SELECTABLE_CARDS, selectableCards);
       return;
-
     }
 
     if (card.type == Card_Type.HIGHER_LOWER) {
@@ -311,7 +368,7 @@ class Match {
     return cardIDs;
   }
 
-  List<Card> getExposedTowerCards(CommonWebSocket socket) {
+  List<Card> getFaceUpTowerCards(CommonWebSocket socket) {
     final topTower = topTowers[socket];
     final bottomTower = bottomTowers[socket];
     final cards = <Card>[];
@@ -319,7 +376,24 @@ class Match {
     for (var index = 0; index < towerLength; index++) {
       if (topTower.cards[index] != _emptyCard) {
         cards.add(topTower.cards[index]);
-      } else if (bottomTower.cards[index] != _emptyCard) {
+      } else if (bottomTower.cards[index] != _emptyCard &&
+          !bottomTower.cards[index].hidden) {
+        cards.add(bottomTower.cards[index]);
+      }
+    }
+
+    return cards;
+  }
+
+  List<Card> getExposedBottomTowerCards(CommonWebSocket socket) {
+    final topTower = topTowers[socket];
+    final bottomTower = bottomTowers[socket];
+    final cards = <Card>[];
+
+    for (var index = 0; index < towerLength; index++) {
+      if (topTower.cards[index] == _emptyCard &&
+          bottomTower.cards[index] != _emptyCard &&
+          bottomTower.cards[index].hidden) {
         cards.add(bottomTower.cards[index]);
       }
     }
@@ -445,8 +519,28 @@ class Match {
   int resolvePileState() {
     if (playedCards.isEmpty) return 0;
 
-    final Card card = playedCards.lastWhere((card) => card is Card);
-    return card.value;
+    final cards = <Card>[];
+    for (var card in playedCards) {
+      if (card is Card) cards.add(card);
+    }
+
+    // higher lower by itself is the mean of basic values (5)
+    if (cards.length == 1 && cards.first.type == Card_Type.HIGHER_LOWER) {
+      return cards.first.value;
+    }
+
+    final valueCards = cards.where((card) =>
+        card.type != Card_Type.HIGHER_LOWER &&
+            card.type != Card_Type.TOP_SWAP &&
+            card.type != Card_Type.HAND_SWAP &&
+            card.type != Card_Type.DISCARD_OR_ROCK &&
+            card.type != Card_Type.WILD &&
+            card.type != Card_Type.REVERSE &&
+            card.type != Card_Type.BOMB);
+
+    if (valueCards.isEmpty) return 0;
+
+    return valueCards.last.value;
   }
 
   bool isSelectableCard(Card card) {
@@ -494,7 +588,7 @@ class Match {
     final hand = hands[socket];
 
     final cards =
-        hand.cards.isNotEmpty ? hand.cards : getExposedTowerCards(socket);
+        hand.cards.isNotEmpty ? hand.cards : getFaceUpTowerCards(socket);
 
     final playableCardIDs = <String>[];
     final cardsToReCheck = <Card>[];
@@ -542,6 +636,13 @@ class Match {
       }
     }
 
+    if (hand.cards.isEmpty) {
+      final exposedBottomCards = getExposedBottomTowerCards(socket);
+      for (var card in exposedBottomCards) {
+        playableCardIDs.add(card.id);
+      }
+    }
+
     return playableCardIDs;
   }
 
@@ -549,8 +650,16 @@ class Match {
     print('socket ${players.indexOf(socket)} turn');
     activePlayer = socket;
 
-    for (var socket in players) {
-      socket.send(SocketMessage_Type.CLEAR_SELECTABLE_CARDS);
+    final socketIndex = players.indexOf(socket);
+
+    for (var socketToSendTo in players) {
+      final socketToSendToIndex = players.indexOf(socketToSendTo);
+
+      final activePlayerIndex = new ActivePlayerIndex()
+        ..index = (socketIndex - socketToSendToIndex) % players.length;
+      socketToSendTo.send(SocketMessage_Type.CLEAR_SELECTABLE_CARDS);
+      socketToSendTo.send(
+          SocketMessage_Type.ACTIVE_PLAYER_INDEX, activePlayerIndex);
     }
 
     // check win
@@ -575,6 +684,15 @@ class Match {
     }
 
     // TODO choose higher lower if player does not and time runs out
+  }
+
+  sendSelectableCards(CommonWebSocket socket) {
+    final playableCardIDs = getSelectableCardIDs(socket);
+
+    if (playableCardIDs.isNotEmpty) {
+      final selectableCards = new CardIDs()..ids.addAll(playableCardIDs);
+      socket.send(SocketMessage_Type.SET_SELECTABLE_CARDS, selectableCards);
+    }
   }
 
   pickUpPile(CommonWebSocket socket) {
@@ -704,34 +822,35 @@ class Match {
       }
     }
 
-    return;
-
     for (var i = 0; i < suitLength; i++) {
       final reverse = Card()
         ..id = uuids.removeLast()
         ..hidden = true
         ..type = Card_Type.REVERSE
-        ..value = specialDefaultCardValue;
-      final wild = Card()
-        ..id = uuids.removeLast()
-        ..hidden = true
-        ..type = Card_Type.WILD
-        ..value = specialDefaultCardValue;
-      final higherLower = Card()
-        ..id = uuids.removeLast()
-        ..hidden = true
-        ..type = Card_Type.HIGHER_LOWER
         ..value = 0;
+//      final wild = Card()
+//        ..id = uuids.removeLast()
+//        ..hidden = true
+//        ..type = Card_Type.WILD
+//        ..value = 0;
+//      final higherLower = Card()
+//        ..id = uuids.removeLast()
+//        ..hidden = true
+//        ..type = Card_Type.HIGHER_LOWER
+//        ..value = 5;
       final bomb = Card()
         ..id = uuids.removeLast()
         ..hidden = true
         ..type = Card_Type.BOMB
-        ..value = specialDefaultCardValue;
+        ..value = 0;
 
-      deck.addAll([reverse, wild, higherLower, bomb]);
-      registerAllCards([reverse, wild, higherLower, bomb]);
+//      deck.addAll([reverse, wild, higherLower, bomb]);
+//      registerAllCards([reverse, wild, higherLower, bomb]);
+      deck.addAll([reverse, bomb]);
+      registerAllCards([reverse, bomb]);
     }
 
+    assert(fullDeckLength == deck.length);
     return;
 
     final topSwap = Card()

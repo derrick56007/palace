@@ -3,7 +3,7 @@ library client;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html' as html;
-import 'dart:math';
+import 'dart:math' hide Point;
 
 import 'client_websocket.dart';
 import 'selectable_manager.dart';
@@ -120,5 +120,10 @@ setupListeners(ClientWebSocket ws) async {
     })
     ..on(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE, (var json) {
 
+    })
+    ..on(SocketMessage_Type.ACTIVE_PLAYER_INDEX, (var json) {
+      final activePlayerIndex = new ActivePlayerIndex.fromJson(json);
+
+      game.setActivePlayerIndex(activePlayerIndex.index);
     });
 }
