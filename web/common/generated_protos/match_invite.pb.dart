@@ -41,3 +41,26 @@ class MatchInvite extends $pb.GeneratedMessage {
   void clearMatchID() => clearField(2);
 }
 
+class UserIDs extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('UserIDs', package: const $pb.PackageName('palace'))
+    ..pPS(1, 'ids')
+    ..hasRequiredFields = false
+  ;
+
+  UserIDs() : super();
+  UserIDs.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  UserIDs.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  UserIDs clone() => new UserIDs()..mergeFromMessage(this);
+  UserIDs copyWith(void Function(UserIDs) updates) => super.copyWith((message) => updates(message as UserIDs));
+  $pb.BuilderInfo get info_ => _i;
+  static UserIDs create() => new UserIDs();
+  static $pb.PbList<UserIDs> createRepeated() => new $pb.PbList<UserIDs>();
+  static UserIDs getDefault() => _defaultInstance ??= create()..freeze();
+  static UserIDs _defaultInstance;
+  static void $checkItem(UserIDs v) {
+    if (v is! UserIDs) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  List<String> get ids => $_getList(0);
+}
+

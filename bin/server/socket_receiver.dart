@@ -5,11 +5,11 @@ class SocketReceiver {
   static final FriendManager _friendManager = FriendManager.shared;
   static final MatchManager _matchManager = MatchManager.shared;
 
-  final ServerWebSocket _socket;
+  final CommonWebSocket _socket;
 
   SocketReceiver._internal(this._socket);
 
-  factory SocketReceiver.handle(ServerWebSocket socket) {
+  factory SocketReceiver.handle(CommonWebSocket socket) {
     final sr = new SocketReceiver._internal(socket);
 
     sr._init();
@@ -40,6 +40,8 @@ class SocketReceiver {
       ..on(SocketMessage_Type.HANDSWAP_CHOICE, _handSwapChoice)
       ..on(SocketMessage_Type.TOPSWAP_CHOICE, _topSwapChoice)
       ..on(SocketMessage_Type.HIGHERLOWER_CHOICE, _higherLowerChoice);
+
+    _matchManager.addInvitableSocket(_socket);
   }
 
   _onClose() {
@@ -73,9 +75,9 @@ class SocketReceiver {
   }
 
   _sendMatchInvite(String json) {
-    final friendID = new SimpleInfo.fromJson(json);
+    final friendID = new UserIDs.fromJson(json);
 
-    _matchManager.sendMatchInvite(_socket, friendID.info);
+    _matchManager.sendMatchInvite(_socket, friendID.ids);
   }
 
   _matchAccept(String json) {

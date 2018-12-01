@@ -5,3 +5,7 @@ message MatchInvite {
     string msg = 1;
     string matchID = 2;
 }
+
+message UserIDs {
+    repeated string ids = 1;
+}

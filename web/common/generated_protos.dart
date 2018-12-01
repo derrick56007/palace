@@ -20,3 +20,4 @@ export 'generated_protos/cards.pb.dart' show TowerCardsToHandInfo;
 export 'generated_protos/cards.pb.dart' show Tower;
 export 'generated_protos/cards.pb.dart' show Hand;
 export 'generated_protos/cards.pb.dart' show FinalDealInfo;
+export 'generated_protos/match_invite.pb.dart' show UserIDs;

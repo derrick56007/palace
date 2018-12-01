@@ -6,6 +6,8 @@ import 'package:protobuf/protobuf.dart' as pb;
 import 'generated_protos/socket_message.pbenum.dart';
 
 abstract class CommonWebSocket {
+  Future done;
+
   static const messageTypeIndex = 0;
   static const valueIndex = 1;
   static const defaultMessageLength = 2;

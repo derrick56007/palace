@@ -180,7 +180,8 @@ class SecondDealTowerInfo extends $pb.GeneratedMessage {
 
 class PlayFromHandInfo extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('PlayFromHandInfo', package: const $pb.PackageName('palace'))
-    ..pp<Card>(1, 'cards', $pb.PbFieldType.PM, Card.$checkItem, Card.create)
+    ..a<int>(1, 'userIndex', $pb.PbFieldType.O3)
+    ..pp<Card>(2, 'cards', $pb.PbFieldType.PM, Card.$checkItem, Card.create)
     ..hasRequiredFields = false
   ;
 
@@ -198,7 +199,12 @@ class PlayFromHandInfo extends $pb.GeneratedMessage {
     if (v is! PlayFromHandInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  List<Card> get cards => $_getList(0);
+  int get userIndex => $_get(0, 0);
+  set userIndex(int v) { $_setSignedInt32(0, v); }
+  bool hasUserIndex() => $_has(0);
+  void clearUserIndex() => clearField(1);
+
+  List<Card> get cards => $_getList(1);
 }
 
 class DiscardInfo extends $pb.GeneratedMessage {

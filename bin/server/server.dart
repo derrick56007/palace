@@ -15,6 +15,7 @@ import '../../web/common/regex_rules.dart';
 import '../../web/common/generated_protos.dart';
 
 part 'logic/match.dart';
+part 'logic/bot_socket.dart';
 
 part 'managers/database_manager.dart';
 part 'managers/friend_manager.dart';

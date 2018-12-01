@@ -17,13 +17,13 @@ class GameUI {
 
   static final Point<num> midPoint = new Point(gameWidth / 2, gameHeight / 2);
 
-  static const defaultDeckLength = 56;
+  static const defaultDeckLength = 45; //56;
 
   final ClientWebSocket socket;
 
   GameUI(this.socket);
 
-  final resourceManager = new ResourceManager();
+  static final resourceManager = new ResourceManager();
   final options = new StageOptions()
     ..backgroundColor = Color.White
     ..renderEngine = RenderEngine.WebGL;
@@ -31,10 +31,9 @@ class GameUI {
   final canvas = html.querySelector('#stage');
   Stage stage;
 
-  static BitmapData logoData;
-  static BitmapData cardBackData;
-
   final selectableCardIDs = <String>[];
+
+  final cardFaceBitmapDatum = <String, BitmapData>{};
 
   init() async {
     stage = new Stage(canvas,
@@ -43,12 +42,21 @@ class GameUI {
     final renderLoop = new RenderLoop();
     renderLoop.addStage(stage);
 
-    resourceManager.addBitmapData("dart", "images/card.jpg");
     resourceManager.addBitmapData("back", "images/card_back.png");
+    // 10 because of rock
+    const basicCardLength = 10;
+    for (var i = 0; i < basicCardLength; i++) {
+      resourceManager.addBitmapData("BASIC$i", "images/BASIC$i.png");
+    }
+    resourceManager.addBitmapData("REVERSE", "images/REVERSE.png");
+    resourceManager.addBitmapData("BOMB", "images/BOMB.png");
+    resourceManager.addBitmapData("HIGHER_LOWER", "images/HIGHER_LOWER.png");
+    resourceManager.addBitmapData("WILD", "images/WILD.png");
+    resourceManager.addBitmapData("TOP_SWAP", "images/TOP_SWAP.png");
+    resourceManager.addBitmapData("HAND_SWAP", "images/HAND_SWAP.png");
+    resourceManager.addBitmapData(
+        "DISCARD_OR_ROCK", "images/DISCARD_OR_ROCK.png");
     await resourceManager.load();
-
-    logoData = resourceManager.getBitmapData("dart");
-    cardBackData = resourceManager.getBitmapData("back");
 
     final sendButton =
         new TextField("Send", new TextFormat('Arial', 50, Color.Black));
@@ -73,7 +81,6 @@ class GameUI {
 
     for (var i = 0; i < defaultDeckLength; i++) {
       final cardSprite = new ClientCard();
-      cardSprite.filters = [new DropShadowFilter(1)];
       cardSprite.x = gameWidth / 2 - cardWidth - 50;
       cardSprite.y = gameHeight / 2;
 
@@ -88,27 +95,30 @@ class GameUI {
 
       final hand = hands.first;
 
-      if (hand.where((card) => card.userData['dragging']).isNotEmpty) return;
+      final cardsTouched = objects.where((e) => e.parent is ClientCard);
 
-      final y = 0;
+      if (cardsTouched.isEmpty) return;
+
+      final lastCardTouched = cardsTouched.last.parent;
+
+      final startY = gameHeight;
 
       for (var i = 0; i < hand.length; i++) {
         final card = hand[i];
 
-        if (card.userData['dragging']) {
+        if (lastCardTouched == card) {
+          final tween =
+              stage.juggler.addTween(card, 1, Transition.easeOutQuintic);
+          tween.animate.y.to(startY - 100);
           continue;
         }
 
-        if (objects.isNotEmpty && objects.last.parent == card) {
-          final tween = stage.juggler
-              .addTween(card.children.last, 1, Transition.easeOutQuintic);
-          tween.animate.y.to(y - 100);
+        if (SelectableManager.shared.selectedIDs.contains(card.cardInfo.id))
           continue;
-        }
 
-        final tween = stage.juggler
-            .addTween(card.children.last, 1, Transition.easeOutQuintic);
-        tween.animate.y.to(y);
+        final tween =
+            stage.juggler.addTween(card, 1, Transition.easeOutQuintic);
+        tween.animate.y.to(startY);
       }
     });
   }
@@ -134,7 +144,7 @@ class GameUI {
     }
 
     final rotatedPoint =
-        rotate_point(midPoint.x, midPoint.y, x, y, towerIndex * 90);
+        rotate_point(midPoint.x, midPoint.y, x, y, towerIndex * -90);
 
     tween.animate.x.to(rotatedPoint.x);
     tween.animate.y.to(rotatedPoint.y);
@@ -153,6 +163,8 @@ class GameUI {
     print('sent $cardIDs');
 
     clearSelectableCards();
+
+    SelectableManager.shared.selectedIDs.clear();
   }
 
   onDealTowerInfo(DealTowerInfo info) async {
@@ -187,17 +199,25 @@ class GameUI {
   }
 
   onTowerCardsToHand(TowerCardsToHandInfo info) {
-    for (var cardID in info.cardIDs)
+    for (var cardID in info.cardIDs) {
       if (cardRegistry.containsKey(cardID)) {
         final card = cardRegistry[cardID];
+
+        if (info.userIndex != 0) {
+          card.hidden = true;
+        }
+
         animateCardToHand(card, info.userIndex, .5);
 
         final tower = topTowers[info.userIndex];
         tower[tower.indexOf(card)] = null;
       }
+    }
+
+      bringHandCardsToTop();
   }
 
-  secondTowerDealInfo(SecondDealTowerInfo info) {
+  secondTowerDealInfo(SecondDealTowerInfo info) async {
     for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
       for (var userIndex = 0; userIndex < info.topTowers.length; userIndex++) {
         if (info.topTowers[userIndex].cards.isEmpty) continue;
@@ -208,8 +228,11 @@ class GameUI {
         final emptyCardIndex =
             topTowers[userIndex].indexWhere((cCard) => cCard == null);
         dealTowerAnim(newCard, topTowers, userIndex, emptyCardIndex, .5);
+        await new Future.delayed(const Duration(milliseconds: 100));
       }
     }
+
+    bringHandCardsToTop();
   }
 
   onFinalDealInfo(FinalDealInfo info) async {
@@ -224,6 +247,8 @@ class GameUI {
         await new Future.delayed(const Duration(milliseconds: 100));
       }
     }
+
+    bringHandCardsToTop();
   }
 
   onPlayFromHandInfo(PlayFromHandInfo info) {
@@ -231,12 +256,18 @@ class GameUI {
       final revealedCard = cardRegistry[card.id];
       revealedCard.cardInfo = card;
 
+      hands[info.userIndex].remove(revealedCard);
+
       final tween =
           stage.juggler.addTween(revealedCard, .75, Transition.easeOutQuintic);
 
       tween.animate.x.to(midPoint.x);
       tween.animate.y.to(midPoint.y);
+
+      stage.setChildIndex(revealedCard, stage.children.length - 1);
     }
+
+    animateCardsInHand(info.userIndex, .75);
   }
 
   onPickUpPileInfo(PickUpPileInfo info) {
@@ -292,6 +323,9 @@ class GameUI {
   }
 
   onDrawInfo(DrawInfo info) async {
+    print('draw info');
+    print(info);
+
     for (var cardInfo in info.cards) {
       final newCard = drawFromDeck(cardInfo);
 
@@ -311,12 +345,21 @@ class GameUI {
     final hand = hands[handIndex];
     hand.add(cCard);
 
-    final handWidth = hand.length * 50;
+    animateCardsInHand(handIndex, animDuration);
+  }
+
+  animateCardsInHand(int handIndex, num animDuration) {
+    final hand = hands[handIndex];
+
+    final handWidth = hand.length * 75 - cardWidth/2;
     final startingX = gameWidth / 2 - handWidth / 2;
     final startingY = gameHeight;
 
     for (var j = 0; j < hand.length; j++) {
       final _card = hand[j];
+
+      stage.juggler.removeTweens(_card);
+
       final tween = stage.juggler
           .addTween(_card, animDuration, Transition.easeOutQuintic);
 
@@ -328,12 +371,20 @@ class GameUI {
       }
 
       final rotatedPoint =
-          rotate_point(midPoint.x, midPoint.y, x, y, handIndex * 90);
+      rotate_point(midPoint.x, midPoint.y, x, y, handIndex * -90);
 
       tween.animate.x.to(rotatedPoint.x);
       tween.animate.y.to(rotatedPoint.y);
       tween.animate.rotation.to(handIndex * pi / 2);
 
+      for (var card in hand) {
+        stage.setChildIndex(card, stage.children.length - 1);
+      }
+    }
+  }
+
+  bringHandCardsToTop() {
+    for (var hand in hands) {
       for (var card in hand) {
         stage.setChildIndex(card, stage.children.length - 1);
       }

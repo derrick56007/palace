@@ -12,3 +12,10 @@ const MatchInvite$json = const {
   ],
 };
 
+const UserIDs$json = const {
+  '1': 'UserIDs',
+  '2': const [
+    const {'1': 'ids', '3': 1, '4': 3, '5': 9, '10': 'ids'},
+  ],
+};
+

@@ -4,82 +4,97 @@ class MatchManager {
   static final shared = MatchManager._internal();
 
   // match invitation
-  final _matchInvites = <ServerWebSocket, String>{};
-  final _matchInvitePlayers = <String, List<ServerWebSocket>>{};
-  final _matchInvitePlayersReady = <String, Map<ServerWebSocket, bool>>{};
+  final _matchInvites = <CommonWebSocket, List<String>>{};
+  final _matchInvitePlayers = <String, List<CommonWebSocket>>{};
+  final _matchInvitePlayersReady = <String, Map<CommonWebSocket, bool>>{};
 
-  final _matches = <ServerWebSocket, Match>{};
+  final _matches = <CommonWebSocket, Match>{};
   final _matchesByID = <String, Match>{};
 
-  // returns matchID from socket
-  String matchIDFromSocket(ServerWebSocket socket) => _matchInvites[socket];
+  // returns matchIDs from socket
+  List<String> matchIDsFromSocket(CommonWebSocket socket) => _matchInvites[socket];
 
   // returns match invite players from matchID
-  List<ServerWebSocket> matchInvitePlayersFromMatchID(String matchID) =>
+  List<CommonWebSocket> matchInvitePlayersFromMatchID(String matchID) =>
       _matchInvitePlayers[matchID];
 
   // returns match invite ready players from matchID
-  Map<ServerWebSocket, bool> matchInvitePlayersReadyFromMatchID(
+  Map<CommonWebSocket, bool> matchInvitePlayersReadyFromMatchID(
           String matchID) =>
       _matchInvitePlayersReady[matchID];
 
   // returns true if socket is invited to match
-  bool socketInvited(ServerWebSocket socket) =>
+  bool socketInvited(CommonWebSocket socket) =>
       _matchInvites.containsKey(socket);
 
   // returns match from socket
-  Match matchFromSocket(ServerWebSocket socket) => _matches[socket];
+  Match matchFromSocket(CommonWebSocket socket) => _matches[socket];
 
   // returns match from matchID
   Match matchFromMatchID(String matchID) => _matchesByID[matchID];
 
   // returns true if socket is in match
-  bool socketInMatch(ServerWebSocket socket) => _matches.containsKey(socket);
+  bool socketInMatch(CommonWebSocket socket) => _matches.containsKey(socket);
 
   MatchManager._internal();
 
-  sendMatchInvite(ServerWebSocket socket, String friendID) {
+  addInvitableSocket(CommonWebSocket socket) {
+    _matchInvites[socket] = [];
+  }
+
+  sendMatchInvite(CommonWebSocket socket, List<String> friendIDs) async {
     // check for existing invitations
     if (socketInvited(socket)) {
       clearInvites(socket);
     }
 
-    if (!LoginManager.shared.userIDLoggedIn(friendID)) {
-      // TODO send error
-      return;
-    }
-
-    final friendSocket = LoginManager.shared.socketFromUserID(friendID);
-
-    if (socketInvited(friendSocket)) {
-      // TODO send error
-      return;
-    }
-
-    // TODO check if friend already in match
-
-    final userID = LoginManager.shared.userIDFromSocket(socket);
-
     // TODO create diff method of generating match IDs
-    final matchID = '$userID$friendID';
 
-    final friendMatchInvite = new MatchInvite()
-      ..msg = 'Play with $userID?'
-      ..matchID = matchID;
-    friendSocket.send(SocketMessage_Type.MATCH_INVITE, friendMatchInvite);
+    final matchID = '${friendIDs.hashCode}';
+    _matchInvitePlayers[matchID] = [];
+    _matchInvitePlayersReady[matchID] = {socket: false};
 
     final userMatchInvite = new MatchInvite()
-      ..msg = 'Play with $friendID?'
+      ..msg = 'Play with ${friendIDs}?'
       ..matchID = matchID;
+
+    _matchInvitePlayers[matchID].add(socket);
+    _matchInvites[socket].add(matchID);
+
     socket.send(SocketMessage_Type.MATCH_INVITE, userMatchInvite);
 
-    _matchInvitePlayers[matchID] = [socket, friendSocket];
-    _matchInvites[socket] = matchID;
-    _matchInvites[friendSocket] = matchID;
-    _matchInvitePlayersReady[matchID] = {socket: false, friendSocket: false};
+    for (var friendID in friendIDs) {
+
+      var friendSocket;
+      if (friendID == 'bot') {
+        final botSocket = new BotSocket();
+        friendSocket = botSocket;
+        _matchInvites[friendSocket] = [];
+
+        SocketReceiver.handle(botSocket);
+      } else {
+        if (!LoginManager.shared.userIDLoggedIn(friendID)) {
+          // TODO send error
+          return;
+        }
+        // TODO check if friend already in match
+
+        friendSocket = LoginManager.shared.socketFromUserID(friendID);
+      }
+
+      _matchInvitePlayers[matchID].add(friendSocket);
+      _matchInvites[friendSocket].add(matchID);
+      _matchInvitePlayersReady[matchID][friendSocket] = false;
+
+      final friendMatchInvite = new MatchInvite()
+        ..msg = 'Play with ${friendIDs}?'
+        ..matchID = matchID;
+      friendSocket.send(SocketMessage_Type.MATCH_INVITE, friendMatchInvite);
+    }
+
   }
 
-  matchAccept(ServerWebSocket socket, matchID) {
+  matchAccept(CommonWebSocket socket, String matchID) {
     if (!socketInvited(socket)) {
       // TODO send error
       return;
@@ -109,7 +124,7 @@ class MatchManager {
     _matchesByID[matchID] = match;
   }
 
-  matchDecline(ServerWebSocket socket, matchID) {
+  matchDecline(CommonWebSocket socket, matchID) {
     if (!_matchInvitePlayers.containsKey(matchID)) {
       // TODO send error
       return;
@@ -129,13 +144,14 @@ class MatchManager {
     _matchInvitePlayersReady.remove(matchID);
   }
 
-  clearInvites(ServerWebSocket socket) {
+  clearInvites(CommonWebSocket socket) {
     if (socketInvited(socket)) {
-      final matchID = matchIDFromSocket(socket);
-
-      matchDecline(socket, matchID);
+      for (var matchID in matchIDsFromSocket(socket)) {
+        matchDecline(socket, matchID);
+      }
     }
   }
 
-  exitMatch(ServerWebSocket socket) {}
+  exitMatch(CommonWebSocket socket) {
+  }
 }

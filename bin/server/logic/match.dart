@@ -1,20 +1,20 @@
 part of server;
 
 class Match {
-  final List<ServerWebSocket> players;
-  final hands = <ServerWebSocket, Hand>{};
-  final bottomTowers = <ServerWebSocket, Tower>{};
-  final topTowers = <ServerWebSocket, Tower>{};
+  final List<CommonWebSocket> players;
+  final hands = <CommonWebSocket, Hand>{};
+  final bottomTowers = <CommonWebSocket, Tower>{};
+  final topTowers = <CommonWebSocket, Tower>{};
 
-  static const fullDeckLength = 52; // 56;
+  static const fullDeckLength = 45; // 56;
   static const towerLength = 3;
   static const basicCardLength = 9;
-  static const suitLength = 4;
+  static const suitLength = 5;
   static const specialDefaultCardValue = 10;
 
   final cardRegistry = <String, Card>{};
 
-  ServerWebSocket activePlayer;
+  CommonWebSocket activePlayer;
 
   final deck = <Card>[];
   final playedCards = [];
@@ -63,7 +63,7 @@ class Match {
     return lst;
   }
 
-  userPlay(ServerWebSocket socket, CardIDs userPlay) {
+  userPlay(CommonWebSocket socket, CardIDs userPlay) {
     if (!gameStarted || gameEnded) {
       // TODO send error
       return;
@@ -84,8 +84,6 @@ class Match {
         // TODO error missing cards
         return;
       }
-
-      print('socket ${players.indexOf(socket)} mulliganed $chosenCards');
       mulliganCards(socket, chosenCards);
 
       return;
@@ -97,7 +95,6 @@ class Match {
     }
 
     final chosenCards = cardListFromCardIDList(userPlay.ids);
-    print('socket ${players.indexOf(socket)} played $chosenCards');
 
     if (chosenCards.contains(null)) {
       print('error missing cards 1');
@@ -141,19 +138,23 @@ class Match {
     applyCardEffect(socket, chosenCards);
   }
 
-  applyCardEffect(ServerWebSocket socket, List<Card> cards) {
+  applyCardEffect(CommonWebSocket socket, List<Card> cards) {
     for (var socket in players) {
       socket.send(SocketMessage_Type.CLEAR_SELECTABLE_CARDS);
     }
-
-    print('applying played $cards');
 
     cards.forEach((card) {
       card.hidden = false;
     });
 
     final playFromHandInfo = new PlayFromHandInfo()..cards.addAll(cards);
+
+    final socketIndex = players.indexOf(socket);
     for (var socketToSendTo in players) {
+      final socketToSendToIndex = players.indexOf(socketToSendTo);
+
+      playFromHandInfo.userIndex =
+          (socketIndex - socketToSendToIndex) % players.length;
       socketToSendTo.send(
           SocketMessage_Type.PLAY_FROM_HAND_INFO, playFromHandInfo);
     }
@@ -245,14 +246,6 @@ class Match {
       socket.send(SocketMessage_Type.SET_SELECTABLE_CARDS, selectableCards);
       return;
 
-//
-//      // send exposed tower cards if no more hand and no more deck
-//      if (hand.cards.isEmpty && deck.isEmpty) {
-//        final exposedTowerCardIds = getExposedTowerCardIDs(socket);
-//        final selectableCards = new CardIDs()..ids.addAll(exposedTowerCardIds);
-//        socket.send(SocketMessage_Type.SET_SELECTABLE_CARDS, selectableCards);
-//        return;
-//      }
     }
 
     if (card.type == Card_Type.HIGHER_LOWER) {
@@ -266,7 +259,7 @@ class Match {
     }
   }
 
-  onWin(ServerWebSocket socket) {
+  onWin(CommonWebSocket socket) {
     gameEnded = true;
     print("win -> ${players.indexOf(socket)}");
 
@@ -275,13 +268,13 @@ class Match {
     print('bot tower: ${topTowers[socket].cards}');
   }
 
-  socketWon(ServerWebSocket socket) =>
+  socketWon(CommonWebSocket socket) =>
       hands[socket].cards.isEmpty &&
       topTowers[socket].cards.where((card) => card == _emptyCard).length == 3 &&
       bottomTowers[socket].cards.where((card) => card == _emptyCard).length ==
           3;
 
-  List<String> getCardIDsInOtherHands(ServerWebSocket socket) {
+  List<String> getCardIDsInOtherHands(CommonWebSocket socket) {
     final otherCardIDsInOtherHands = <String>[];
     for (var hand in hands.values.where((hand) => hand != hands[socket])) {
       for (var card in hand.cards) {
@@ -302,7 +295,7 @@ class Match {
     return allExposedTowerCardIDs;
   }
 
-  List<String> getExposedTowerCardIDs(ServerWebSocket socket) {
+  List<String> getExposedTowerCardIDs(CommonWebSocket socket) {
     final topTower = topTowers[socket];
     final bottomTower = bottomTowers[socket];
     final cardIDs = <String>[];
@@ -318,7 +311,7 @@ class Match {
     return cardIDs;
   }
 
-  List<Card> getExposedTowerCards(ServerWebSocket socket) {
+  List<Card> getExposedTowerCards(CommonWebSocket socket) {
     final topTower = topTowers[socket];
     final bottomTower = bottomTowers[socket];
     final cards = <Card>[];
@@ -350,7 +343,7 @@ class Match {
     cards.clear();
   }
 
-  sendDrawInfo(ServerWebSocket socket, List<Card> cards) {
+  sendDrawInfo(CommonWebSocket socket, List<Card> cards) {
     if (cards.isEmpty) {
       return;
     }
@@ -373,7 +366,7 @@ class Match {
 
       if (socketToSendTo == socket) {
         cards.forEach((card) {
-          card.hidden = false;
+          card.hidden = true;
         });
       }
     }
@@ -394,7 +387,7 @@ class Match {
     return card;
   }
 
-  mulliganCards(ServerWebSocket socket, List<Card> cards) {
+  mulliganCards(CommonWebSocket socket, List<Card> cards) {
     final tower = topTowers[socket];
     final hand = hands[socket];
 
@@ -413,14 +406,8 @@ class Match {
       final info = new TowerCardsToHandInfo()
         ..userIndex = (socketIndex - socketToSendToIndex) % players.length
         ..cardIDs.addAll(cards.map((card) => card.id));
-      socketToSendTo.send(
-          SocketMessage_Type.TOWER_CARD_IDS_TO_HAND, info);
+      socketToSendTo.send(SocketMessage_Type.TOWER_CARD_IDS_TO_HAND, info);
     }
-
-    final userID = LoginManager.shared.userIDFromSocket(socket);
-    print('mulligan $userID -> $cards');
-    print('hand $userID -> ${hands[socket]}');
-    print('top $userID -> ${topTowers[socket]}');
   }
 
   static const mulliganDuration = Duration(seconds: 10);
@@ -503,7 +490,7 @@ class Match {
     return false;
   }
 
-  List<String> getSelectableCardIDs(ServerWebSocket socket) {
+  List<String> getSelectableCardIDs(CommonWebSocket socket) {
     final hand = hands[socket];
 
     final cards =
@@ -558,7 +545,7 @@ class Match {
     return playableCardIDs;
   }
 
-  startPlayerTurn(ServerWebSocket socket) {
+  startPlayerTurn(CommonWebSocket socket) async {
     print('socket ${players.indexOf(socket)} turn');
     activePlayer = socket;
 
@@ -579,6 +566,8 @@ class Match {
       socket.send(SocketMessage_Type.SET_SELECTABLE_CARDS, selectableCards);
     } else {
       // no available cards to play so pick up
+      await new Future.delayed(const Duration(seconds: 1));
+
       pickUpPile(socket);
 
       // end turn
@@ -588,7 +577,7 @@ class Match {
     // TODO choose higher lower if player does not and time runs out
   }
 
-  pickUpPile(ServerWebSocket socket) {
+  pickUpPile(CommonWebSocket socket) {
     // pick up cards
     final pickedUpCards = <Card>[];
 
@@ -629,7 +618,7 @@ class Match {
     hand.cards.addAll(pickedUpCards);
   }
 
-  endPlayerTurn(ServerWebSocket socket) {
+  endPlayerTurn(CommonWebSocket socket) async {
     // check if won
     if (socketWon(socket)) {
       onWin(socket);
@@ -640,12 +629,12 @@ class Match {
     final hand = hands[socket];
 
     final newHand = <Card>[];
-    while (newHand.length < 3 && deck.isNotEmpty) {
+    while (hand.cards.length < 3 && deck.isNotEmpty) {
       final newCard = deckDraw();
       newHand.add(newCard);
-    }
 
-    hand.cards.addAll(newHand);
+      hand.cards.add(newCard);
+    }
 
     sendDrawInfo(socket, newHand);
 
@@ -654,7 +643,7 @@ class Match {
     startPlayerTurn(players[nextIndex]);
   }
 
-  otherPlayersCardsExist(ServerWebSocket socket) {
+  otherPlayersCardsExist(CommonWebSocket socket) {
     final myHand = hands[socket];
     return hands.values
         .toList()
@@ -662,14 +651,14 @@ class Match {
         .isNotEmpty;
   }
 
-  onHigherSelection(ServerWebSocket socket) {
+  onHigherSelection(CommonWebSocket socket) {
     final lastCard = playedCards.last;
     if (lastCard.type == Card_Type.HIGHER_LOWER) {
       playedCards.add(HigherLowerChoice_Type.HIGHER);
     }
   }
 
-  onLowerSelection(ServerWebSocket socket) {
+  onLowerSelection(CommonWebSocket socket) {
     final lastCard = playedCards.last;
     if (lastCard.type == Card_Type.HIGHER_LOWER) {
       playedCards.add(HigherLowerChoice_Type.LOWER);
@@ -894,7 +883,7 @@ class Match {
     }
   }
 
-  List shiftListRespectiveToSocketIndex(ServerWebSocket socket, List list) {
+  List shiftListRespectiveToSocketIndex(CommonWebSocket socket, List list) {
     final socketIndex = players.indexOf(socket);
 
     final newList = list.sublist(socketIndex);
@@ -903,7 +892,7 @@ class Match {
     return newList;
   }
 
-  onTopSwapChoice(ServerWebSocket socket, CardIDs topSwapChoice) {
+  onTopSwapChoice(CommonWebSocket socket, CardIDs topSwapChoice) {
     if (!gameStarted || gameEnded) {
       // TODO send error
       return;
@@ -960,7 +949,7 @@ class Match {
     return null;
   }
 
-  ServerWebSocket getOwnerOfCardID(String cardID) {
+  CommonWebSocket getOwnerOfCardID(String cardID) {
     final card = cardRegistry[cardID];
 
     for (var socket in players) {
@@ -974,7 +963,7 @@ class Match {
     return null;
   }
 
-  onHandSwapChoice(ServerWebSocket socket, CardIDs handSwapChoice) {
+  onHandSwapChoice(CommonWebSocket socket, CardIDs handSwapChoice) {
     if (!gameStarted || gameEnded) {
       // TODO send error
       return;
@@ -1002,7 +991,7 @@ class Match {
   }
 
   onHigherLowerChoice(
-      ServerWebSocket socket, HigherLowerChoice higherLowerChoice) {
+      CommonWebSocket socket, HigherLowerChoice higherLowerChoice) {
     if (!gameStarted || gameEnded) {
       // TODO send error
       return;
