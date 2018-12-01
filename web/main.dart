@@ -112,18 +112,29 @@ setupListeners(ClientWebSocket ws) async {
       final info = new DiscardInfo.fromJson(json);
       game.onDiscardInfo(info);
     })
-    ..on(SocketMessage_Type.REQUEST_HANDSWAP_CHOICE, (var json) {
+    ..on(SocketMessage_Type.REQUEST_HANDSWAP_CHOICE, () {
+//      game.onRequestHandSwapChoice();
+    })
+    ..on(SocketMessage_Type.REQUEST_TOPSWAP_CHOICE, () {
 
     })
-    ..on(SocketMessage_Type.REQUEST_TOPSWAP_CHOICE, (var json) {
-
-    })
-    ..on(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE, (var json) {
-
+    ..on(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE, () {
+      game.onRequest_HigherLowerChoice();
     })
     ..on(SocketMessage_Type.ACTIVE_PLAYER_INDEX, (var json) {
       final activePlayerIndex = new ActivePlayerIndex.fromJson(json);
 
       game.setActivePlayerIndex(activePlayerIndex.index);
+    })
+    ..on(SocketMessage_Type.HIGHERLOWER_CHOICE, (var json) {
+      final higherLowerChoice = new HigherLowerChoice.fromJson(json);
+
+      game.onHigherLowerChoice(higherLowerChoice);
+    })
+    ..on(SocketMessage_Type.HANDSWAP_CHOICE, (var json) {
+
+    })
+    ..on(SocketMessage_Type.TOPSWAP_CHOICE, (var json) {
+
     });
 }

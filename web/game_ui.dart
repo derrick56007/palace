@@ -17,7 +17,7 @@ class GameUI {
 
   static final Point<num> midPoint = new Point(gameWidth / 2, gameHeight / 2);
 
-  static const defaultDeckLength = 44; //56;
+  static const defaultDeckLength = 52; //56;
 
   final ClientWebSocket socket;
 
@@ -37,6 +37,15 @@ class GameUI {
 
   Bitmap currentPlayerToken;
 
+  final Bitmap blackOverlay =
+      new Bitmap(new BitmapData(gameWidth, gameHeight, Color.Black));
+
+  Sprite higherChoice;
+  Sprite lowerChoice;
+
+  Bitmap higher;
+  Bitmap lower;
+
   init() async {
     stage = new Stage(canvas,
         width: gameWidth, height: gameHeight, options: options);
@@ -44,7 +53,14 @@ class GameUI {
     final renderLoop = new RenderLoop();
     renderLoop.addStage(stage);
 
+    blackOverlay.pivotX = blackOverlay.width / 2;
+    blackOverlay.pivotY = blackOverlay.height / 2;
+
     resourceManager.addBitmapData("crown", "images/crown.png");
+    resourceManager.addBitmapData("LOWER_CHOICE", "images/LOWER_CHOICE.png");
+    resourceManager.addBitmapData("LOWER", "images/LOWER.png");
+    resourceManager.addBitmapData("HIGHER_CHOICE", "images/HIGHER_CHOICE.png");
+    resourceManager.addBitmapData("HIGHER", "images/HIGHER.png");
     resourceManager.addBitmapData("back", "images/card_back.png");
     // 10 because of rock
     const basicCardLength = 10;
@@ -61,12 +77,47 @@ class GameUI {
         "DISCARD_OR_ROCK", "images/DISCARD_OR_ROCK.png");
     await resourceManager.load();
 
+    lower = new Bitmap(resourceManager.getBitmapData("LOWER"));
+    higher = new Bitmap(resourceManager.getBitmapData("HIGHER"));
+
     currentPlayerToken = new Bitmap(resourceManager.getBitmapData("crown"));
     currentPlayerToken.x = midPoint.x;
     currentPlayerToken.y = midPoint.y;
-    currentPlayerToken.pivotX = currentPlayerToken.width/2;
-    currentPlayerToken.pivotY = currentPlayerToken.height/2;
+    currentPlayerToken.pivotX = currentPlayerToken.width / 2;
+    currentPlayerToken.pivotY = currentPlayerToken.height / 2;
     stage.addChild(currentPlayerToken);
+
+    lowerChoice = new Sprite();
+    lowerChoice.children
+        .add(new Bitmap(resourceManager.getBitmapData("LOWER_CHOICE")));
+    lowerChoice.pivotX = lowerChoice.width / 2;
+    lowerChoice.pivotY = lowerChoice.height / 2;
+    lowerChoice.x = midPoint.x - lowerChoice.width / 2 - 25;
+    lowerChoice.y = midPoint.y;
+    lowerChoice.mouseCursor = MouseCursor.POINTER;
+    lowerChoice.filters = [
+      new GlowFilter(Color.Gold, 20, 20),
+      new DropShadowFilter(1)
+    ];
+    lowerChoice.onMouseClick.listen((_) {
+      chooseHigherLower(HigherLowerChoice_Type.LOWER);
+    });
+
+    higherChoice = new Sprite();
+    higherChoice.children
+        .add(new Bitmap(resourceManager.getBitmapData("HIGHER_CHOICE")));
+    higherChoice.pivotX = higherChoice.width / 2;
+    higherChoice.pivotY = higherChoice.height / 2;
+    higherChoice.x = midPoint.x + higherChoice.width / 2 + 25;
+    higherChoice.y = midPoint.y;
+    higherChoice.mouseCursor = MouseCursor.POINTER;
+    higherChoice.filters = [
+      new GlowFilter(Color.Gold, 20, 20),
+      new DropShadowFilter(1)
+    ];
+    higherChoice.onMouseClick.listen((_) {
+      chooseHigherLower(HigherLowerChoice_Type.HIGHER);
+    });
 
     final sendButton =
         new TextField("Send", new TextFormat('Arial', 50, Color.Black));
@@ -88,15 +139,6 @@ class GameUI {
         }
       });
     stage.addChild(sendButton);
-
-    for (var i = 0; i < defaultDeckLength; i++) {
-      final cardSprite = new ClientCard();
-      cardSprite.x = gameWidth / 2 - cardWidth - 100;
-      cardSprite.y = gameHeight / 2;
-
-      stage.children.add(cardSprite);
-      deck.add(cardSprite);
-    }
 
     stage.onMouseMove.listen((MouseEvent e) {
       final objects = stage.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
@@ -131,6 +173,28 @@ class GameUI {
         tween.animate.y.to(startY);
       }
     });
+  }
+
+  createDeck() {
+    final cardsToRemove = <DisplayObject>[];
+
+    stage.children
+        .where((child) => child is ClientCard)
+        .forEach((card) => cardsToRemove.add(card));
+
+    for (var card in cardsToRemove) {
+      card.removeFromParent();
+    }
+
+    deck.clear();
+    for (var i = 0; i < defaultDeckLength; i++) {
+      final cardSprite = new ClientCard();
+      cardSprite.x = gameWidth / 2 - cardWidth - 100;
+      cardSprite.y = gameHeight / 2;
+
+      stage.children.add(cardSprite);
+      deck.add(cardSprite);
+    }
   }
 
   ClientCard dealTowerAnim(ClientCard newCard, List<List<ClientCard>> towers,
@@ -178,6 +242,11 @@ class GameUI {
   }
 
   onDealTowerInfo(DealTowerInfo info) async {
+    createDeck();
+    hands.clear();
+    topTowers.clear();
+    botTowers.clear();
+
     final usersLength = info.topTowers.length;
 
     for (var i = 0; i < usersLength; i++) {
@@ -270,6 +339,8 @@ class GameUI {
       final revealedCard = cardRegistry[card.id];
       revealedCard.cardInfo = card;
 
+      playedCards.add(revealedCard);
+
       hands[info.userIndex].remove(revealedCard);
 
       stage.juggler.removeTweens(revealedCard);
@@ -279,7 +350,7 @@ class GameUI {
 
       final offSetX = rand.nextInt(15) * (rand.nextBool() ? -1 : 1);
       final offSetY = rand.nextInt(15) * (rand.nextBool() ? -1 : 1);
-      final offSetRotation = rand.nextDouble() * (rand.nextBool() ? -1 : 1);
+      final offSetRotation = rand.nextDouble() / 2 * (rand.nextBool() ? -1 : 1);
 
       tween.animate.x.to(midPoint.x + offSetX);
       tween.animate.y.to(midPoint.y + offSetY);
@@ -419,7 +490,8 @@ class GameUI {
     num y = gameHeight - cardHeight - 75;
     final x = midPoint.x - cardWidth;
 
-    final tween = stage.juggler.addTween(currentPlayerToken, 1, Transition.easeInOutCubic);
+    final tween = stage.juggler
+        .addTween(currentPlayerToken, 1, Transition.easeInOutCubic);
 
     if (index % 2 != 0) {
       y += ((gameWidth / 2) - (gameHeight / 2)).round() + 30;
@@ -441,27 +513,53 @@ class GameUI {
     return new Point(nx, ny);
   }
 
-//  final serverDeck = <Card>[];
-//
-//  createServerCards() {
-//    final uuids = <String>[];
-//
-//    for (var i = 0; i < defaultDeckLength; i++) {
-//      uuids.add('$i');
-//    }
-//    uuids.shuffle();
-//
-//    // create value cards
-//    for (var j = 0; j < 4; j++) {
-//      for (var cardValue = 0; cardValue < 9; cardValue++) {
-//        final card = Card()
-//          ..id = uuids.removeLast()
-//          ..hidden = true
-//          ..type = Card_Type.BASIC
-//          ..value = cardValue + 1;
-//        serverDeck.add(card);
-////        registerCard(card);
-//      }
-//    }
-//  }
+  onRequest_HigherLowerChoice() {
+    blackOverlay.alpha = 0;
+
+    stage.addChild(blackOverlay);
+
+    final tween =
+        stage.juggler.addTween(blackOverlay, .5, Transition.easeOutQuintic);
+    tween.animate.alpha.to(.75);
+
+    higherChoice.alpha = 0;
+    lowerChoice.alpha = 0;
+    stage.addChild(higherChoice);
+    stage.addChild(lowerChoice);
+
+    final tween2 =
+        stage.juggler.addTween(higherChoice, .5, Transition.easeOutQuintic);
+    tween2.animate.alpha.to(.75);
+
+    final tween3 =
+        stage.juggler.addTween(lowerChoice, .5, Transition.easeOutQuintic);
+    tween3.animate.alpha.to(.75);
+  }
+
+  chooseHigherLower(HigherLowerChoice_Type type) {
+    blackOverlay.removeFromParent();
+    lowerChoice.removeFromParent();
+    higherChoice.removeFromParent();
+
+    final higherLowerChoice = new HigherLowerChoice()..choice = type;
+    socket.send(SocketMessage_Type.HIGHERLOWER_CHOICE, higherLowerChoice);
+  }
+
+  onHigherLowerChoice(HigherLowerChoice choice) {
+    assert(playedCards.last._card.type == Card_Type.HIGHER_LOWER);
+
+    final card = playedCards.last;
+    card.front.removeFromParent();
+    card.front = new Bitmap(
+        GameUI.resourceManager.getBitmapData("BASIC${choice.value}"));
+    card.addChild(card.front);
+
+    if (choice.choice == HigherLowerChoice_Type.HIGHER) {
+      higher.removeFromParent();
+      card.addChild(higher);
+    } else {
+      lowerChoice.removeFromParent();
+      card.addChild(lower);
+    }
+  }
 }

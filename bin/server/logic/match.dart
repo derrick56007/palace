@@ -6,7 +6,7 @@ class Match {
   final bottomTowers = <CommonWebSocket, Tower>{};
   final topTowers = <CommonWebSocket, Tower>{};
 
-  static const fullDeckLength = 44; // 56;
+  static const fullDeckLength = 52; // 56;
   static const towerLength = 3;
   static const basicCardLength = 9;
   static const suitLength = 4;
@@ -40,6 +40,7 @@ class Match {
     _discardOrRock = null;
     gameDirection = 1;
 
+    playedCards.clear();
     createDeck();
     deck.shuffle();
     firstTowerDeal();
@@ -323,6 +324,8 @@ class Match {
     print('hand: ${hands[socket].cards}');
     print('top tower: ${topTowers[socket].cards}');
     print('bot tower: ${topTowers[socket].cards}');
+
+    newGame();
   }
 
   socketWon(CommonWebSocket socket) =>
@@ -529,14 +532,27 @@ class Match {
       return cards.first.value;
     }
 
-    final valueCards = cards.where((card) =>
-        card.type != Card_Type.HIGHER_LOWER &&
-            card.type != Card_Type.TOP_SWAP &&
-            card.type != Card_Type.HAND_SWAP &&
-            card.type != Card_Type.DISCARD_OR_ROCK &&
-            card.type != Card_Type.WILD &&
-            card.type != Card_Type.REVERSE &&
-            card.type != Card_Type.BOMB);
+    final valueCards = <Card>[];
+    for (var i = 0; i < cards.length; i++) {
+      final card = cards[i];
+
+      if (card.type == Card_Type.HIGHER_LOWER) {
+        if (i > 0 && cards[i - 1].type == Card_Type.WILD) {
+          valueCards.add(card);
+        }
+        continue;
+      }
+
+      if (card.type != Card_Type.TOP_SWAP &&
+          card.type != Card_Type.HAND_SWAP &&
+          card.type != Card_Type.DISCARD_OR_ROCK &&
+//            card.type != Card_Type.WILD && // makes state 0
+          card.type != Card_Type.REVERSE &&
+          card.type != Card_Type.BOMB) {
+
+        valueCards.add(card);
+      }
+    }
 
     if (valueCards.isEmpty) return 0;
 
@@ -561,9 +577,32 @@ class Match {
         return true;
       }
 
+      var lower = false;
+
+      for (var card in playedCards.reversed) {
+        if (card is Card) {
+          if (card.type == Card_Type.BASIC) {
+            break;
+          }
+
+          if (card.type == Card_Type.REVERSE ||
+              card.type == Card_Type.DISCARD_OR_ROCK ||
+              card.type == Card_Type.TOP_SWAP ||
+              card.type == Card_Type.HAND_SWAP) {
+            continue;
+          } else {
+            break;
+          }
+        } else {
+          if (card == HigherLowerChoice_Type.LOWER) {
+            lower = true;
+          }
+          break;
+        }
+      }
+
       // check if last card is higher lower
-      if (playedCards.last is HigherLowerChoice_Type &&
-          playedCards.last.choice == HigherLowerChoice_Type.LOWER) {
+      if (lower) {
         if (card.value <= pileState) {
           return true;
         } else {
@@ -828,26 +867,24 @@ class Match {
         ..hidden = true
         ..type = Card_Type.REVERSE
         ..value = 0;
-//      final wild = Card()
-//        ..id = uuids.removeLast()
-//        ..hidden = true
-//        ..type = Card_Type.WILD
-//        ..value = 0;
-//      final higherLower = Card()
-//        ..id = uuids.removeLast()
-//        ..hidden = true
-//        ..type = Card_Type.HIGHER_LOWER
-//        ..value = 5;
+      final wild = Card()
+        ..id = uuids.removeLast()
+        ..hidden = true
+        ..type = Card_Type.WILD
+        ..value = 0;
+      final higherLower = Card()
+        ..id = uuids.removeLast()
+        ..hidden = true
+        ..type = Card_Type.HIGHER_LOWER
+        ..value = 5;
       final bomb = Card()
         ..id = uuids.removeLast()
         ..hidden = true
         ..type = Card_Type.BOMB
         ..value = 0;
 
-//      deck.addAll([reverse, wild, higherLower, bomb]);
-//      registerAllCards([reverse, wild, higherLower, bomb]);
-      deck.addAll([reverse, bomb]);
-      registerAllCards([reverse, bomb]);
+      deck.addAll([reverse, wild, higherLower, bomb]);
+      registerAllCards([reverse, wild, higherLower, bomb]);
     }
 
     assert(fullDeckLength == deck.length);
@@ -1120,14 +1157,22 @@ class Match {
       return;
     }
 
+    if (playedCards.isEmpty) return;
+
     final lastE = playedCards.last;
 
     if (lastE is Card && lastE.type == Card_Type.HIGHER_LOWER) {
       playedCards.add(higherLowerChoice.choice);
 
-      // TODO send info
+      higherLowerChoice.value = resolvePileState();
+
+      for (var socket in players) {
+        socket.send(SocketMessage_Type.HIGHERLOWER_CHOICE, higherLowerChoice);
+      }
 
       endPlayerTurn(socket);
+    } else {
+      return;
     }
   }
 }

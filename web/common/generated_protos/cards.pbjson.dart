@@ -47,6 +47,7 @@ const HigherLowerChoice$json = const {
   '1': 'HigherLowerChoice',
   '2': const [
     const {'1': 'choice', '3': 1, '4': 1, '5': 14, '6': '.palace.HigherLowerChoice.Type', '10': 'choice'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 5, '10': 'value'},
   ],
   '4': const [HigherLowerChoice_Type$json],
 };

@@ -34,6 +34,7 @@ message HigherLowerChoice {
     }
 
     Type choice = 1;
+    int32 value = 2;
 }
 
 message DealTowerInfo {

@@ -106,6 +106,7 @@ class CardIDs extends $pb.GeneratedMessage {
 class HigherLowerChoice extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('HigherLowerChoice', package: const $pb.PackageName('palace'))
     ..e<HigherLowerChoice_Type>(1, 'choice', $pb.PbFieldType.OE, HigherLowerChoice_Type.HIGHER, HigherLowerChoice_Type.valueOf, HigherLowerChoice_Type.values)
+    ..a<int>(2, 'value', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 
@@ -127,6 +128,11 @@ class HigherLowerChoice extends $pb.GeneratedMessage {
   set choice(HigherLowerChoice_Type v) { setField(1, v); }
   bool hasChoice() => $_has(0);
   void clearChoice() => clearField(1);
+
+  int get value => $_get(1, 0);
+  set value(int v) { $_setSignedInt32(1, v); }
+  bool hasValue() => $_has(1);
+  void clearValue() => clearField(2);
 }
 
 class DealTowerInfo extends $pb.GeneratedMessage {

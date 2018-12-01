@@ -10,6 +10,8 @@ class BotSocket extends CommonWebSocket {
     done = completer.future;
   }
 
+  final rand = new Random();
+
   @override
   send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) async {
     switch (type) {
@@ -46,6 +48,20 @@ class BotSocket extends CommonWebSocket {
         final lowCardIDs = new CardIDs();
         lowCardIDs.ids.add(selectableCardIDs.ids.first);
         match.userPlay(this, lowCardIDs);
+        break;
+      case SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE:
+        await new Future.delayed(const Duration(seconds: 2));
+
+        final match = MatchManager.shared.matchFromSocket(this);
+
+        final higherLowerChoice = new HigherLowerChoice()
+        ..choice = rand.nextBool() ? HigherLowerChoice_Type.HIGHER : HigherLowerChoice_Type.LOWER;
+
+        match.onHigherLowerChoice(this, higherLowerChoice);
+        break;
+      case SocketMessage_Type.REQUEST_TOPSWAP_CHOICE:
+        break;
+      case SocketMessage_Type.REQUEST_HANDSWAP_CHOICE:
         break;
       default:
     }
