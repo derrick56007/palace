@@ -10,6 +10,8 @@ class ClientCard extends Sprite {
   Bitmap crossOut;
 
   bool draggable = false;
+  bool interactable = false;
+
   ClientCard() {
     crossOut =
         new Bitmap(new BitmapData(cardWidth, cardHeight, Color.Green));

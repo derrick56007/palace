@@ -158,6 +158,8 @@ class GameUI {
       for (var i = 0; i < hand.length; i++) {
         final card = hand[i];
 
+        if (!card.interactable) continue;
+
         if (lastCardTouched == card) {
           final tween =
               stage.juggler.addTween(card, 1, Transition.easeOutQuintic);
@@ -278,6 +280,10 @@ class GameUI {
   }
 
   onTowerCardsToHand(TowerCardsToHandInfo info) async {
+    final newCards = <ClientCard>[];
+
+    final initialHandLength = hands[info.userIndex].length;
+
     for (var cardID in info.cardIDs) {
       if (cardRegistry.containsKey(cardID)) {
         final card = cardRegistry[cardID];
@@ -286,16 +292,23 @@ class GameUI {
           card.hidden = true;
         }
 
-        animateCardToHand(card, info.userIndex, 1, Transition.easeInOutCubic);
+        stage.setChildIndex(card, stage.children.length - 1);
+
+        hands[info.userIndex].add(card);
 
         final tower = topTowers[info.userIndex];
         tower[tower.indexOf(card)] = null;
 
-        await new Future.delayed(const Duration(milliseconds: 150));
+        newCards.add(card);
       }
     }
 
-    bringHandCardsToTop();
+    animateCardsInHand(info.userIndex, .75, Transition.easeOutQuintic, initialHandLength);
+
+    for (var card in newCards) {
+      animateCardToHand(card, info.userIndex, 1, Transition.easeInOutCubic);
+      await new Future.delayed(const Duration(milliseconds: 150));
+    }
   }
 
   secondTowerDealInfo(SecondDealTowerInfo info) async {
@@ -317,36 +330,53 @@ class GameUI {
   }
 
   onFinalDealInfo(FinalDealInfo info) async {
-    for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
       for (var userIndex = 0; userIndex < info.hands.length; userIndex++) {
-        if (info.hands[userIndex].cards.isEmpty) continue;
+        final newCards = <ClientCard>[];
 
-        final cardInfo = info.hands[userIndex].cards.removeAt(0);
-        final newCard = drawFromDeck(cardInfo);
+        final initialHandLength = hands[userIndex].length;
 
-        animateCardToHand(newCard, userIndex, 1, Transition.easeOutQuintic);
-        await new Future.delayed(const Duration(milliseconds: 150));
+        for (var cardInfo in info.hands[userIndex].cards) {
+          final newCard = drawFromDeck(cardInfo);
+
+          hands[userIndex].add(newCard);
+          newCards.add(newCard);
+        }
+
+        animateCardsInHand(
+            userIndex, .75, Transition.easeOutQuintic, initialHandLength);
+
+        for (var card in newCards) {
+          stage.setChildIndex(card, stage.children.length - 1);
+          animateCardToHand(card, userIndex, 1, Transition.easeOutQuintic);
+          await new Future.delayed(const Duration(milliseconds: 150));
+        }
       }
-    }
-
-    bringHandCardsToTop();
   }
 
   final rand = new Random();
 
-  onPlayFromHandInfo(PlayFromHandInfo info) {
+  onPlayFromHandInfo(PlayFromHandInfo info) async {
+    final revealedCards = <ClientCard>[];
+
     for (var card in info.cards) {
       final revealedCard = cardRegistry[card.id];
       revealedCard.cardInfo = card;
+      revealedCard.interactable = false;
 
       playedCards.add(revealedCard);
+      revealedCards.add(revealedCard);
 
       hands[info.userIndex].remove(revealedCard);
+    }
 
+    animateCardsInHand(info.userIndex, .75, Transition.easeOutQuintic,
+        hands[info.userIndex].length);
+
+    for (var revealedCard in revealedCards) {
       stage.juggler.removeTweens(revealedCard);
 
       final tween =
-          stage.juggler.addTween(revealedCard, 1, Transition.easeOutQuintic);
+      stage.juggler.addTween(revealedCard, 1, Transition.easeOutQuintic);
 
       final offSetX = rand.nextInt(15) * (rand.nextBool() ? -1 : 1);
       final offSetY = rand.nextInt(15) * (rand.nextBool() ? -1 : 1);
@@ -357,20 +387,31 @@ class GameUI {
       tween.animate.rotation.by(offSetRotation);
 
       stage.setChildIndex(revealedCard, stage.children.length - 1);
-    }
 
-    animateCardsInHand(info.userIndex, 1, Transition.easeOutQuintic);
+      await new Future.delayed(const Duration(milliseconds: 200));
+    }
   }
 
-  onPickUpPileInfo(PickUpPileInfo info) {
+  onPickUpPileInfo(PickUpPileInfo info) async {
+    final pickedUpCards = <ClientCard>[];
+
+    final initialHandLength = hands[info.userIndex].length;
+
     for (var cardInfo in info.cards) {
       final pickedUpCard = cardRegistry[cardInfo.id];
       pickedUpCard.cardInfo = cardInfo;
 
-      stage.juggler.removeTweens(pickedUpCard);
+      hands[info.userIndex].add(pickedUpCard);
+      pickedUpCards.add(pickedUpCard);
+    }
 
+    animateCardsInHand(
+        info.userIndex, .75, Transition.easeOutQuintic, initialHandLength);
+
+    for (var pickedUpCard in pickedUpCards) {
       animateCardToHand(
           pickedUpCard, info.userIndex, 1, Transition.easeInOutCubic);
+      await new Future.delayed(const Duration(milliseconds: 125));
     }
   }
 
@@ -421,10 +462,25 @@ class GameUI {
     print('draw info');
     print(info);
 
+    final newCards = <ClientCard>[];
+
+    final initalHandLength = hands[info.userIndex].length;
+
     for (var cardInfo in info.cards) {
       final newCard = drawFromDeck(cardInfo);
+      hands[info.userIndex].add(newCard);
 
-      animateCardToHand(newCard, info.userIndex, 1, Transition.easeInOutCubic);
+      newCards.add(newCard);
+    }
+
+    animateCardsInHand(
+        info.userIndex, .75, Transition.easeOutQuintic, initalHandLength);
+    await new Future.delayed(const Duration(milliseconds: 500));
+
+    for (var cCard in newCards) {
+      stage.setChildIndex(cCard, stage.children.length - 1);
+
+      animateCardToHand(cCard, info.userIndex, 1, Transition.easeInOutCubic);
       await new Future.delayed(const Duration(milliseconds: 150));
     }
   }
@@ -439,22 +495,48 @@ class GameUI {
   animateCardToHand(
       ClientCard cCard, int handIndex, num animDuration, var transition) {
     final hand = hands[handIndex];
-    hand.add(cCard);
 
-    animateCardsInHand(handIndex, animDuration, transition);
+    stage.juggler.removeTweens(cCard);
+
+    final tween = stage.juggler.addTween(cCard, animDuration, transition);
+
+    final handWidth = hand.length * 75 - cardWidth / 2;
+    final startingX = gameWidth / 2 - handWidth / 2;
+    final startingY = gameHeight;
+
+    final x = startingX + hand.indexOf(cCard) * 75;
+    var y = startingY;
+
+    if (handIndex % 2 != 0) {
+      y += ((gameWidth / 2) - (gameHeight / 2)).round() + 30;
+    }
+
+    final rotatedPoint =
+        rotatePoint(midPoint.x, midPoint.y, x, y, handIndex * -90);
+
+    tween.animate.x.to(rotatedPoint.x);
+    tween.animate.y.to(rotatedPoint.y);
+    tween.animate.rotation.to(handIndex * pi / 2);
+
+    tween.onComplete = () {
+      if (handIndex == 0) {
+        cCard.interactable = true;
+      }
+    };
+
+//    stage.setChildIndex(cCard, stage.children.length - 1);
   }
 
-  animateCardsInHand(int handIndex, num animDuration, var transition) {
+  animateCardsInHand(
+      int handIndex, num animDuration, var transition, int range) {
     final hand = hands[handIndex];
 
     final handWidth = hand.length * 75 - cardWidth / 2;
     final startingX = gameWidth / 2 - handWidth / 2;
     final startingY = gameHeight;
 
-    for (var j = 0; j < hand.length; j++) {
+    for (var j = 0; j < range; j++) {
       final _card = hand[j];
-
-      stage.juggler.removeTweens(_card);
 
       final tween = stage.juggler.addTween(_card, animDuration, transition);
 

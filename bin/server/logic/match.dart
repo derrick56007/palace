@@ -44,12 +44,15 @@ class Match {
     createDeck();
     deck.shuffle();
     firstTowerDeal();
+
+    await new Future.delayed(const Duration(seconds: 1));
+
     await startMulliganWindow();
     print('end mulligan window');
     secondTowerDeal();
     finalDeal();
 
-    await new Future.delayed(const Duration(seconds: 1));
+    await new Future.delayed(const Duration(milliseconds: 2700));
 
     chooseStartingPlayer();
   }
