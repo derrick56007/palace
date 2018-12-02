@@ -53,9 +53,6 @@ class GameUI {
     final renderLoop = new RenderLoop();
     renderLoop.addStage(stage);
 
-    blackOverlay.pivotX = blackOverlay.width / 2;
-    blackOverlay.pivotY = blackOverlay.height / 2;
-
     resourceManager.addBitmapData("crown", "images/crown.png");
     resourceManager.addBitmapData("LOWER_CHOICE", "images/LOWER_CHOICE.png");
     resourceManager.addBitmapData("LOWER", "images/LOWER.png");
@@ -611,11 +608,11 @@ class GameUI {
 
     final tween2 =
         stage.juggler.addTween(higherChoice, .5, Transition.easeOutQuintic);
-    tween2.animate.alpha.to(.75);
+    tween2.animate.alpha.to(1);
 
     final tween3 =
         stage.juggler.addTween(lowerChoice, .5, Transition.easeOutQuintic);
-    tween3.animate.alpha.to(.75);
+    tween3.animate.alpha.to(1);
   }
 
   chooseHigherLower(HigherLowerChoice_Type type) {
