@@ -2,18 +2,77 @@
 
 <html>
 <head>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="scaffolded-by" content="https://github.com/google/stagehand">
     <title>palace_ui</title>
+
     <link rel="stylesheet" href="styles.css">
     <script defer src="main.dart.js"></script>
 </head>
 
 <body>
+<!-- Modal Trigger -->
+
+<a id="login-modal-btn" class="waves-effect waves-light btn modal-trigger" href="#modal1" style="display: none;">Login</a>
+<a id="register-modal-btn" class="waves-effect waves-light btn modal-trigger" href="#modal2" style="display: none;">Register</a>
+<a id="add-friend-btn" class="waves-effect waves-light btn modal-trigger" style="display: none;">Add Friend</a>
+<a id="invite-friends-btn" class="waves-effect waves-light btn modal-trigger" style="display: none;">Invite Friends</a>
+
+<!-- Modal Structure -->
+<div id="modal1" class="modal" >
+    <div class="modal-content">
+        <h4>Enter Login Info</h4>
+        <div class="input-field col s6">
+            <input placeholder="Placeholder" id="login_user_name" type="text">
+            <label for="login_user_name">Username</label>
+        </div>
+        <div class="input-field col s6">
+            <input id="login_password" type="password">
+            <label for="login_password">Password</label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a id="login-btn" href="#!" class="modal-close waves-effect waves-green btn-flat">Login</a>
+    </div>
+</div>
+
+<div id="modal2" class="modal" >
+    <div class="modal-content">
+        <h4>Enter Login Info</h4>
+        <div class="input-field col s6">
+            <input placeholder="Placeholder" id="register_user_name" type="text">
+            <label for="register_user_name">Username</label>
+        </div>
+        <div class="input-field col s6">
+            <input id="register_password" type="password">
+            <label for="register_password">Password</label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a id="register-btn" href="#!" class="modal-close waves-effect waves-green btn-flat">Register</a>
+    </div>
+</div>
 
 <canvas id="stage" class="stage--fullscreen"></canvas>
 
 </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+
+        var options = {dismissable: false};
+        var instances = M.Modal.init(elems, options);
+    });
+</script>
+
 </html>

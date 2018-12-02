@@ -33,8 +33,6 @@ class FriendManager {
     final friendExistingFriends =
         friendIdSearchResults.first['friends'] as List;
 
-    print('friend request sent $userID -> $friendID');
-
     // already existing friends
     if (friendExistingFriends.contains(userID)) {
       print('already existing friends! $userID & $friendID');
@@ -43,6 +41,8 @@ class FriendManager {
 
     // check if friend is online
     if (LoginManager.shared.userIDLoggedIn(friendID)) {
+      print('friend request sent $userID -> $friendID');
+
       final friendSocket = LoginManager.shared.socketFromUserID(friendID);
       friendSocket.send(SocketMessage_Type.FRIEND_REQUEST, SimpleInfo()..info = userID);
     } else {
