@@ -125,6 +125,7 @@ class Match {
         // check if card flip succeeded
         if (isSelectableCard(card)) {
           applyCardEffect(socket, [card]);
+          return;
         } else {
           // did not
           final playFromHandInfo = new PlayFromHandInfo()..cards.add(card);
@@ -149,9 +150,8 @@ class Match {
           pickUpPile(socket);
 
           endPlayerTurn(socket);
+          return;
         }
-
-        return;
       }
     }
 
@@ -320,13 +320,15 @@ class Match {
     }
   }
 
-  onWin(CommonWebSocket socket) {
+  onWin(CommonWebSocket socket) async {
     gameEnded = true;
     print("win -> ${players.indexOf(socket)}");
 
     print('hand: ${hands[socket].cards}');
     print('top tower: ${topTowers[socket].cards}');
     print('bot tower: ${topTowers[socket].cards}');
+
+    await new Future.delayed(const Duration(seconds: 3));
 
     newGame();
   }
