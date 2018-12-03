@@ -7,3 +7,124 @@ html, body, .stage--fullscreen {
     padding: 0;
     border: 0;
 }
+
+.side-bar-container {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 250px;
+    position: absolute;
+    height: 100vh;
+    justify-content: flex-start;
+}
+
+.side-bar-container .card {
+    margin-bottom: 0;
+}
+
+#side-bar {
+    flex-grow: 1;
+    margin-bottom: 5px;
+    display: none;
+    flex-direction: column;
+}
+
+.side-bar-btn {
+    width: 40px;
+    height: 34px;
+    padding-top: 4px;
+    color: black;
+    text-align: center;
+    line-height: 2.5em;
+    border-radius: 3px;
+    background: white;
+    cursor: pointer;
+    user-select: none;
+}
+
+input[type=checkbox] {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    /* For mobile, it's typically better to position checkbox on top of clickable
+       area and turn opacity to 0 instead. */
+}
+
+/* Toggled State */
+input[type=checkbox]:checked ~ #side-bar {
+    display: flex;
+}
+
+#side-bar h5 {
+    text-align: center;
+    padding-top: 5px;
+}
+
+#side-bar .input-field {
+    margin-top: 0;
+}
+
+.matches-card {
+    flex-grow: 1;
+    max-height: 50%;
+    overflow: auto;
+}
+
+.matches-card ul, .friends-card ul {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+
+.collection-item {
+    display: flex;
+    padding: 5px;
+    height: 50px;
+    line-height: 17px;
+    justify-content: space-between;
+}
+
+.friends-card {
+    flex-grow: 1;
+    max-height: 50%;
+    overflow: auto;
+}
+
+.collection-item-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 150px;
+}
+
+.collection-item-btns {
+    margin-top: 5px;
+    width: 70px;
+}
+
+.collection-item-btn {
+    margin-top: 5px;
+    width: 32px;
+}
+
+#invite-btn {
+    margin-top: 7px;
+    text-align: center;
+    height: 90px;
+    line-height: 90px;
+    border-radius: 3px;
+    font-size: 2em;
+}
+
+.friend-card .row {
+    margin-bottom: 0;
+}
+
+.collection-item-title {
+    text-decoration: underline;
+}
+
+
+div .collection-item-friend-header {
+    font-size: 1.75em;
+    line-height: 1.6em;
+}

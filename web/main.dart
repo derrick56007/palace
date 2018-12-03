@@ -13,8 +13,6 @@ import 'common/generated_protos.dart';
 
 import 'package:stagexl/stagexl.dart';
 
-import 'toast.dart';
-
 part 'game_ui.dart';
 part 'client_card.dart';
 
