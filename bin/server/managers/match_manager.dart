@@ -1,10 +1,14 @@
 part of server;
 
 class Lobby {
+  static const maxPlayers = 4;
+
   CommonWebSocket host;
   final _invitedPlayersReadyStatus = <CommonWebSocket, bool>{};
 
   Iterable<CommonWebSocket> get players => _invitedPlayersReadyStatus.keys;
+
+  bool playerReady(CommonWebSocket socket) => _invitedPlayersReadyStatus[socket];
 
   List<CommonWebSocket> getReadyPlayers() {
     final readyPlayers = <CommonWebSocket>[];
@@ -32,11 +36,9 @@ class Lobby {
   declineInvite(CommonWebSocket socket) {
     _invitedPlayersReadyStatus.remove(socket);
 
-    if (_invitedPlayersReadyStatus.isEmpty) return;
-
-    if (socket != host) return;
-
-    host = _invitedPlayersReadyStatus.keys.first;
+    if (_invitedPlayersReadyStatus.isNotEmpty && socket == host) {
+      host = _invitedPlayersReadyStatus.keys.first;
+    }
 
     _sendInfoToPlayers();
   }
@@ -95,10 +97,21 @@ class MatchManager {
   Match matchFromSocket(CommonWebSocket socket) => _matchBySocket[socket];
 
   sendMatchInvite(CommonWebSocket socket, String friendID) async {
-    if (socketInMatch(socket) || socketInLobby(socket)) return;
+    if (socketInMatch(socket)) return;
 
-    // add user to lobby
-    final lobby = new Lobby(socket);
+    // check for existing lobby
+    Lobby lobby;
+    if (socketInLobby(socket)) {
+      lobby = _lobbyBySocket[socket];
+
+      // can't add user until accepts or declines match invite
+      if (!lobby.playerReady(socket)) return;
+
+      // can't add more if lobby full
+      if (lobby.players.length == Lobby.maxPlayers) return;
+    } else {
+      lobby = new Lobby(socket);
+    }
 
     var friendSocket;
     if (friendID == 'bot') {
@@ -162,6 +175,9 @@ class MatchManager {
       _matchBySocket[socket] = match;
       socket.send(SocketMessage_Type.MATCH_START);
     }
+
+    lobby.host.send(SocketMessage_Type.MATCH_START);
+    _lobbyBySocket.remove(lobby);
   }
 
   matchDecline(CommonWebSocket socket) {
