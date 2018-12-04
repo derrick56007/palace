@@ -133,18 +133,35 @@ class MatchManager {
 
     final lobby = lobbyFromSocket(socket);
     lobby.declineInvite(socket);
+    _lobbyBySocket.remove(socket);
   }
 
   logout(CommonWebSocket socket) {
-    if (socketInMatch(socket)) {
-      final match = matchFromSocket(socket);
-      // TODO replace with bot
-    }
-
     // remove from lobby if exists
     if (socketInLobby(socket)) {
       final lobby = lobbyFromSocket(socket);
       lobby.declineInvite(socket);
+      _lobbyBySocket.remove(socket);
     }
+
+    // replace with bot
+    if (socketInMatch(socket)) {
+      _matchBySocket.remove(socket);
+
+      final match = matchFromSocket(socket);
+      final botSocket = new BotSocket();
+      SocketReceiver.handle(botSocket);
+
+      final indexOfPlayer = match.players.indexOf(socket);
+
+      if (indexOfPlayer == -1) return;
+
+      match.players[indexOfPlayer] = botSocket;
+
+      if (match.activePlayer != socket) return;
+
+      match.startPlayerTurn(botSocket);
+    }
+
   }
 }

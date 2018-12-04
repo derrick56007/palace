@@ -521,33 +521,44 @@ class Match {
 
   chooseStartingPlayer() {
     // TODO choose random player to start
-    startPlayerTurn(players.first);
+    if (activePlayer == null) {
+      startPlayerTurn(players.first);
+      return;
+    }
+
+    startPlayerTurn(activePlayer);
   }
 
   int resolvePileState() {
     if (playedCards.isEmpty) return 0;
 
+    // get "real" cards (played cards could include HigherLowerChoice)
     final cards = <Card>[];
     for (var card in playedCards) {
       if (card is Card) cards.add(card);
     }
 
-    // higher lower by itself is the mean of basic values (5)
+    // higher lower card value by itself is the mean of basic values (5)
     if (cards.length == 1 && cards.first.type == Card_Type.HIGHER_LOWER) {
       return cards.first.value;
     }
 
+    // collect cards with "value"
     final valueCards = <Card>[];
     for (var i = 0; i < cards.length; i++) {
       final card = cards[i];
 
+      // check HIGHER_LOWER special case
       if (card.type == Card_Type.HIGHER_LOWER) {
+        // check if previous card exists and is WILD
         if (i > 0 && cards[i - 1].type == Card_Type.WILD) {
+          // add HIGHER_LOWER as value card
           valueCards.add(card);
         }
         continue;
       }
 
+      // cards with no value
       if (card.type != Card_Type.TOP_SWAP &&
           card.type != Card_Type.HAND_SWAP &&
           card.type != Card_Type.DISCARD_OR_ROCK &&
@@ -559,6 +570,7 @@ class Match {
       }
     }
 
+    // return 0 if no value cards
     if (valueCards.isEmpty) return 0;
 
     return valueCards.last.value;
