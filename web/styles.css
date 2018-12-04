@@ -141,3 +141,33 @@ div .collection-item-friend-header {
     font-size: 1.75em;
     line-height: 1.6em;
 }
+
+#lobby-card {
+    width: 250px;
+    text-align: center;
+    padding: 10px 5px;
+}
+
+.lobby-item-text {
+    width: 200px;
+    line-height: 45px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.lobby-item {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    height: 45px;
+    border-radius: 2px;
+}
+
+div .lobby-item-status {
+    padding: 3px 5px;
+}
+
+#lobby-btn {
+
+}
