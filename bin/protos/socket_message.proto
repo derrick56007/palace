@@ -43,6 +43,7 @@ message SocketMessage {
 
         // to client
         FRIEND_ITEM_INFO = 34;
+        LOBBY_INFO = 35;
     }
 
     Type type = 1;

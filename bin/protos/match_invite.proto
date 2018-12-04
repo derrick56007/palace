@@ -6,7 +6,16 @@ message MatchInvite {
     string userID = 2;
 }
 
-message LobbyInfo
+message LobbyInfo {
+    string host = 1;
+    repeated PlayerEntry players = 2;
+    bool canStart = 3;
+}
+
+message PlayerEntry {
+    string userID = 1;
+    bool ready = 2;
+}
 
 message UserIDs {
     repeated string ids = 1;

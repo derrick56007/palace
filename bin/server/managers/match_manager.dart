@@ -1,29 +1,67 @@
 part of server;
 
 class Lobby {
-  final CommonWebSocket host;
+  CommonWebSocket host;
   final _invitedPlayersReadyStatus = <CommonWebSocket, bool>{};
 
-  List<CommonWebSocket> getPlayers() => _invitedPlayersReadyStatus.keys.toList();
+  Iterable<CommonWebSocket> get players => _invitedPlayersReadyStatus.keys;
 
-  bool playersReady() => !_invitedPlayersReadyStatus.values.contains(false);
+  List<CommonWebSocket> getReadyPlayers() {
+    final readyPlayers = <CommonWebSocket>[];
+    for (var player in _invitedPlayersReadyStatus.keys) {
+      if (_invitedPlayersReadyStatus[player]) continue;
+
+      readyPlayers.add(player);
+    }
+
+    return readyPlayers;
+  }
 
   addPlayer(CommonWebSocket socket) {
     _invitedPlayersReadyStatus[socket] = false;
 
-    // send update
+    _sendInfoToPlayers();
   }
 
   acceptInvite(CommonWebSocket socket) {
     _invitedPlayersReadyStatus[socket] = true;
 
-    // send update
+    _sendInfoToPlayers();
   }
 
   declineInvite(CommonWebSocket socket) {
     _invitedPlayersReadyStatus.remove(socket);
 
-    // send update
+    if (_invitedPlayersReadyStatus.isEmpty) return;
+
+    if (socket != host) return;
+
+    host = _invitedPlayersReadyStatus.keys.first;
+
+    _sendInfoToPlayers();
+  }
+
+  _sendInfoToPlayers() {
+    final lobbyInfo = new LobbyInfo()
+        ..host = LoginManager.shared.userIDFromSocket(host)
+        ..canStart = false;
+
+    for (var socket in _invitedPlayersReadyStatus.keys) {
+      final playerID = LoginManager.shared.userIDFromSocket(socket);
+
+      final playerEntry = new PlayerEntry()..userID = playerID..ready = _invitedPlayersReadyStatus[socket];
+      lobbyInfo.players.add(playerEntry);
+    }
+    
+    for (var socket in _invitedPlayersReadyStatus.keys) {
+      socket.send(SocketMessage_Type.LOBBY_INFO, lobbyInfo);
+    }
+
+    if (!_invitedPlayersReadyStatus.containsValue(false)) {
+      lobbyInfo.canStart = true;
+    }
+
+    host.send(SocketMessage_Type.LOBBY_INFO, lobbyInfo);
   }
 
   Lobby(this.host);
@@ -109,18 +147,17 @@ class MatchManager {
     // only host can start
     if (socket != lobby.host) return;
 
-    // players not ready
-    if (!lobby.playersReady()) return;
-
     final players = <CommonWebSocket>[lobby.host];
-    players.addAll(lobby.getPlayers());
+    players.addAll(lobby.getReadyPlayers());
 
     final match = new Match(players);
 
+    for (var socket in lobby.players) {
+      _lobbyBySocket.remove(socket);
+    }
+
     for (var socket in players) {
       _matchBySocket[socket] = match;
-      _lobbyBySocket.remove(socket);
-
       socket.send(SocketMessage_Type.MATCH_START);
     }
   }

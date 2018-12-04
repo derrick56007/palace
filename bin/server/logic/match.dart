@@ -562,7 +562,7 @@ class Match {
       if (card.type != Card_Type.TOP_SWAP &&
           card.type != Card_Type.HAND_SWAP &&
           card.type != Card_Type.DISCARD_OR_ROCK &&
-//            card.type != Card_Type.WILD && // makes state 0
+          // card.type != Card_Type.WILD && // makes state 0
           card.type != Card_Type.REVERSE &&
           card.type != Card_Type.BOMB) {
 
