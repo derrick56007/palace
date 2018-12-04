@@ -108,6 +108,9 @@ class LoginManager {
       ..tidy();
 
     print('registered $userID');
+
+    // automatically login user
+    login(socket, userID, passCode);
   }
 
   // logs in socket with username
