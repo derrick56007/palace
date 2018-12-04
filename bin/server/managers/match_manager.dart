@@ -43,24 +43,26 @@ class Lobby {
 
   _sendInfoToPlayers() {
     final lobbyInfo = new LobbyInfo()
-        ..host = LoginManager.shared.userIDFromSocket(host)
-        ..canStart = false;
+      ..host = LoginManager.shared.userIDFromSocket(host)
+      ..canStart = false;
 
+    // add player entries
     for (var socket in _invitedPlayersReadyStatus.keys) {
       final playerID = LoginManager.shared.userIDFromSocket(socket);
 
-      final playerEntry = new PlayerEntry()..userID = playerID..ready = _invitedPlayersReadyStatus[socket];
+      final playerEntry = new PlayerEntry()
+        ..userID = playerID
+        ..ready = _invitedPlayersReadyStatus[socket];
       lobbyInfo.players.add(playerEntry);
     }
-    
+
+    // send to players
     for (var socket in _invitedPlayersReadyStatus.keys) {
       socket.send(SocketMessage_Type.LOBBY_INFO, lobbyInfo);
     }
 
-    if (!_invitedPlayersReadyStatus.containsValue(false)) {
-      lobbyInfo.canStart = true;
-    }
-
+    // host has more options
+    lobbyInfo.canStart = true;
     host.send(SocketMessage_Type.LOBBY_INFO, lobbyInfo);
   }
 
@@ -199,6 +201,5 @@ class MatchManager {
 
       match.startPlayerTurn(botSocket);
     }
-
   }
 }
