@@ -1,11 +1,21 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
-html, body, .stage--fullscreen {
+html, body, .stage--fullscreen, #play-card {
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
     border: 0;
+    overflow: hidden;
+}
+
+#login-card {
+    display: flex;
+    justify-content: center;
+}
+
+canvas {
+    margin-bottom: -5px;
 }
 
 .side-bar-container {
@@ -15,6 +25,8 @@ html, body, .stage--fullscreen {
     position: absolute;
     height: 100vh;
     justify-content: flex-start;
+    top: 0;
+    margin-left: 5px;
 }
 
 .side-bar-container .card {
@@ -63,17 +75,16 @@ input[type=checkbox]:checked ~ #side-bar {
     margin-top: 0;
 }
 
-.matches-card {
-    flex-grow: 1;
-    max-height: 50%;
-    overflow: auto;
-}
+/*.matches-card {*/
+    /*flex-grow: 1;*/
+    /*max-height: 50%;*/
+    /*overflow: auto;*/
+/*}*/
 
-.matches-card ul, .friends-card ul {
-    padding-left: 7px;
-    padding-right: 7px;
-}
-
+/*.matches-card ul, .friends-card ul {*/
+    /*padding-left: 7px;*/
+    /*padding-right: 7px;*/
+/*}*/
 
 .collection-item {
     display: flex;
@@ -85,8 +96,12 @@ input[type=checkbox]:checked ~ #side-bar {
 
 .friends-card {
     flex-grow: 1;
-    max-height: 50%;
     overflow: auto;
+    padding: 5px;
+}
+
+.friend-card h5 {
+    margin-top: 5px;
 }
 
 .collection-item-text {
@@ -103,7 +118,6 @@ input[type=checkbox]:checked ~ #side-bar {
 
 .collection-item-btn {
     margin-top: 5px;
-    width: 32px;
 }
 
 #invite-btn {
@@ -122,7 +136,6 @@ input[type=checkbox]:checked ~ #side-bar {
 .collection-item-title {
     text-decoration: underline;
 }
-
 
 div .collection-item-friend-header {
     font-size: 1.75em;

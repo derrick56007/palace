@@ -1,4 +1,10 @@
-part of client;
+
+
+import 'package:stagexl/stagexl.dart';
+
+import 'common/generated_protos/cards.pb.dart';
+import 'game_ui.dart';
+import 'selectable_manager.dart';
 
 class ClientCard extends Sprite {
   static const cardWidth = 140;

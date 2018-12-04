@@ -12,7 +12,7 @@ import 'package:protobuf/protobuf.dart' as $pb;
 class MatchInvite extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('MatchInvite', package: const $pb.PackageName('palace'))
     ..aOS(1, 'msg')
-    ..aOS(2, 'matchID')
+    ..aOS(2, 'userID')
     ..hasRequiredFields = false
   ;
 
@@ -35,10 +35,10 @@ class MatchInvite extends $pb.GeneratedMessage {
   bool hasMsg() => $_has(0);
   void clearMsg() => clearField(1);
 
-  String get matchID => $_getS(1, '');
-  set matchID(String v) { $_setString(1, v); }
-  bool hasMatchID() => $_has(1);
-  void clearMatchID() => clearField(2);
+  String get userID => $_getS(1, '');
+  set userID(String v) { $_setString(1, v); }
+  bool hasUserID() => $_has(1);
+  void clearUserID() => clearField(2);
 }
 
 class UserIDs extends $pb.GeneratedMessage {

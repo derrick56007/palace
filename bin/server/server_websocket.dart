@@ -4,7 +4,6 @@ class ServerWebSocket extends CommonWebSocket {
   final HttpRequest _req;
 
   WebSocket _webSocket;
-  Future done;
 
   ServerWebSocket.upgradeRequest(this._req);
 

@@ -33,63 +33,63 @@ class SocketReceiver {
       ..on(SocketMessage_Type.LOGIN, _login)
       ..on(SocketMessage_Type.ADD_FRIEND, _addFriend)
       ..on(SocketMessage_Type.ACCEPT_FRIEND_REQUEST, _acceptFriendRequest)
+      ..on(SocketMessage_Type.DECLINE_FRIEND_REQUEST, _declineFriendRequest)
       ..on(SocketMessage_Type.SEND_MATCH_INVITE, _sendMatchInvite)
+      ..on(SocketMessage_Type.START, _startMatch)
       ..on(SocketMessage_Type.MATCH_ACCEPT, _matchAccept)
       ..on(SocketMessage_Type.MATCH_DECLINE, _matchDecline)
       ..on(SocketMessage_Type.USER_PLAY, _userPlay)
       ..on(SocketMessage_Type.HANDSWAP_CHOICE, _handSwapChoice)
       ..on(SocketMessage_Type.TOPSWAP_CHOICE, _topSwapChoice)
       ..on(SocketMessage_Type.HIGHERLOWER_CHOICE, _higherLowerChoice);
-
-    _matchManager.addInvitableSocket(_socket);
   }
 
   _onClose() {
-    _matchManager.clearInvites(_socket);
-    _matchManager.exitMatch(_socket);
+    _matchManager.logout(_socket);
     _loginManager.logout(_socket);
   }
 
   _register(String json) {
     final loginInfo = new LoginCredentials.fromJson(json);
-
     _loginManager.register(_socket, loginInfo.userID, loginInfo.passCode);
   }
 
   _login(String json) {
     final loginInfo = new LoginCredentials.fromJson(json);
-
     _loginManager.login(_socket, loginInfo.userID, loginInfo.passCode);
   }
 
   _addFriend(String json) {
     final friendID = new SimpleInfo.fromJson(json);
-
     _friendManager.addFriend(_socket, friendID.info);
   }
 
   _acceptFriendRequest(String json) {
     final friendID = new SimpleInfo.fromJson(json);
-
     _friendManager.acceptFriendRequest(_socket, friendID.info);
   }
 
+  _declineFriendRequest(String json) {
+    final friendID = new SimpleInfo.fromJson(json);
+    _friendManager.declineFriendRequest(_socket, friendID.info);
+  }
+
   _sendMatchInvite(String json) {
-    final friendID = new UserIDs.fromJson(json);
+    final friendID = new SimpleInfo.fromJson(json);
 
-    _matchManager.sendMatchInvite(_socket, friendID.ids);
+    _matchManager.sendMatchInvite(_socket, friendID.info);
   }
 
-  _matchAccept(String json) {
-    final matchID = new SimpleInfo.fromJson(json);
-
-    _matchManager.matchAccept(_socket, matchID.info);
+  _matchAccept() {
+    _matchManager.matchAccept(_socket);
   }
 
-  _matchDecline(String json) {
-    final matchID = new SimpleInfo.fromJson(json);
+  _startMatch() {
+    _matchManager.startMatch(_socket);
+  }
 
-    _matchManager.matchDecline(_socket, matchID.info);
+  _matchDecline() {
+    _matchManager.matchDecline(_socket);
   }
 
   _userPlay(String json) {

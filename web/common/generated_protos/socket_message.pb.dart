@@ -71,3 +71,41 @@ class ActivePlayerIndex extends $pb.GeneratedMessage {
   void clearIndex() => clearField(1);
 }
 
+class FriendItemInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('FriendItemInfo', package: const $pb.PackageName('palace'))
+    ..aOS(1, 'userID')
+    ..aOB(2, 'online')
+    ..aOB(3, 'invitable')
+    ..hasRequiredFields = false
+  ;
+
+  FriendItemInfo() : super();
+  FriendItemInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  FriendItemInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  FriendItemInfo clone() => new FriendItemInfo()..mergeFromMessage(this);
+  FriendItemInfo copyWith(void Function(FriendItemInfo) updates) => super.copyWith((message) => updates(message as FriendItemInfo));
+  $pb.BuilderInfo get info_ => _i;
+  static FriendItemInfo create() => new FriendItemInfo();
+  static $pb.PbList<FriendItemInfo> createRepeated() => new $pb.PbList<FriendItemInfo>();
+  static FriendItemInfo getDefault() => _defaultInstance ??= create()..freeze();
+  static FriendItemInfo _defaultInstance;
+  static void $checkItem(FriendItemInfo v) {
+    if (v is! FriendItemInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get userID => $_getS(0, '');
+  set userID(String v) { $_setString(0, v); }
+  bool hasUserID() => $_has(0);
+  void clearUserID() => clearField(1);
+
+  bool get online => $_get(1, false);
+  set online(bool v) { $_setBool(1, v); }
+  bool hasOnline() => $_has(1);
+  void clearOnline() => clearField(2);
+
+  bool get invitable => $_get(2, false);
+  set invitable(bool v) { $_setBool(2, v); }
+  bool hasInvitable() => $_has(2);
+  void clearInvitable() => clearField(3);
+}
+

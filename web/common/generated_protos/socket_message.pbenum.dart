@@ -41,6 +41,9 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
   static const SocketMessage_Type HANDSWAP_CHOICE = const SocketMessage_Type._(29, 'HANDSWAP_CHOICE');
   static const SocketMessage_Type TOPSWAP_CHOICE = const SocketMessage_Type._(30, 'TOPSWAP_CHOICE');
   static const SocketMessage_Type HIGHERLOWER_CHOICE = const SocketMessage_Type._(31, 'HIGHERLOWER_CHOICE');
+  static const SocketMessage_Type DECLINE_FRIEND_REQUEST = const SocketMessage_Type._(32, 'DECLINE_FRIEND_REQUEST');
+  static const SocketMessage_Type START = const SocketMessage_Type._(33, 'START');
+  static const SocketMessage_Type FRIEND_ITEM_INFO = const SocketMessage_Type._(34, 'FRIEND_ITEM_INFO');
 
   static const List<SocketMessage_Type> values = const <SocketMessage_Type> [
     ERROR,
@@ -75,6 +78,9 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     HANDSWAP_CHOICE,
     TOPSWAP_CHOICE,
     HIGHERLOWER_CHOICE,
+    DECLINE_FRIEND_REQUEST,
+    START,
+    FRIEND_ITEM_INFO,
   ];
 
   static final Map<int, SocketMessage_Type> _byValue = $pb.ProtobufEnum.initByValue(values);

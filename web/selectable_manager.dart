@@ -1,5 +1,3 @@
-import 'main.dart';
-
 class SelectableManager {
   static final shared = new SelectableManager._internal();
 

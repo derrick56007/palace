@@ -1,4 +1,13 @@
-part of client;
+import 'dart:async';
+import 'dart:html' as html;
+import 'dart:math' hide Point;
+
+import 'package:stagexl/stagexl.dart';
+
+import 'client_card.dart';
+import 'client_websocket.dart';
+import 'common/generated_protos.dart';
+import 'selectable_manager.dart';
 
 final hands = <List<ClientCard>>[];
 final topTowers = <List<ClientCard>>[];
@@ -25,7 +34,8 @@ class GameUI {
 
   static final resourceManager = new ResourceManager();
   final options = new StageOptions()
-    ..backgroundColor = Color.White
+    ..backgroundColor = Color.Transparent
+    ..transparent = true
     ..renderEngine = RenderEngine.WebGL;
 
   final canvas = html.querySelector('#stage');
@@ -272,7 +282,7 @@ class GameUI {
     }
 
     final cardIDs = new CardIDs()
-      ..ids.addAll(topTowers.first.map((cCard) => cCard._card.id));
+      ..ids.addAll(topTowers.first.map((cCard) => cCard.cardInfo.id));
     setSelectableCards(cardIDs);
   }
 
@@ -300,7 +310,8 @@ class GameUI {
       }
     }
 
-    animateCardsInHand(info.userIndex, .75, Transition.easeOutQuintic, initialHandLength);
+    animateCardsInHand(
+        info.userIndex, .75, Transition.easeOutQuintic, initialHandLength);
 
     for (var card in newCards) {
       animateCardToHand(card, info.userIndex, 1, Transition.easeInOutCubic);
@@ -327,27 +338,27 @@ class GameUI {
   }
 
   onFinalDealInfo(FinalDealInfo info) async {
-      for (var userIndex = 0; userIndex < info.hands.length; userIndex++) {
-        final newCards = <ClientCard>[];
+    for (var userIndex = 0; userIndex < info.hands.length; userIndex++) {
+      final newCards = <ClientCard>[];
 
-        final initialHandLength = hands[userIndex].length;
+      final initialHandLength = hands[userIndex].length;
 
-        for (var cardInfo in info.hands[userIndex].cards) {
-          final newCard = drawFromDeck(cardInfo);
+      for (var cardInfo in info.hands[userIndex].cards) {
+        final newCard = drawFromDeck(cardInfo);
 
-          hands[userIndex].add(newCard);
-          newCards.add(newCard);
-        }
-
-        animateCardsInHand(
-            userIndex, .75, Transition.easeOutQuintic, initialHandLength);
-
-        for (var card in newCards) {
-          stage.setChildIndex(card, stage.children.length - 1);
-          animateCardToHand(card, userIndex, 1, Transition.easeOutQuintic);
-          await new Future.delayed(const Duration(milliseconds: 150));
-        }
+        hands[userIndex].add(newCard);
+        newCards.add(newCard);
       }
+
+      animateCardsInHand(
+          userIndex, .75, Transition.easeOutQuintic, initialHandLength);
+
+      for (var card in newCards) {
+        stage.setChildIndex(card, stage.children.length - 1);
+        animateCardToHand(card, userIndex, 1, Transition.easeOutQuintic);
+        await new Future.delayed(const Duration(milliseconds: 150));
+      }
+    }
   }
 
   final rand = new Random();
@@ -373,7 +384,7 @@ class GameUI {
       stage.juggler.removeTweens(revealedCard);
 
       final tween =
-      stage.juggler.addTween(revealedCard, 1, Transition.easeOutQuintic);
+          stage.juggler.addTween(revealedCard, 1, Transition.easeOutQuintic);
 
       final offSetX = rand.nextInt(15) * (rand.nextBool() ? -1 : 1);
       final offSetY = rand.nextInt(15) * (rand.nextBool() ? -1 : 1);
@@ -625,7 +636,7 @@ class GameUI {
   }
 
   onHigherLowerChoice(HigherLowerChoice choice) {
-    assert(playedCards.last._card.type == Card_Type.HIGHER_LOWER);
+    assert(playedCards.last.cardInfo.type == Card_Type.HIGHER_LOWER);
 
     final card = playedCards.last;
     card.front.removeFromParent();

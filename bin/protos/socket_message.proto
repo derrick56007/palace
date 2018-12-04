@@ -38,6 +38,11 @@ message SocketMessage {
         HANDSWAP_CHOICE = 29;
         TOPSWAP_CHOICE = 30;
         HIGHERLOWER_CHOICE = 31;
+        DECLINE_FRIEND_REQUEST = 32;
+        START = 33;
+
+        // to client
+        FRIEND_ITEM_INFO = 34;
     }
 
     Type type = 1;
@@ -46,4 +51,10 @@ message SocketMessage {
 
 message ActivePlayerIndex {
     int32 index = 1;
+}
+
+message FriendItemInfo {
+    string userID = 1;
+    bool online = 2;
+    bool invitable = 3;
 }

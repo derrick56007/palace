@@ -1,12 +1,9 @@
 part of server;
 
 class BotSocket extends CommonWebSocket {
-  Future done;
-
   @override
   start() async {
     final completer = new Completer();
-
     done = completer.future;
   }
 
@@ -16,10 +13,7 @@ class BotSocket extends CommonWebSocket {
   send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) async {
     switch (type) {
       case SocketMessage_Type.MATCH_INVITE:
-        final matchInvite = generatedMessage as MatchInvite;
-        final matchID = new SimpleInfo()..info = matchInvite.matchID;
-
-        MatchManager.shared.matchAccept(this, matchID.info);
+        MatchManager.shared.matchAccept(this);
         break;
 
       case SocketMessage_Type.SET_MULLIGANABLE_CARDS:

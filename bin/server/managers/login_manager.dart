@@ -8,16 +8,17 @@ class LoginManager {
   static final _pbkdf2 = new PBKDF2();
 
   // default login error string
-  static final _defaultLoginErrorString =
-      SimpleInfo()..info = 'Invalid username or password';
+  static final _defaultLoginErrorString = SimpleInfo()
+    ..info = 'Invalid username or password';
 
   // default userId already exists error string
-  static final _defaultUserIdExistsErrorString =
-      SimpleInfo()..info = 'Username already exists';
+  static final _defaultUserIdExistsErrorString = SimpleInfo()
+    ..info = 'Username already exists';
 
-  var _matches = <String, Match>{};
-  var _socketForUserID = <ServerWebSocket, String>{};
-  var _userIDForSocket = <String, ServerWebSocket>{};
+  final _matches = <String, Match>{};
+  final _socketForUserID = <ServerWebSocket, String>{};
+  final _userIDForSocket = <String, ServerWebSocket>{};
+  final _userIDForFriendIDs = <String, List<String>>{};
 
   // create singleton
   LoginManager._internal();
@@ -35,6 +36,17 @@ class LoginManager {
 
   // returns username from socket
   String userIDFromSocket(ServerWebSocket socket) => _socketForUserID[socket];
+
+  // checks if userID is invitable
+  bool userIDInvitable(String userID) {
+    if (!userIDLoggedIn(userID)) return false;
+
+    final friendSocket = socketFromUserID(userID);
+    if (MatchManager.shared.socketInLobby(friendSocket)) return false;
+    if (MatchManager.shared.socketInMatch(friendSocket)) return false;
+
+    return true;
+  }
 
   // get all sockets
   getSockets() => _socketForUserID.keys;
@@ -146,11 +158,40 @@ class LoginManager {
     // add user
     _socketForUserID[socket] = userID;
     _userIDForSocket[userID] = socket;
-
+    _userIDForFriendIDs[userID] = [];
     // alert successful login
     socket.send(SocketMessage_Type.LOGIN_SUCCESSFUL);
-
     print('logged in $userID');
+
+    // send friends list
+    final friendIDs = await FriendManager.shared.friendIDsFromUserID(userID);
+    if (friendIDs == null || friendIDs.isEmpty) {
+      return;
+    }
+
+    // send friends list to user
+    for (var friendID in friendIDs) {
+      _userIDForFriendIDs[userID].add(friendID);
+
+      final friendItemInfo = new FriendItemInfo()
+        ..userID = friendID
+        ..online = userIDLoggedIn(friendID)
+        ..invitable = MatchManager.shared.userIDInvitable(friendID);
+
+      socket.send(SocketMessage_Type.FRIEND_ITEM_INFO, friendItemInfo);
+
+      // alert friend that user is online
+      if (userIDLoggedIn(friendID)) {
+        final friendSocket = socketFromUserID(friendID);
+
+        final selfInfo = new FriendItemInfo()
+          ..userID = userID
+          ..online = true
+          ..invitable = MatchManager.shared.userIDInvitable(friendID);
+
+        friendSocket.send(SocketMessage_Type.FRIEND_ITEM_INFO, selfInfo);
+      }
+    }
   }
 
   // logs out socket

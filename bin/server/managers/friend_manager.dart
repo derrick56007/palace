@@ -8,6 +8,19 @@ class FriendManager {
 
   FriendManager._internal() {}
 
+  Future<List> friendIDsFromUserID(String userID) async {
+    // search for userID
+    final userIDSearchResults =
+        await DataBaseManager.shared.userDB.find({'userID': userID});
+
+    if (userIDSearchResults.isEmpty) {
+      // TODO send error msg
+      return null;
+    }
+
+    return userIDSearchResults.first['friends'] as List;
+  }
+
   addFriend(ServerWebSocket socket, friendID) async {
     // check if userId is valid
     if (friendID == null ||
@@ -22,6 +35,9 @@ class FriendManager {
     final friendIdSearchResults =
         await DataBaseManager.shared.userDB.find({'userID': friendID});
 
+    final friendExistingFriends =
+        friendIdSearchResults.first['friends'] as List;
+
     // check if friendID exists
     if (friendIdSearchResults.isEmpty) {
       socket.send(SocketMessage_Type.ERROR, defaultAddFriendErrorString);
@@ -29,9 +45,6 @@ class FriendManager {
     }
 
     final userID = LoginManager.shared.userIDFromSocket(socket);
-
-    final friendExistingFriends =
-        friendIdSearchResults.first['friends'] as List;
 
     // already existing friends
     if (friendExistingFriends.contains(userID)) {
@@ -44,21 +57,77 @@ class FriendManager {
       print('friend request sent $userID -> $friendID');
 
       final friendSocket = LoginManager.shared.socketFromUserID(friendID);
-      friendSocket.send(SocketMessage_Type.FRIEND_REQUEST, SimpleInfo()..info = userID);
-    } else {
-      final existingFriendRequests =
-          friendIdSearchResults.first['friend_requests'] as List;
-      existingFriendRequests.add(userID);
+      friendSocket.send(
+          SocketMessage_Type.FRIEND_REQUEST, SimpleInfo()..info = userID);
+    }
 
-      // save friendRequest to messages
-      DataBaseManager.shared.userDB
-        ..update(
-            {'userID': friendID}, {'friend_requests': existingFriendRequests})
-        ..tidy();
+    // save friend request
+    final existingFriendRequests =
+        friendIdSearchResults.first['friend_requests'] as List;
+    existingFriendRequests.add(userID);
+
+    // save friendRequest to messages
+    DataBaseManager.shared.userDB
+      ..update(
+          {'userID': friendID}, {'friend_requests': existingFriendRequests})
+      ..tidy();
+  }
+
+  static sendAllExistingFriendRequests(ServerWebSocket socket) async {
+    final userID = LoginManager.shared.userIDFromSocket(socket);
+
+    // search for userID
+    final userIDSearchResults =
+        await DataBaseManager.shared.userDB.find({'userID': userID});
+
+    if (userIDSearchResults.isEmpty) {
+      // TODO send error msg
+      return;
+    }
+
+    final userFriendRequests =
+        userIDSearchResults.first['friend_requests'] as List;
+
+    for (var friendID in userFriendRequests) {
+      final info = new SimpleInfo()..info = friendID;
+      socket.send(SocketMessage_Type.FRIEND_REQUEST, info);
     }
   }
 
-  acceptFriendRequest(ServerWebSocket socket, friendID) async {
+  declineFriendRequest(ServerWebSocket socket, String notFriendID) async {
+    final userID = LoginManager.shared.userIDFromSocket(socket);
+
+    // search for userID
+    final userIDSearchResults =
+        await DataBaseManager.shared.userDB.find({'userID': userID});
+
+    // search for friendID
+    final friendIDSearchResults =
+        await DataBaseManager.shared.userDB.find({'userID': notFriendID});
+
+    // error if returns empty
+    if (userIDSearchResults.isEmpty || friendIDSearchResults.isEmpty) {
+      // TODO send error msg
+      return;
+    }
+
+    final userFriendRequests =
+        userIDSearchResults.first['friend_requests'] as List;
+
+    // check if friendRequest exists
+    if (!userFriendRequests.contains(notFriendID)) {
+      // TODO error msg
+      return;
+    }
+
+    userFriendRequests.remove(notFriendID);
+
+    DataBaseManager.shared.userDB
+      ..update({'userID': userID}, {'friend_requests': userFriendRequests})
+      ..tidy();
+  }
+
+  acceptFriendRequest(ServerWebSocket socket, String friendID) async {
     final userID = LoginManager.shared.userIDFromSocket(socket);
 
     // search for userID

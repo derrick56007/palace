@@ -48,6 +48,9 @@ const SocketMessage_Type$json = const {
     const {'1': 'HANDSWAP_CHOICE', '2': 29},
     const {'1': 'TOPSWAP_CHOICE', '2': 30},
     const {'1': 'HIGHERLOWER_CHOICE', '2': 31},
+    const {'1': 'DECLINE_FRIEND_REQUEST', '2': 32},
+    const {'1': 'START', '2': 33},
+    const {'1': 'FRIEND_ITEM_INFO', '2': 34},
   ],
 };
 
@@ -55,6 +58,15 @@ const ActivePlayerIndex$json = const {
   '1': 'ActivePlayerIndex',
   '2': const [
     const {'1': 'index', '3': 1, '4': 1, '5': 5, '10': 'index'},
+  ],
+};
+
+const FriendItemInfo$json = const {
+  '1': 'FriendItemInfo',
+  '2': const [
+    const {'1': 'userID', '3': 1, '4': 1, '5': 9, '10': 'userID'},
+    const {'1': 'online', '3': 2, '4': 1, '5': 8, '10': 'online'},
+    const {'1': 'invitable', '3': 3, '4': 1, '5': 8, '10': 'invitable'},
   ],
 };
 

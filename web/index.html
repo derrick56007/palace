@@ -18,140 +18,113 @@
     <script defer src="main.dart.js"></script>
 </head>
 
-<body>
-<!-- Modal Trigger -->
+<body class="blue accent-2">
 
-<a id="login-modal-btn" class="waves-effect waves-light btn modal-trigger" href="#modal1" style="display: none;">Login</a>
-<a id="register-modal-btn" class="waves-effect waves-light btn modal-trigger" href="#modal2" style="display: none;">Register</a>
-<a id="add-friend-btn" class="waves-effect waves-light btn modal-trigger" style="display: none;">Add Friend</a>
-<a id="invite-friends-btn" class="waves-effect waves-light btn modal-trigger" style="display: none;">Invite Friends</a>
+<div id="login-card" class="darken-1" style="display: none">
 
-<!-- Modal Structure -->
-<div id="modal1" class="modal" >
-    <div class="modal-content">
-        <h4>Enter Login Info</h4>
-        <div class="input-field col s6">
-            <input placeholder="Placeholder" id="login_user_name" type="text">
-            <label for="login_user_name">Username</label>
-        </div>
-        <div class="input-field col s6">
-            <input id="login_password" type="password">
-            <label for="login_password">Password</label>
+    <div class="card" style="height: 310px">
+        <div class="card-content black-text" style="padding-bottom: 14px; text-align: center">
+            <div class="card-title">Login</div>
+            <div class="input-field col s6" style="height: 80px">
+                <input id="login_user_name" type="text" class="validate" data-length="16">
+                <label for="login_user_name">Username</label>
+            </div>
+            <div class="input-field col s6" style="height: 80px">
+                <input id="login_password" type="password" class="validate" data-length="16">
+                <label for="login_password">Password</label>
+            </div>
+            <a id="login-btn" class="waves-effect waves-light btn">Login</a>
         </div>
     </div>
-    <div class="modal-footer">
-        <a id="login-btn" href="#!" class="modal-close waves-effect waves-green btn-flat">Login</a>
+
+    <div class="card" style="margin-left: 5px;">
+        <div class="card-content black-text" style="padding-bottom: 14px; text-align: center">
+            <div class="card-title">Register</div>
+            <div class="input-field col s6" style="height: 80px">
+                <input id="register_user_name" type="text" class="validate" data-length="16">
+                <label for="register_user_name">Username</label>
+            </div>
+            <div class="input-field col s6" style="height: 80px">
+                <input id="register_password" type="password" class="validate" data-length="16">
+                <label for="register_password">Password</label>
+            </div>
+
+            <div class="input-field col s6" style="height: 80px">
+                <input id="register_password_retype" type="password" class="validate" data-length="16">
+                <label for="register_password_retype">Retype Password</label>
+            </div>
+            <a id="register-btn" class="waves-effect waves-light btn">Register</a>
+        </div>
     </div>
+
 </div>
 
-<div id="modal2" class="modal" >
-    <div class="modal-content">
-        <h4>Enter Login Info</h4>
-        <div class="input-field col s6">
-            <input placeholder="Placeholder" id="register_user_name" type="text">
-            <label for="register_user_name">Username</label>
-        </div>
-        <div class="input-field col s6">
-            <input id="register_password" type="password">
-            <label for="register_password">Password</label>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <a id="register-btn" href="#!" class="modal-close waves-effect waves-green btn-flat">Register</a>
-    </div>
-</div>
+<div id="play-card" style="display: none;">
+    <canvas id="stage" class="stage--fullscreen"></canvas>
+    <div class="side-bar-container">
+        <label for="toggle-1" class="side-bar-btn">
+            <i class="material-icons">people</i>
+        </label>
 
-<canvas id="stage" class="stage--fullscreen"></canvas>
-
-<div class="side-bar-container">
-    <label for="toggle-1" class="side-bar-btn">
-        <i class="material-icons">people</i>
-    </label>
-
-    <input type="checkbox" id="toggle-1">
-    <div id="side-bar">
-        <div class="card friend-card">
-            <h5>Add Friends</h5>
+        <input type="checkbox" id="toggle-1">
+        <div id="side-bar">
+            <div class="card friend-card">
+                <h5>Add Friends</h5>
                 <div class="row">
                     <div class="input-field col s10">
-                        <input id="username" type="text">
-                        <label for="username">Username</label>
+                        <input id="add_friend_username" type="text">
+                        <label for="add_friend_username">Username</label>
                     </div>
-                    <a class="btn-floating btn-small waves-effect waves-light teal"><i class="material-icons">add</i></a>
+                    <a id="add-friend-btn" class="btn-floating btn-small waves-effect waves-light teal"><i
+                            class="material-icons">add</i></a>
                 </div>
-        </div>
+            </div>
 
-        <div class="card matches-card">
-            <h5>Matches</h5>
+            <!--<div class="card matches-card">-->
+                <!--<h5>Matches</h5>-->
 
-                <ul id="matches-list">
-                    <li class="collection-item card">
-                        <div class="collection-item-text">
-                            <div class="collection-item-title">Invite</div>
-                            derp merp yerp herp awdk
-                        </div>
-                        <div class="collection-item-btns">
-                            <a href="#!" class="secondary-content">
-                                <a class="btn-floating btn-small waves-effect waves-light teal">
-                                    <i class="material-icons">check</i>
-                                </a>
-                                <a class="btn-floating btn-small waves-effect waves-light red">
-                                    <i class="material-icons">close</i>
-                                </a>
-                            </a>
-                        </div>
-                    </li>
+                <!--<ul id="matches-list">-->
+                    <!--<li class="collection-item card">-->
+                        <!--<div class="collection-item-text">-->
+                            <!--<div class="collection-item-title">Invite</div>-->
+                            <!--derp merp yerp herp awdk-->
+                        <!--</div>-->
+                        <!--<div class="collection-item-btns">-->
+                            <!--<a href="#!" class="secondary-content">-->
+                                <!--<a class="btn-floating btn-small waves-effect waves-light teal">-->
+                                    <!--<i class="material-icons">check</i>-->
+                                <!--</a>-->
+                                <!--<a class="btn-floating btn-small waves-effect waves-light red">-->
+                                    <!--<i class="material-icons">close</i>-->
+                                <!--</a>-->
+                            <!--</a>-->
+                        <!--</div>-->
+                    <!--</li>-->
+
+                <!--</ul>-->
+            <!--</div>-->
+
+            <div class="card friends-card">
+                <h5>Friends</h5>
+
+                <ul id="friend-request-list">
 
                 </ul>
-        </div>
-
-        <div class="card friends-card">
-            <h5>Friends</h5>
 
                 <ul id="friends-list">
-                    <li class="collection-item card">
-                        <div class="collection-item-text">
-                            <div class="collection-item-title">Friend Request</div>
-                            derp
-                        </div>
-                        <div class="collection-item-btns">
-                            <a href="#!" class="secondary-content">
-                                <a class="btn-floating btn-small waves-effect waves-light teal">
-                                    <i class="material-icons">check</i>
-                                </a>
-                                <a class="btn-floating btn-small waves-effect waves-light red">
-                                    <i class="material-icons">close</i>
-                                </a>
-                            </a>
-                        </div>
-                    </li>
-
-                    <li class="collection-item card">
-                        <div class="collection-item-text">
-                            <div class="collection-item-friend-header">derp</div>
-                        </div>
-                        <div class="collection-item-btn">
-                            <a href="#!" class="secondary-content">
-                                <a class="btn-floating btn-small waves-effect waves-light teal">
-                                    <i class="material-icons">person_add</i>
-                                </a>
-                            </a>
-                        </div>
-                    </li>
 
                 </ul>
+            </div>
         </div>
 
-        <a class="waves-effect waves-light btn" id="invite-btn">Send Invites</a>
     </div>
-
 </div>
 
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var elems = document.querySelectorAll('.modal');
 
         var options = {dismissable: false};
