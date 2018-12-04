@@ -57,6 +57,10 @@ class GameUI {
   Bitmap lower;
 
   init() async {
+    canvas.onClick.listen((_) {
+      (html.querySelector('#toggle-1') as html.InputElement).checked = false;
+    });
+
     stage = new Stage(canvas,
         width: gameWidth, height: gameHeight, options: options);
 
