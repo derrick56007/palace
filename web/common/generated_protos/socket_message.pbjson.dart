@@ -53,6 +53,7 @@ const SocketMessage_Type$json = const {
     const {'1': 'FRIEND_ITEM_INFO', '2': 34},
     const {'1': 'LOBBY_INFO', '2': 35},
     const {'1': 'LOGOUT_SUCCESSFULL', '2': 36},
+    const {'1': 'CHANGE_DISCARD_TO_ROCK', '2': 37},
   ],
 };
 

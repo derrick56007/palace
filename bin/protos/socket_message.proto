@@ -45,6 +45,7 @@ message SocketMessage {
         FRIEND_ITEM_INFO = 34;
         LOBBY_INFO = 35;
         LOGOUT_SUCCESSFULL = 36;
+        CHANGE_DISCARD_TO_ROCK = 37;
     }
 
     Type type = 1;

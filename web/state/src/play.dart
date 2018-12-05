@@ -74,7 +74,11 @@ class Play extends State {
         game.onHigherLowerChoice(higherLowerChoice);
       })
       ..on(SocketMessage_Type.HANDSWAP_CHOICE, (var json) {})
-      ..on(SocketMessage_Type.TOPSWAP_CHOICE, (var json) {});
+      ..on(SocketMessage_Type.TOPSWAP_CHOICE, (var json) {})
+      ..on(SocketMessage_Type.CHANGE_DISCARD_TO_ROCK, (var json) {
+        final card = new Card.fromJson(json);
+        game.onChangeDiscardToRock(card);
+      });
   }
 
   @override

@@ -1,3 +1,4 @@
 $objectdb{"version":1}
-{"userID":"derp1","passCode":"tO1olXHa5wCh5IbnyWxab8HmieuDkEp0\n¥>½ÁG\f<ÕeÏÐ¯;öy÷\n[<;¨AN¼wO","friends":["derp2"],"friend_requests":[],"_id":"5c0768020ec9eb2c88e873f8"}
-{"userID":"derp2","passCode":"fRyl5HIQzO5Wat/7DnKKV31CFQF3twGCå\"ÿpÝÏæÍÕ°@\u000f\u0005ÐX dÊqØZ¡Jä\u0003R\u0018eën","friends":["derp1"],"friend_requests":[],"_id":"5c07680d0ec9eb2c88e873f9"}
+{"userID":"derp1","passCode":"tO1olXHa5wCh5IbnyWxab8HmieuDkEp0\n¥>½ÁG\f<ÕeÏÐ¯;öy÷\n[<;¨AN¼wO","friends":["derp2","derp3"],"friend_requests":[],"_id":"5c0768020ec9eb2c88e873f8"}
+{"userID":"derp2","passCode":"fRyl5HIQzO5Wat/7DnKKV31CFQF3twGCå\"ÿpÝÏæÍÕ°@\u000f\u0005ÐX dÊqØZ¡Jä\u0003R\u0018eën","friends":["derp1","derp3"],"friend_requests":[],"_id":"5c07680d0ec9eb2c88e873f9"}
+{"userID":"derp3","passCode":"ZHV8fJO5IhQYZS7PVYOdY2SaHPhkrj9Q\u00184õBe¥\u001f\u0001¹¤2m,G/¶eJ\u001a\u000fÎ2\u0000©èI","friends":["derp2","derp1"],"friend_requests":[],"_id":"5c07847e6e02d990c292b6ae"}

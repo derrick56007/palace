@@ -6,7 +6,7 @@ class Match {
   final bottomTowers = <CommonWebSocket, Tower>{};
   final topTowers = <CommonWebSocket, Tower>{};
 
-  static const fullDeckLength = 52; // 56;
+  static const fullDeckLength = 54; // 56;
   static const towerLength = 3;
   static const basicCardLength = 9;
   static const suitLength = 4;
@@ -28,6 +28,8 @@ class Match {
   Card _discardOrRock;
 
   static final _emptyCard = new Card();
+
+  final uuids = <String>[];
 
   Match(this.players) {
     newGame();
@@ -51,6 +53,8 @@ class Match {
     print('end mulligan window');
     secondTowerDeal();
     finalDeal();
+    createAdditionalCards();
+    deck.shuffle();
 
     await new Future.delayed(const Duration(milliseconds: 2700));
 
@@ -270,7 +274,7 @@ class Match {
       hand.cards.addAll(newHand);
       sendDrawInfo(socket, newHand);
 
-      endPlayerTurn(socket);
+      startPlayerTurn(socket);
       return;
     }
 
@@ -323,10 +327,6 @@ class Match {
   onWin(CommonWebSocket socket) async {
     gameEnded = true;
     print("win -> ${players.indexOf(socket)}");
-
-    print('hand: ${hands[socket].cards}');
-    print('top tower: ${topTowers[socket].cards}');
-    print('bot tower: ${topTowers[socket].cards}');
 
     await new Future.delayed(const Duration(seconds: 3));
 
@@ -462,8 +462,24 @@ class Match {
     final card = deck.removeLast();
 
     if (deck.isEmpty && _discardOrRock != null) {
-      _discardOrRock.type = Card_Type.BASIC;
-      _discardOrRock.value = 0;
+      // last card is discard
+      if (card == _discardOrRock) {
+        _discardOrRock.type = Card_Type.BASIC;
+        _discardOrRock.value = 0;
+      } else {
+        for (var player in players) {
+          final hand = hands[player];
+
+          if (!hand.cards.contains(_discardOrRock)) continue;
+          _discardOrRock.type = Card_Type.BASIC;
+          _discardOrRock.value = 0;
+          player.send(
+              SocketMessage_Type.CHANGE_DISCARD_TO_ROCK, _discardOrRock);
+
+          print('changed card in hand to discard!');
+          break;
+        }
+      }
     }
 
     return card;
@@ -565,7 +581,6 @@ class Match {
           // card.type != Card_Type.WILD && // makes state 0
           card.type != Card_Type.REVERSE &&
           card.type != Card_Type.BOMB) {
-
         valueCards.add(card);
       }
     }
@@ -584,6 +599,10 @@ class Match {
         card.type == Card_Type.BOMB ||
         card.type == Card_Type.HIGHER_LOWER ||
         card.type == Card_Type.WILD) {
+      return true;
+    }
+
+    if (card.type == Card_Type.DISCARD_OR_ROCK && deck.isNotEmpty) {
       return true;
     }
 
@@ -678,17 +697,9 @@ class Match {
       }
 
       // check discard
-      if (card.type == Card_Type.DISCARD_OR_ROCK) {
-        // when deck is empty
-        if (deck.isEmpty && isSelectableCard(card)) {
-          playableCardIDs.add('${card.id}');
-          continue;
-        }
-
-        // deck not empty
-        if (deck.isNotEmpty) {
-          playableCardIDs.add('${card.id}');
-        }
+      if (card.type == Card_Type.DISCARD_OR_ROCK && isSelectableCard(card)) {
+        playableCardIDs.add('${card.id}');
+        continue;
       }
     }
 
@@ -703,7 +714,6 @@ class Match {
   }
 
   startPlayerTurn(CommonWebSocket socket) async {
-    print('socket ${players.indexOf(socket)} turn');
     activePlayer = socket;
 
     final socketIndex = players.indexOf(socket);
@@ -764,6 +774,15 @@ class Match {
 
     pickedUpCards.forEach((card) {
       card.hidden = true;
+
+      if (_discardOrRock != null &&
+          card == _discardOrRock &&
+          card.type == Card_Type.DISCARD_OR_ROCK &&
+          deck.isEmpty) {
+        print('picked up discard without deck -> rock!');
+        _discardOrRock.type = Card_Type.BASIC;
+        _discardOrRock.value = 0;
+      }
     });
 
     final socketIndex = players.indexOf(socket);
@@ -857,8 +876,7 @@ class Match {
 
   createDeck() {
     deck.clear();
-
-    final uuids = <String>[];
+    uuids.clear();
 
     for (var i = 0; i < fullDeckLength; i++) {
       uuids.add('$i');
@@ -903,8 +921,30 @@ class Match {
       deck.addAll([reverse, wild, higherLower, bomb]);
       registerAllCards([reverse, wild, higherLower, bomb]);
     }
+  }
 
-    assert(fullDeckLength == deck.length);
+  createAdditionalCards() {
+
+    final discardOrRock = Card()
+      ..id = uuids.removeLast()
+      ..hidden = true
+      ..type = Card_Type.DISCARD_OR_ROCK
+      ..value = 0;
+
+    _discardOrRock = discardOrRock;
+
+    final rock = Card()
+      ..id = uuids.removeLast()
+      ..hidden = true
+      ..type = Card_Type.BASIC
+      ..value = 0;
+
+    deck.addAll([rock, discardOrRock]);
+    registerAllCards([rock, discardOrRock]);
+//    deck.addAll([topSwap, handSwap, rock, discardOrRock]);
+//    registerAllCards([topSwap, handSwap, rock, discardOrRock]);
+
+//    assert(fullDeckLength == deck.length);
     return;
 
     final topSwap = Card()
@@ -917,21 +957,6 @@ class Match {
       ..hidden = true
       ..type = Card_Type.HAND_SWAP
       ..value = specialDefaultCardValue;
-    final rock = Card()
-      ..id = uuids.removeLast()
-      ..hidden = true
-      ..type = Card_Type.BASIC
-      ..value = 0;
-    final discardOrRock = Card()
-      ..id = uuids.removeLast()
-      ..hidden = true
-      ..type = Card_Type.DISCARD_OR_ROCK
-      ..value = specialDefaultCardValue;
-
-    _discardOrRock = discardOrRock;
-
-    deck.addAll([topSwap, handSwap, rock, discardOrRock]);
-    registerAllCards([topSwap, handSwap, rock, discardOrRock]);
   }
 
   firstTowerDeal() {

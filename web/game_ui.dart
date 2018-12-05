@@ -26,7 +26,7 @@ class GameUI {
 
   static final Point<num> midPoint = new Point(gameWidth / 2, gameHeight / 2);
 
-  static const defaultDeckLength = 52; //56;
+  static const defaultDeckLength = 54; //56;
 
   final ClientWebSocket socket;
 
@@ -432,10 +432,27 @@ class GameUI {
       final discardedCard = cardRegistry[cardInfo.id];
       discardedCard.cardInfo = cardInfo;
 
-      final tween =
-          stage.juggler.addTween(discardedCard, 1, Transition.easeOutQuintic);
+      List<ClientCard> cardHand;
 
-      tween.animate.alpha.to(0);
+      for (var hand in hands) {
+        if (hand.contains(discardedCard)) {
+          cardHand = hand;
+        }
+      }
+
+      if (cardHand != null) {
+        cardHand.remove(discardedCard);
+        final tween = stage.juggler
+            .addTween(discardedCard, 2, Transition.easeOutQuintic);
+        tween.animate.alpha.to(0);
+        tween.animate.y.by(-100);
+      } else {
+        final tween =
+            stage.juggler.addTween(discardedCard, 1, Transition.easeOutQuintic);
+        tween.animate.alpha.to(0);
+      }
+
+      cardRegistry.remove(cardInfo.id);
     }
   }
 
@@ -655,5 +672,12 @@ class GameUI {
       lowerChoice.removeFromParent();
       card.addChild(lower);
     }
+  }
+
+  void onChangeDiscardToRock(Card card) {
+    card.hidden = false;
+
+    final revealedCard = cardRegistry[card.id];
+    revealedCard.cardInfo = card;
   }
 }

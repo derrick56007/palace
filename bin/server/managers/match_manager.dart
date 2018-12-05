@@ -144,6 +144,9 @@ class MatchManager {
         // TODO send error
         return;
       }
+      final userID = LoginManager.shared.userIDFromSocket(socket);
+
+      print('invite $userID -> $friendID');
 
       friendSocket = LoginManager.shared.socketFromUserID(friendID);
 

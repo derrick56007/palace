@@ -27,6 +27,7 @@ canvas {
     justify-content: flex-start;
     top: 0;
     margin-left: 5px;
+    pointer-events: none;
 }
 
 .side-bar-container .card {
@@ -37,6 +38,7 @@ canvas {
     flex-grow: 1;
     margin-bottom: 5px;
     display: none;
+    pointer-events: none;
     flex-direction: column;
 }
 
@@ -51,6 +53,7 @@ canvas {
     background: white;
     cursor: pointer;
     user-select: none;
+    pointer-events: all;
 }
 
 input[type=checkbox] {
@@ -64,6 +67,7 @@ input[type=checkbox] {
 /* Toggled State */
 input[type=checkbox]:checked ~ #side-bar {
     display: flex;
+    pointer-events: all;
 }
 
 #side-bar h5 {

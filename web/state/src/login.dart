@@ -94,5 +94,7 @@ class Login extends State {
 
   _logoutSuccessful() {
     StateManager.shared.pushState('login');
+
+    querySelector('#friends-list').children.clear();
   }
 }
