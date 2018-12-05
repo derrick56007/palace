@@ -106,9 +106,14 @@ class Match {
 
     // ending turn without playing picks up the pile
     if (userPlay.ids.isEmpty) {
-      pickUpPile(socket);
-      endPlayerTurn(socket);
-      return;
+      if (playedCards.isNotEmpty) {
+        pickUpPile(socket);
+        endPlayerTurn(socket);
+        return;
+      } else {
+        sendSelectableCards(socket);
+        return;
+      }
     }
 
     final chosenCards = cardListFromCardIDList(userPlay.ids);
@@ -169,6 +174,14 @@ class Match {
 
     // multiple card play
     if (chosenCards.length > 1) {
+      // check if in tower (multiple bottom tower plays not allowed
+      for (var chosenCard in chosenCards) {
+        if (bottomTowers[socket].cards.contains(chosenCard)) {
+          sendSelectableCards(socket);
+          return;
+        }
+      }
+
       // error if chosen cards contains single play cards
       for (var chosenCard in chosenCards) {
         if (chosenCard.type == Card_Type.TOP_SWAP ||
@@ -475,8 +488,6 @@ class Match {
           _discardOrRock.value = 0;
           player.send(
               SocketMessage_Type.CHANGE_DISCARD_TO_ROCK, _discardOrRock);
-
-          print('changed card in hand to discard!');
           break;
         }
       }
@@ -779,7 +790,6 @@ class Match {
           card == _discardOrRock &&
           card.type == Card_Type.DISCARD_OR_ROCK &&
           deck.isEmpty) {
-        print('picked up discard without deck -> rock!');
         _discardOrRock.type = Card_Type.BASIC;
         _discardOrRock.value = 0;
       }
