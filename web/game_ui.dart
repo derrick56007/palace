@@ -243,6 +243,8 @@ class GameUI {
   }
 
   sendSelectedCards() {
+    if (SelectableManager.shared.selectedIDs.isEmpty) return;
+
     final cardIDs = new CardIDs()
       ..ids.addAll(SelectableManager.shared.selectedIDs);
 
