@@ -44,6 +44,7 @@ message SocketMessage {
         // to client
         FRIEND_ITEM_INFO = 34;
         LOBBY_INFO = 35;
+        LOGOUT_SUCCESSFULL = 36;
     }
 
     Type type = 1;
@@ -58,4 +59,6 @@ message FriendItemInfo {
     string userID = 1;
     bool online = 2;
     bool invitable = 3;
+    string statusText = 4;
+    string color = 5;
 }

@@ -13,9 +13,6 @@ class Play extends State {
     MatchHandler(client);
 
     client
-      ..on(SocketMessage_Type.MATCH_START, () {
-        print('match started!');
-      })
       ..on(SocketMessage_Type.FIRST_DEAL_TOWER_INFO, (var json) {
         final info = new DealTowerInfo.fromJson(json);
         game.onDealTowerInfo(info);

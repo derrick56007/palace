@@ -9,43 +9,12 @@ import 'dart:core' show int, bool, double, String, List, override;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
-class MatchInvite extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('MatchInvite', package: const $pb.PackageName('palace'))
-    ..aOS(1, 'msg')
-    ..aOS(2, 'userID')
-    ..hasRequiredFields = false
-  ;
-
-  MatchInvite() : super();
-  MatchInvite.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  MatchInvite.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  MatchInvite clone() => new MatchInvite()..mergeFromMessage(this);
-  MatchInvite copyWith(void Function(MatchInvite) updates) => super.copyWith((message) => updates(message as MatchInvite));
-  $pb.BuilderInfo get info_ => _i;
-  static MatchInvite create() => new MatchInvite();
-  static $pb.PbList<MatchInvite> createRepeated() => new $pb.PbList<MatchInvite>();
-  static MatchInvite getDefault() => _defaultInstance ??= create()..freeze();
-  static MatchInvite _defaultInstance;
-  static void $checkItem(MatchInvite v) {
-    if (v is! MatchInvite) $pb.checkItemFailed(v, _i.qualifiedMessageName);
-  }
-
-  String get msg => $_getS(0, '');
-  set msg(String v) { $_setString(0, v); }
-  bool hasMsg() => $_has(0);
-  void clearMsg() => clearField(1);
-
-  String get userID => $_getS(1, '');
-  set userID(String v) { $_setString(1, v); }
-  bool hasUserID() => $_has(1);
-  void clearUserID() => clearField(2);
-}
-
 class LobbyInfo extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('LobbyInfo', package: const $pb.PackageName('palace'))
     ..aOS(1, 'host')
     ..pp<PlayerEntry>(2, 'players', $pb.PbFieldType.PM, PlayerEntry.$checkItem, PlayerEntry.create)
     ..aOB(3, 'canStart')
+    ..aOB(4, 'canJoin')
     ..hasRequiredFields = false
   ;
 
@@ -74,6 +43,11 @@ class LobbyInfo extends $pb.GeneratedMessage {
   set canStart(bool v) { $_setBool(2, v); }
   bool hasCanStart() => $_has(2);
   void clearCanStart() => clearField(3);
+
+  bool get canJoin => $_get(3, false);
+  set canJoin(bool v) { $_setBool(3, v); }
+  bool hasCanJoin() => $_has(3);
+  void clearCanJoin() => clearField(4);
 }
 
 class PlayerEntry extends $pb.GeneratedMessage {

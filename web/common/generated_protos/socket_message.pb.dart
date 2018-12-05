@@ -76,6 +76,8 @@ class FriendItemInfo extends $pb.GeneratedMessage {
     ..aOS(1, 'userID')
     ..aOB(2, 'online')
     ..aOB(3, 'invitable')
+    ..aOS(4, 'statusText')
+    ..aOS(5, 'color')
     ..hasRequiredFields = false
   ;
 
@@ -107,5 +109,15 @@ class FriendItemInfo extends $pb.GeneratedMessage {
   set invitable(bool v) { $_setBool(2, v); }
   bool hasInvitable() => $_has(2);
   void clearInvitable() => clearField(3);
+
+  String get statusText => $_getS(3, '');
+  set statusText(String v) { $_setString(3, v); }
+  bool hasStatusText() => $_has(3);
+  void clearStatusText() => clearField(4);
+
+  String get color => $_getS(4, '');
+  set color(String v) { $_setString(4, v); }
+  bool hasColor() => $_has(4);
+  void clearColor() => clearField(5);
 }
 

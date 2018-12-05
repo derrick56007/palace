@@ -9,8 +9,10 @@ class BotSocket extends CommonWebSocket {
 
   final rand = new Random();
 
+  // named send but is actually the receiving end
   @override
   send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) async {
+    // split this into methods
     switch (type) {
       case SocketMessage_Type.MATCH_INVITE:
         MatchManager.shared.matchAccept(this);
@@ -23,6 +25,8 @@ class BotSocket extends CommonWebSocket {
 
         final lowCardThreshold = 5;
         final lowCardIDs = new CardIDs();
+
+        // get rid of this, is kinda cheating
         for (var card in match.topTowers[this].cards) {
           if (card.type == Card_Type.BASIC && card.value < lowCardThreshold) {
             lowCardIDs.ids.add(card.id);

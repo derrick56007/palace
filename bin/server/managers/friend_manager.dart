@@ -6,19 +6,39 @@ class FriendManager {
   static final defaultAddFriendErrorString = SimpleInfo()
     ..info = "Invalid userID";
 
+  final _friendIDsFromSocket = <ServerWebSocket, List<String>>{};
+
   FriendManager._internal() {}
 
-  Future<List> friendIDsFromUserID(String userID) async {
-    // search for userID
+  login(ServerWebSocket socket) async {
+    final userID = LoginManager.shared.userIDFromSocket(socket);
+
     final userIDSearchResults =
-        await DataBaseManager.shared.userDB.find({'userID': userID});
+    await DataBaseManager.shared.userDB.find({'userID': userID});
 
     if (userIDSearchResults.isEmpty) {
       // TODO send error msg
       return null;
     }
 
-    return userIDSearchResults.first['friends'] as List;
+    _friendIDsFromSocket[socket] = <String>[];
+
+    for (var friendID in userIDSearchResults.first['friends']) {
+      _friendIDsFromSocket[socket].add(friendID.toString());
+    }
+    sendFriendStatuses(socket);
+  }
+
+  logout(ServerWebSocket socket) {
+    for (var friendID in _friendIDsFromSocket[socket]) {
+      if (!LoginManager.shared.userIDLoggedIn(friendID)) continue;
+
+      final friendSocket = LoginManager.shared.socketFromUserID(friendID);
+
+      sendFriendStatuses(friendSocket);
+    }
+
+    _friendIDsFromSocket.remove(socket);
   }
 
   addFriend(ServerWebSocket socket, friendID) async {
@@ -183,6 +203,47 @@ class FriendManager {
       })
       ..tidy();
 
+    _friendIDsFromSocket[socket].add(friendID);
+
+    if (LoginManager.shared.userIDLoggedIn(friendID)) {
+      final friendSocket = LoginManager.shared.socketFromUserID(friendID);
+      _friendIDsFromSocket[friendSocket].add(userID);
+
+    }
+
     print('new friends $userID & $friendID');
+
+    sendFriendStatuses(socket);
+  }
+
+  void sendFriendStatuses(ServerWebSocket socket) {
+    if (_friendIDsFromSocket[socket].isEmpty) {
+      return;
+    }
+    final userID = LoginManager.shared.userIDFromSocket(socket);
+
+    // send friends list to user
+    for (var friendID in _friendIDsFromSocket[socket]) {
+      if (LoginManager.shared.socketLoggedIn(socket)) {
+        final friendItemInfo = new FriendItemInfo()
+          ..userID = friendID
+          ..online = LoginManager.shared.userIDLoggedIn(friendID)
+          ..invitable = MatchManager.shared.userIDInvitable(friendID);
+
+        socket.send(SocketMessage_Type.FRIEND_ITEM_INFO, friendItemInfo);
+      }
+
+      // alert friend that user is online
+      if (LoginManager.shared.userIDLoggedIn(friendID)) {
+        final friendSocket = LoginManager.shared.socketFromUserID(friendID);
+
+        final selfInfo = new FriendItemInfo()
+          ..userID = userID
+          ..online = LoginManager.shared.userIDLoggedIn(userID)
+          ..invitable = MatchManager.shared.userIDInvitable(userID);
+
+        friendSocket.send(SocketMessage_Type.FRIEND_ITEM_INFO, selfInfo);
+      }
+    }
   }
 }

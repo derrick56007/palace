@@ -6,7 +6,6 @@ import 'state/state.dart';
 
 main() async {
   final client = new ClientWebSocket();
-
   await client.start();
 
   client.on(SocketMessage_Type.ERROR, (var json) {

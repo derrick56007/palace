@@ -63,10 +63,33 @@ class FriendHandler {
 
       final inviteBtn = el.querySelector('#invite-btn');
 
-
+      var inviteSent = false;
       inviteBtn.onClick.listen((_) {
+        if (inviteSent) return;
 
+        final userIDInfo = new SimpleInfo()..info = info.userID;
+
+        client.send(SocketMessage_Type.SEND_MATCH_INVITE, userIDInfo);
+
+        inviteBtn.classes.add('disabled');
+        inviteBtn.text = 'Sent';
+        inviteSent = true;
       });
+    } else if (!info.online){
+      el = new Element.html('''
+                    <li class="collection-item card">
+                        <div class="collection-item-text">
+                            <div id="user-id" class="collection-item-friend-header">${info.userID}</div>
+                        </div>
+                        <div class="collection-item-btn">
+                            <a href="#!" class="secondary-content">
+                                <a class="btn-small waves-effect waves-light red disabled">
+                                    Offline
+                                </a>
+                            </a>
+                        </div>
+                    </li>
+      ''');
     } else {
       el = new Element.html('''
                     <li class="collection-item card">
@@ -75,8 +98,8 @@ class FriendHandler {
                         </div>
                         <div class="collection-item-btn">
                             <a href="#!" class="secondary-content">
-                                <a class="btn-small waves-effect waves-light teal disabled">
-                                    Offline
+                                <a class="btn-small waves-effect waves-light red disabled">
+                                    In game
                                 </a>
                             </a>
                         </div>

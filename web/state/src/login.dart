@@ -15,7 +15,9 @@ class Login extends State {
   StreamSubscription submitSub;
 
   Login(ClientWebSocket client) : super(client) {
-    client.on(SocketMessage_Type.LOGIN_SUCCESSFUL, _loginSuccessful);
+    client
+        ..on(SocketMessage_Type.LOGIN_SUCCESSFUL, _loginSuccessful)
+        ..on(SocketMessage_Type.LOGOUT_SUCCESSFULL, _logoutSuccessful);
 
     querySelector('#login-btn').onClick.listen((_) {
       submitLogin();
@@ -88,5 +90,9 @@ class Login extends State {
 
   _loginSuccessful() {
     StateManager.shared.pushState('play');
+  }
+
+  _logoutSuccessful() {
+    StateManager.shared.pushState('login');
   }
 }

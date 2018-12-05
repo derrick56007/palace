@@ -52,6 +52,7 @@ const SocketMessage_Type$json = const {
     const {'1': 'START', '2': 33},
     const {'1': 'FRIEND_ITEM_INFO', '2': 34},
     const {'1': 'LOBBY_INFO', '2': 35},
+    const {'1': 'LOGOUT_SUCCESSFULL', '2': 36},
   ],
 };
 
@@ -68,6 +69,8 @@ const FriendItemInfo$json = const {
     const {'1': 'userID', '3': 1, '4': 1, '5': 9, '10': 'userID'},
     const {'1': 'online', '3': 2, '4': 1, '5': 8, '10': 'online'},
     const {'1': 'invitable', '3': 3, '4': 1, '5': 8, '10': 'invitable'},
+    const {'1': 'statusText', '3': 4, '4': 1, '5': 9, '10': 'statusText'},
+    const {'1': 'color', '3': 5, '4': 1, '5': 9, '10': 'color'},
   ],
 };
 

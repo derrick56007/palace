@@ -6,9 +6,6 @@ import 'package:protobuf/protobuf.dart' as pb;
 
 import 'common/common_websocket.dart';
 import 'common/generated_protos/socket_message.pbenum.dart';
-//import 'common/encodable/encodable.dart';
-//import 'common/message_type.dart';
-//import 'common/generated_protos.dart';
 
 class ClientWebSocket extends CommonWebSocket {
   WebSocket _webSocket;

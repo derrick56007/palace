@@ -75,23 +75,13 @@ input[type=checkbox]:checked ~ #side-bar {
     margin-top: 0;
 }
 
-/*.matches-card {*/
-    /*flex-grow: 1;*/
-    /*max-height: 50%;*/
-    /*overflow: auto;*/
-/*}*/
-
-/*.matches-card ul, .friends-card ul {*/
-    /*padding-left: 7px;*/
-    /*padding-right: 7px;*/
-/*}*/
-
 .collection-item {
     display: flex;
     padding: 5px;
     height: 50px;
     line-height: 17px;
     justify-content: space-between;
+    align-items: center;
 }
 
 .friends-card {
@@ -121,12 +111,8 @@ input[type=checkbox]:checked ~ #side-bar {
 }
 
 #invite-btn {
-    margin-top: 7px;
     text-align: center;
-    height: 90px;
-    line-height: 90px;
     border-radius: 3px;
-    font-size: 2em;
 }
 
 .friend-card .row {
@@ -154,6 +140,7 @@ div .collection-item-friend-header {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    text-align: left;
 }
 
 .lobby-item {
@@ -170,4 +157,11 @@ div .lobby-item-status {
 
 #lobby-btn {
 
+}
+
+.collection-item-btn .btn-small {
+    padding: 3px;
+    display: flex;
+    line-height: 2em;
+    margin: auto;
 }

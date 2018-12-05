@@ -13,7 +13,7 @@ class Lobby {
   List<CommonWebSocket> getReadyPlayers() {
     final readyPlayers = <CommonWebSocket>[];
     for (var player in _invitedPlayersReadyStatus.keys) {
-      if (_invitedPlayersReadyStatus[player]) continue;
+      if (!_invitedPlayersReadyStatus[player]) continue;
 
       readyPlayers.add(player);
     }
@@ -22,6 +22,24 @@ class Lobby {
   }
 
   addPlayer(CommonWebSocket socket) {
+
+    final lobbyInfo = new LobbyInfo()
+      ..host = LoginManager.shared.userIDFromSocket(host)
+      ..canJoin = true
+      ..canStart = false;
+
+    // add player entries
+    for (var socket in _invitedPlayersReadyStatus.keys) {
+      final playerID = LoginManager.shared.userIDFromSocket(socket);
+
+      final playerEntry = new PlayerEntry()
+        ..userID = playerID
+        ..ready = _invitedPlayersReadyStatus[socket];
+      lobbyInfo.players.add(playerEntry);
+    }
+
+    socket.send(SocketMessage_Type.MATCH_INVITE, lobbyInfo);
+
     _invitedPlayersReadyStatus[socket] = false;
 
     _sendInfoToPlayers();
@@ -113,6 +131,8 @@ class MatchManager {
       lobby = new Lobby(socket);
     }
 
+    _lobbyBySocket[socket] = lobby;
+
     var friendSocket;
     if (friendID == 'bot') {
       final botSocket = new BotSocket();
@@ -124,21 +144,18 @@ class MatchManager {
         // TODO send error
         return;
       }
-      // TODO check if friend already in match
 
       friendSocket = LoginManager.shared.socketFromUserID(friendID);
+
+      if (socketInLobby(friendSocket)) return;
 
       _lobbyBySocket[friendSocket] = lobby;
     }
 
     lobby.addPlayer(friendSocket);
 
-    final userID = LoginManager.shared.userIDFromSocket(socket);
-
-    final friendMatchInvite = new MatchInvite()
-      ..msg = 'Play with $userID?'
-      ..userID = userID;
-    friendSocket.send(SocketMessage_Type.MATCH_INVITE, friendMatchInvite);
+    FriendManager.shared.sendFriendStatuses(socket);
+    FriendManager.shared.sendFriendStatuses(friendSocket);
   }
 
   matchAccept(CommonWebSocket socket) {
@@ -181,6 +198,7 @@ class MatchManager {
   }
 
   matchDecline(CommonWebSocket socket) {
+    // check if in lobby and in not in a match
     if (!socketInLobby(socket) || socketInMatch(socket)) {
       // TODO send error
       return;

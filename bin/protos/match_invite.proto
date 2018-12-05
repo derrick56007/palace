@@ -1,15 +1,11 @@
 syntax = "proto3";
 package palace;
 
-message MatchInvite {
-    string msg = 1;
-    string userID = 2;
-}
-
 message LobbyInfo {
     string host = 1;
     repeated PlayerEntry players = 2;
     bool canStart = 3;
+    bool canJoin = 4;
 }
 
 message PlayerEntry {

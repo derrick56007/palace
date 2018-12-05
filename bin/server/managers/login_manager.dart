@@ -115,8 +115,7 @@ class LoginManager {
 
   // logs in socket with username
   login(ServerWebSocket socket, String userID, String passCode) async {
-    // logout socket if previously logged in
-    logout(socket);
+    if (socketLoggedIn(socket)) return;
 
     // validate username
     if (userID == null ||
@@ -125,6 +124,12 @@ class LoginManager {
         !StringValidator.isValidUsername(userID)) {
       socket.send(SocketMessage_Type.ERROR, _defaultLoginErrorString);
       return;
+    }
+
+    // close old socket with same username
+    if (userIDLoggedIn(userID)) {
+      final oldSocket = socketFromUserID(userID);
+      logout(oldSocket);
     }
 
     final userIdSearchResults =
@@ -166,39 +171,12 @@ class LoginManager {
     socket.send(SocketMessage_Type.LOGIN_SUCCESSFUL);
     print('logged in $userID');
 
-    // send friends list
-    final friendIDs = await FriendManager.shared.friendIDsFromUserID(userID);
-    if (friendIDs == null || friendIDs.isEmpty) {
-      return;
-    }
-
-    // send friends list to user
-    for (var friendID in friendIDs) {
-      _userIDForFriendIDs[userID].add(friendID);
-
-      final friendItemInfo = new FriendItemInfo()
-        ..userID = friendID
-        ..online = userIDLoggedIn(friendID)
-        ..invitable = MatchManager.shared.userIDInvitable(friendID);
-
-      socket.send(SocketMessage_Type.FRIEND_ITEM_INFO, friendItemInfo);
-
-      // alert friend that user is online
-      if (userIDLoggedIn(friendID)) {
-        final friendSocket = socketFromUserID(friendID);
-
-        final selfInfo = new FriendItemInfo()
-          ..userID = userID
-          ..online = true
-          ..invitable = MatchManager.shared.userIDInvitable(friendID);
-
-        friendSocket.send(SocketMessage_Type.FRIEND_ITEM_INFO, selfInfo);
-      }
-    }
+    // load friends
+    FriendManager.shared.login(socket);
   }
 
   // logs out socket
-  logout(ServerWebSocket socket) {
+  logout(ServerWebSocket socket) async {
     // check if socket is logged in
     if (!socketLoggedIn(socket)) return;
 
@@ -206,6 +184,10 @@ class LoginManager {
 
     _userIDForSocket.remove(userID);
 
+    socket.send(SocketMessage_Type.LOGOUT_SUCCESSFULL);
+
     print('logged out $userID');
+
+    FriendManager.shared.logout(socket);
   }
 }
