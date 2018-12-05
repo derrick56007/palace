@@ -56,10 +56,14 @@ class Play extends State {
         final info = new DiscardInfo.fromJson(json);
         game.onDiscardInfo(info);
       })
-      ..on(SocketMessage_Type.REQUEST_HANDSWAP_CHOICE, () {
-//      game.onRequestHandSwapChoice();
+      ..on(SocketMessage_Type.REQUEST_HANDSWAP_CHOICE, (var json) {
+        final cardIDs = new CardIDs.fromJson(json);
+        game.setSelectableCards(cardIDs);
       })
-      ..on(SocketMessage_Type.REQUEST_TOPSWAP_CHOICE, () {})
+      ..on(SocketMessage_Type.REQUEST_TOPSWAP_CHOICE, (var json) {
+        final cardIDs = new CardIDs.fromJson(json);
+        game.setSelectableCards(cardIDs);
+      })
       ..on(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE, () {
         game.onRequest_HigherLowerChoice();
       })
@@ -73,8 +77,14 @@ class Play extends State {
 
         game.onHigherLowerChoice(higherLowerChoice);
       })
-      ..on(SocketMessage_Type.HANDSWAP_CHOICE, (var json) {})
-      ..on(SocketMessage_Type.TOPSWAP_CHOICE, (var json) {})
+      ..on(SocketMessage_Type.HANDSWAP_CHOICE, (var json) {
+        final handSwapInfo = new HandSwapInfo.fromJson(json);
+        game.onHandSwapInfo(handSwapInfo);
+      })
+      ..on(SocketMessage_Type.TOPSWAP_CHOICE, (var json) {
+        final topSwapInfo = new TopSwapInfo.fromJson(json);
+        game.onTopSwapInfo(topSwapInfo);
+      })
       ..on(SocketMessage_Type.CHANGE_DISCARD_TO_ROCK, (var json) {
         final card = new Card.fromJson(json);
         game.onChangeDiscardToRock(card);

@@ -85,16 +85,19 @@ class ClientCard extends Sprite {
 
   bool _selectable = false;
 
-  final glowFilter = new GlowFilter(Color.Gold, 20, 20);
+  final glowFilter = new GlowFilter(Color.LimeGreen, 15, 15, 2);
+  final glowFilter2 = new GlowFilter(Color.LimeGreen, 15, 15, 2);
 
   set selectable(bool s) {
     _selectable = s;
 
     if (_selectable) {
       filters.add(glowFilter);
+      filters.add(glowFilter2);
       mouseCursor = MouseCursor.POINTER;
     } else {
       filters.remove(glowFilter);
+      filters.remove(glowFilter2);
       mouseCursor = MouseCursor.DEFAULT;
     }
 

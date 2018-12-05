@@ -128,3 +128,19 @@ const FinalDealInfo$json = const {
   ],
 };
 
+const TopSwapInfo$json = const {
+  '1': 'TopSwapInfo',
+  '2': const [
+    const {'1': 'card1', '3': 1, '4': 1, '5': 11, '6': '.palace.Card', '10': 'card1'},
+    const {'1': 'card2', '3': 2, '4': 1, '5': 11, '6': '.palace.Card', '10': 'card2'},
+  ],
+};
+
+const HandSwapInfo$json = const {
+  '1': 'HandSwapInfo',
+  '2': const [
+    const {'1': 'userIndexToGiveTo', '3': 1, '4': 1, '5': 5, '10': 'userIndexToGiveTo'},
+    const {'1': 'receivedCards', '3': 2, '4': 3, '5': 11, '6': '.palace.Card', '10': 'receivedCards'},
+  ],
+};
+

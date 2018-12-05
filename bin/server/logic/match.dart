@@ -6,7 +6,7 @@ class Match {
   final bottomTowers = <CommonWebSocket, Tower>{};
   final topTowers = <CommonWebSocket, Tower>{};
 
-  static const fullDeckLength = 54; // 56;
+  static const fullDeckLength = 55; // 56;
   static const towerLength = 3;
   static const basicCardLength = 9;
   static const suitLength = 4;
@@ -123,6 +123,14 @@ class Match {
       return;
     }
 
+    // check for handswap
+    final cardIDsInOtherHands = getCardIDsInOtherHands(socket);
+    if (chosenCards.length == 1 &&
+        cardIDsInOtherHands.contains(userPlay.ids.first)) {
+      onHandSwapChoice(socket, userPlay);
+      return;
+    }
+
     final playableCards = getSelectableCardIDs(socket);
 
     // check if bottom tower play
@@ -168,6 +176,7 @@ class Match {
     for (var chosenCardID in userPlay.ids) {
       if (!playableCards.contains(chosenCardID)) {
         print('error missing cards 2');
+        sendSelectableCards(socket);
         return;
       }
     }
@@ -934,7 +943,6 @@ class Match {
   }
 
   createAdditionalCards() {
-
     final discardOrRock = Card()
       ..id = uuids.removeLast()
       ..hidden = true
@@ -948,9 +956,14 @@ class Match {
       ..hidden = true
       ..type = Card_Type.BASIC
       ..value = 0;
+    final handSwap = Card()
+      ..id = uuids.removeLast()
+      ..hidden = true
+      ..type = Card_Type.HAND_SWAP
+      ..value = specialDefaultCardValue;
 
-    deck.addAll([rock, discardOrRock]);
-    registerAllCards([rock, discardOrRock]);
+    deck.addAll([rock, discardOrRock, handSwap]);
+    registerAllCards([rock, discardOrRock, handSwap]);
 //    deck.addAll([topSwap, handSwap, rock, discardOrRock]);
 //    registerAllCards([topSwap, handSwap, rock, discardOrRock]);
 
@@ -961,11 +974,6 @@ class Match {
       ..id = uuids.removeLast()
       ..hidden = true
       ..type = Card_Type.TOP_SWAP
-      ..value = specialDefaultCardValue;
-    final handSwap = Card()
-      ..id = uuids.removeLast()
-      ..hidden = true
-      ..type = Card_Type.HAND_SWAP
       ..value = specialDefaultCardValue;
   }
 
@@ -1171,7 +1179,7 @@ class Match {
     return null;
   }
 
-  onHandSwapChoice(CommonWebSocket socket, CardIDs handSwapChoice) {
+  onHandSwapChoice(CommonWebSocket socket, CardIDs handSwapChoice) async {
     if (!gameStarted || gameEnded) {
       // TODO send error
       return;
@@ -1189,13 +1197,30 @@ class Match {
       final otherSocket = getOwnerOfCardID(handSwapChoice.ids.first);
 
       final tempMyHand = hands[socket];
-      hands[socket] = hands[otherSocket];
+      final otherHand = hands[otherSocket];
+      hands[socket] = otherHand;
       hands[otherSocket] = tempMyHand;
 
-      // TODO alert
+      final handSwapInfo1 = new HandSwapInfo()
+        ..userIndexToGiveTo =
+            getRelativeSocketIndexFromSocket(socket, otherSocket)
+        ..receivedCards.addAll(otherHand.cards);
+      socket.send(SocketMessage_Type.HANDSWAP_CHOICE, handSwapInfo1);
+
+      final handSwapInfo2 = new HandSwapInfo()
+        ..userIndexToGiveTo =
+            getRelativeSocketIndexFromSocket(otherSocket, socket)
+        ..receivedCards.addAll(tempMyHand.cards);
+      otherSocket.send(SocketMessage_Type.HANDSWAP_CHOICE, handSwapInfo2);
+
+      await new Future.delayed(const Duration(seconds: 1));
 
       startPlayerTurn(socket);
     }
+  }
+
+  getRelativeSocketIndexFromSocket(CommonWebSocket s1, CommonWebSocket s2) {
+    return (players.indexOf(s2) - players.indexOf(s1)) % players.length;
   }
 
   onHigherLowerChoice(

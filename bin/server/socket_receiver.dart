@@ -39,8 +39,6 @@ class SocketReceiver {
       ..on(SocketMessage_Type.MATCH_ACCEPT, _matchAccept)
       ..on(SocketMessage_Type.MATCH_DECLINE, _matchDecline)
       ..on(SocketMessage_Type.USER_PLAY, _userPlay)
-      ..on(SocketMessage_Type.HANDSWAP_CHOICE, _handSwapChoice)
-      ..on(SocketMessage_Type.TOPSWAP_CHOICE, _topSwapChoice)
       ..on(SocketMessage_Type.HIGHERLOWER_CHOICE, _higherLowerChoice);
   }
 
@@ -99,26 +97,6 @@ class SocketReceiver {
       final match = _matchManager.matchFromSocket(_socket);
 
       match.userPlay(_socket, userPlay);
-    }
-  }
-
-  _topSwapChoice(String json) {
-    final topSwapChoice = new CardIDs.fromJson(json);
-
-    if (_matchManager.socketInMatch(_socket)) {
-      final match = _matchManager.matchFromSocket(_socket);
-
-      match.onTopSwapChoice(_socket, topSwapChoice);
-    }
-  }
-
-  _handSwapChoice(String json) {
-    final handSwapChoice = new CardIDs.fromJson(json);
-
-    if (_matchManager.socketInMatch(_socket)) {
-      final match = _matchManager.matchFromSocket(_socket);
-
-      match.onHandSwapChoice(_socket, handSwapChoice);
     }
   }
 

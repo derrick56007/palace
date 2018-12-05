@@ -77,3 +77,13 @@ message TowerCardsToHandInfo {
 message FinalDealInfo {
     repeated Hand hands = 1;
 }
+
+message TopSwapInfo {
+    Card card1 = 1;
+    Card card2 = 2;
+}
+
+message HandSwapInfo {
+    int32 userIndexToGiveTo = 1;
+    repeated Card receivedCards = 2;
+}

@@ -369,3 +369,64 @@ class FinalDealInfo extends $pb.GeneratedMessage {
   List<Hand> get hands => $_getList(0);
 }
 
+class TopSwapInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('TopSwapInfo', package: const $pb.PackageName('palace'))
+    ..a<Card>(1, 'card1', $pb.PbFieldType.OM, Card.getDefault, Card.create)
+    ..a<Card>(2, 'card2', $pb.PbFieldType.OM, Card.getDefault, Card.create)
+    ..hasRequiredFields = false
+  ;
+
+  TopSwapInfo() : super();
+  TopSwapInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  TopSwapInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  TopSwapInfo clone() => new TopSwapInfo()..mergeFromMessage(this);
+  TopSwapInfo copyWith(void Function(TopSwapInfo) updates) => super.copyWith((message) => updates(message as TopSwapInfo));
+  $pb.BuilderInfo get info_ => _i;
+  static TopSwapInfo create() => new TopSwapInfo();
+  static $pb.PbList<TopSwapInfo> createRepeated() => new $pb.PbList<TopSwapInfo>();
+  static TopSwapInfo getDefault() => _defaultInstance ??= create()..freeze();
+  static TopSwapInfo _defaultInstance;
+  static void $checkItem(TopSwapInfo v) {
+    if (v is! TopSwapInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  Card get card1 => $_getN(0);
+  set card1(Card v) { setField(1, v); }
+  bool hasCard1() => $_has(0);
+  void clearCard1() => clearField(1);
+
+  Card get card2 => $_getN(1);
+  set card2(Card v) { setField(2, v); }
+  bool hasCard2() => $_has(1);
+  void clearCard2() => clearField(2);
+}
+
+class HandSwapInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('HandSwapInfo', package: const $pb.PackageName('palace'))
+    ..a<int>(1, 'userIndexToGiveTo', $pb.PbFieldType.O3)
+    ..pp<Card>(2, 'receivedCards', $pb.PbFieldType.PM, Card.$checkItem, Card.create)
+    ..hasRequiredFields = false
+  ;
+
+  HandSwapInfo() : super();
+  HandSwapInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  HandSwapInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  HandSwapInfo clone() => new HandSwapInfo()..mergeFromMessage(this);
+  HandSwapInfo copyWith(void Function(HandSwapInfo) updates) => super.copyWith((message) => updates(message as HandSwapInfo));
+  $pb.BuilderInfo get info_ => _i;
+  static HandSwapInfo create() => new HandSwapInfo();
+  static $pb.PbList<HandSwapInfo> createRepeated() => new $pb.PbList<HandSwapInfo>();
+  static HandSwapInfo getDefault() => _defaultInstance ??= create()..freeze();
+  static HandSwapInfo _defaultInstance;
+  static void $checkItem(HandSwapInfo v) {
+    if (v is! HandSwapInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  int get userIndexToGiveTo => $_get(0, 0);
+  set userIndexToGiveTo(int v) { $_setSignedInt32(0, v); }
+  bool hasUserIndexToGiveTo() => $_has(0);
+  void clearUserIndexToGiveTo() => clearField(1);
+
+  List<Card> get receivedCards => $_getList(1);
+}
+

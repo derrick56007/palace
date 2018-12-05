@@ -26,7 +26,7 @@ class GameUI {
 
   static final Point<num> midPoint = new Point(gameWidth / 2, gameHeight / 2);
 
-  static const defaultDeckLength = 54; //56;
+  static const defaultDeckLength = 55; //56;
 
   final ClientWebSocket socket;
 
@@ -243,8 +243,6 @@ class GameUI {
   }
 
   sendSelectedCards() {
-    if (SelectableManager.shared.selectedIDs.isEmpty) return;
-
     final cardIDs = new CardIDs()
       ..ids.addAll(SelectableManager.shared.selectedIDs);
 
@@ -444,8 +442,8 @@ class GameUI {
 
       if (cardHand != null) {
         cardHand.remove(discardedCard);
-        final tween = stage.juggler
-            .addTween(discardedCard, 2, Transition.easeOutQuintic);
+        final tween =
+            stage.juggler.addTween(discardedCard, 2, Transition.easeOutQuintic);
         tween.animate.alpha.to(0);
         tween.animate.y.by(-100);
       } else {
@@ -682,4 +680,35 @@ class GameUI {
     final revealedCard = cardRegistry[card.id];
     revealedCard.cardInfo = card;
   }
+
+  void onHandSwapInfo(HandSwapInfo handSwapInfo) {
+    final tempMyHand = hands.first;
+    final otherHand = hands[handSwapInfo.userIndexToGiveTo];
+    hands.first = otherHand;
+    hands[handSwapInfo.userIndexToGiveTo] = tempMyHand;
+
+    for (var card in handSwapInfo.receivedCards) {
+      final revealedCard = cardRegistry[card.id];
+      revealedCard.cardInfo = card;
+      revealedCard.interactable = true;
+      revealedCard.hidden = false;
+    }
+
+    for (var i = 0; i < hands.first.length; i++) {
+      final card = hands.first[i];
+
+      animateCardToHand(card, 0, 1, Transition.easeInOutCubic);
+    }
+
+    for (var i = 0; i < hands[handSwapInfo.userIndexToGiveTo].length; i++) {
+      final card = hands[handSwapInfo.userIndexToGiveTo][i];
+      card.interactable = false;
+      card.hidden = true;
+
+      animateCardToHand(
+          card, handSwapInfo.userIndexToGiveTo, 1, Transition.easeInOutCubic);
+    }
+  }
+
+  void onTopSwapInfo(TopSwapInfo topSwapInfo) {}
 }
