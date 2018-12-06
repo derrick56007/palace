@@ -51,7 +51,8 @@ class BotSocket extends CommonWebSocket {
         lowCardIDs.ids.add(selectableCardIDs.ids.first);
 
         // choose multiple if not bottom tower card
-        if (!match.bottomTowers[this].cards.contains(selectedCard)) {
+        if (!match.bottomTowers[this].cards.contains(selectedCard) &&
+            !match.topTowers[this].cards.contains(selectedCard)) {
           for (var selectableID in selectableCardIDs.ids.sublist(1)) {
             final card = match.cardRegistry[selectableID];
 
