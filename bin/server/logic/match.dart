@@ -130,6 +130,7 @@ class Match {
     if (chosenCards.length == 2 &&
         exposedTowerCards.contains(chosenCards.first) &&
         exposedTowerCards.contains(chosenCards.last) &&
+        playedCards.isNotEmpty &&
         playedCards.last is Card &&
         playedCards.last.type == Card_Type.TOP_SWAP) {
       onTopSwapChoice(socket, userPlay);
