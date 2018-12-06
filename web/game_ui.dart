@@ -471,7 +471,7 @@ class GameUI {
         final tween =
             stage.juggler.addTween(discardedCard, 2, Transition.easeOutQuintic);
         tween.animate.alpha.to(0);
-        tween.animate.y.by(-100);
+        tween.animate.pivotY.by(-100);
         tween.onComplete = () {
           discardedCard.removeFromParent();
         };
@@ -485,6 +485,10 @@ class GameUI {
       }
 
       cardRegistry.remove(cardInfo.id);
+
+      if (playedCards.contains(discardedCard)) {
+        playedCards.remove(discardedCard);
+      }
     }
   }
 
