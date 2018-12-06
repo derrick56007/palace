@@ -229,9 +229,9 @@ class MatchManager {
 
     // replace with bot
     if (socketInMatch(socket)) {
+      final match = matchFromSocket(socket);
       _matchBySocket.remove(socket);
 
-      final match = matchFromSocket(socket);
       final botSocket = new BotSocket();
       SocketReceiver.handle(botSocket);
 
