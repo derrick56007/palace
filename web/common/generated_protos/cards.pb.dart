@@ -403,8 +403,10 @@ class TopSwapInfo extends $pb.GeneratedMessage {
 
 class HandSwapInfo extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('HandSwapInfo', package: const $pb.PackageName('palace'))
-    ..a<int>(1, 'userIndexToGiveTo', $pb.PbFieldType.O3)
-    ..pp<Card>(2, 'receivedCards', $pb.PbFieldType.PM, Card.$checkItem, Card.create)
+    ..a<int>(1, 'userIndex1', $pb.PbFieldType.O3)
+    ..a<int>(2, 'userIndex2', $pb.PbFieldType.O3)
+    ..pp<Card>(3, 'cards1', $pb.PbFieldType.PM, Card.$checkItem, Card.create)
+    ..pp<Card>(4, 'cards2', $pb.PbFieldType.PM, Card.$checkItem, Card.create)
     ..hasRequiredFields = false
   ;
 
@@ -422,11 +424,18 @@ class HandSwapInfo extends $pb.GeneratedMessage {
     if (v is! HandSwapInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  int get userIndexToGiveTo => $_get(0, 0);
-  set userIndexToGiveTo(int v) { $_setSignedInt32(0, v); }
-  bool hasUserIndexToGiveTo() => $_has(0);
-  void clearUserIndexToGiveTo() => clearField(1);
+  int get userIndex1 => $_get(0, 0);
+  set userIndex1(int v) { $_setSignedInt32(0, v); }
+  bool hasUserIndex1() => $_has(0);
+  void clearUserIndex1() => clearField(1);
 
-  List<Card> get receivedCards => $_getList(1);
+  int get userIndex2 => $_get(1, 0);
+  set userIndex2(int v) { $_setSignedInt32(1, v); }
+  bool hasUserIndex2() => $_has(1);
+  void clearUserIndex2() => clearField(2);
+
+  List<Card> get cards1 => $_getList(2);
+
+  List<Card> get cards2 => $_getList(3);
 }
 

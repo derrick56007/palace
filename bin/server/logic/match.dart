@@ -6,11 +6,10 @@ class Match {
   final bottomTowers = <CommonWebSocket, Tower>{};
   final topTowers = <CommonWebSocket, Tower>{};
 
-  static const fullDeckLength = 55; // 56;
+  static const fullDeckLength = 56;
   static const towerLength = 3;
   static const basicCardLength = 9;
   static const suitLength = 4;
-  static const specialDefaultCardValue = 10;
 
   final cardRegistry = <String, Card>{};
 
@@ -56,7 +55,7 @@ class Match {
     createAdditionalCards();
     deck.shuffle();
 
-    await new Future.delayed(const Duration(milliseconds: 2700));
+    await new Future.delayed(const Duration(milliseconds: 2000));
 
     chooseStartingPlayer();
   }
@@ -106,14 +105,8 @@ class Match {
 
     // ending turn without playing picks up the pile
     if (userPlay.ids.isEmpty) {
-      if (playedCards.isNotEmpty) {
-        pickUpPile(socket);
-        endPlayerTurn(socket);
-        return;
-      } else {
-        sendSelectableCards(socket);
-        return;
-      }
+      sendSelectableCards(socket);
+      return;
     }
 
     final chosenCards = cardListFromCardIDList(userPlay.ids);
@@ -128,6 +121,14 @@ class Match {
     if (chosenCards.length == 1 &&
         cardIDsInOtherHands.contains(userPlay.ids.first)) {
       onHandSwapChoice(socket, userPlay);
+      return;
+    }
+
+    // check for topswap
+    final exposedTowerCards = cardListFromCardIDList(getAllExposedTowerCardIDs());
+    if (chosenCards.length == 2 && exposedTowerCards.contains(chosenCards.first) &&
+        exposedTowerCards.contains(chosenCards.last)) {
+      onTopSwapChoice(socket, userPlay);
       return;
     }
 
@@ -295,6 +296,8 @@ class Match {
 
       hand.cards.addAll(newHand);
       sendDrawInfo(socket, newHand);
+
+      await new Future.delayed(const Duration(seconds: 2));
 
       startPlayerTurn(socket);
       return;
@@ -556,9 +559,8 @@ class Match {
   }
 
   chooseStartingPlayer() {
-    // TODO choose random player to start
     if (activePlayer == null) {
-      startPlayerTurn(players.first);
+      startPlayerTurn(players[(new Random()).nextInt(players.length)]);
       return;
     }
 
@@ -716,6 +718,14 @@ class Match {
         continue;
       }
 
+
+      // TODO check if there are available cards after playing
+      // getplayablebottomcards
+      if (card.type == Card_Type.TOP_SWAP && getExposedTowerCardIDs(socket).isNotEmpty) {
+        playableCardIDs.add('${card.id}');
+        continue;
+      }
+
       // check discard
       if (card.type == Card_Type.DISCARD_OR_ROCK && isSelectableCard(card)) {
         playableCardIDs.add('${card.id}');
@@ -746,12 +756,6 @@ class Match {
       socketToSendTo.send(SocketMessage_Type.CLEAR_SELECTABLE_CARDS);
       socketToSendTo.send(
           SocketMessage_Type.ACTIVE_PLAYER_INDEX, activePlayerIndex);
-    }
-
-    // check win
-    if (socketWon(socket)) {
-      onWin(socket);
-      return;
     }
 
     final playableCardIDs = getSelectableCardIDs(socket);
@@ -960,21 +964,16 @@ class Match {
       ..id = uuids.removeLast()
       ..hidden = true
       ..type = Card_Type.HAND_SWAP
-      ..value = specialDefaultCardValue;
-
-    deck.addAll([rock, discardOrRock, handSwap]);
-    registerAllCards([rock, discardOrRock, handSwap]);
-//    deck.addAll([topSwap, handSwap, rock, discardOrRock]);
-//    registerAllCards([topSwap, handSwap, rock, discardOrRock]);
-
-//    assert(fullDeckLength == deck.length);
-    return;
+      ..value = 0;
 
     final topSwap = Card()
       ..id = uuids.removeLast()
       ..hidden = true
       ..type = Card_Type.TOP_SWAP
-      ..value = specialDefaultCardValue;
+      ..value = 0;
+
+    deck.addAll([topSwap, handSwap, rock, discardOrRock]);
+    registerAllCards([topSwap, handSwap, rock, discardOrRock]);
   }
 
   firstTowerDeal() {
@@ -1108,7 +1107,7 @@ class Match {
     return newList;
   }
 
-  onTopSwapChoice(CommonWebSocket socket, CardIDs topSwapChoice) {
+  onTopSwapChoice(CommonWebSocket socket, CardIDs topSwapChoice) async {
     if (!gameStarted || gameEnded) {
       // TODO send error
       return;
@@ -1133,7 +1132,7 @@ class Match {
       final tower2 = getTowerContainingCard(card2);
 
       final indexOfCard1 = tower1.indexOf(card1);
-      final indexOfCard2 = tower1.indexOf(card2);
+      final indexOfCard2 = tower2.indexOf(card2);
 
       tower1[indexOfCard1] = card2;
       tower2[indexOfCard2] = card1;
@@ -1143,7 +1142,16 @@ class Match {
         card2.hidden = false;
       }
 
-      // TODO send info
+      for (var socketToSendTo in players) {
+
+        final topSwapInfo = new TopSwapInfo()
+          ..card1 = card1
+          ..card2 = card2;
+
+        socketToSendTo.send(SocketMessage_Type.TOPSWAP_CHOICE, topSwapInfo);
+      }
+
+      await new Future.delayed(const Duration(milliseconds: 1500));
 
       startPlayerTurn(socket);
     }
@@ -1201,19 +1209,35 @@ class Match {
       hands[socket] = otherHand;
       hands[otherSocket] = tempMyHand;
 
-      final handSwapInfo1 = new HandSwapInfo()
-        ..userIndexToGiveTo =
-            getRelativeSocketIndexFromSocket(socket, otherSocket)
-        ..receivedCards.addAll(otherHand.cards);
-      socket.send(SocketMessage_Type.HANDSWAP_CHOICE, handSwapInfo1);
+      final socketIndex = players.indexOf(socket);
+      final otherSocketIndex = players.indexOf(otherSocket);
 
-      final handSwapInfo2 = new HandSwapInfo()
-        ..userIndexToGiveTo =
-            getRelativeSocketIndexFromSocket(otherSocket, socket)
-        ..receivedCards.addAll(tempMyHand.cards);
-      otherSocket.send(SocketMessage_Type.HANDSWAP_CHOICE, handSwapInfo2);
+      for (var socketToSendTo in players) {
+        final socketToSendToIndex = players.indexOf(socketToSendTo);
 
-      await new Future.delayed(const Duration(seconds: 1));
+        if (socketToSendTo == socket) {
+          otherHand.cards.forEach((card) {
+            card.hidden = false;
+          });
+        }
+
+        final handSwapInfo1 = new HandSwapInfo()
+          ..userIndex1 = (socketIndex - socketToSendToIndex) % players.length
+          ..userIndex2 =
+              (otherSocketIndex - socketToSendToIndex) % players.length
+          ..cards1.addAll(otherHand.cards)
+          ..cards2.addAll(tempMyHand.cards);
+
+        socketToSendTo.send(SocketMessage_Type.HANDSWAP_CHOICE, handSwapInfo1);
+
+        if (socketToSendTo == socket) {
+          otherHand.cards.forEach((card) {
+            card.hidden = true;
+          });
+        }
+      }
+
+      await new Future.delayed(const Duration(milliseconds: 1500));
 
       startPlayerTurn(socket);
     }

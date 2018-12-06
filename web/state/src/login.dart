@@ -16,6 +16,9 @@ class Login extends State {
 
   Login(ClientWebSocket client) : super(client) {
     client
+        ..onClose.listen((_){
+          _logoutSuccessful();
+        })
         ..on(SocketMessage_Type.LOGIN_SUCCESSFUL, _loginSuccessful)
         ..on(SocketMessage_Type.LOGOUT_SUCCESSFULL, _logoutSuccessful);
 

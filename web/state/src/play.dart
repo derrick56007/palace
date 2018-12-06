@@ -69,12 +69,10 @@ class Play extends State {
       })
       ..on(SocketMessage_Type.ACTIVE_PLAYER_INDEX, (var json) {
         final activePlayerIndex = new ActivePlayerIndex.fromJson(json);
-
         game.setActivePlayerIndex(activePlayerIndex.index);
       })
       ..on(SocketMessage_Type.HIGHERLOWER_CHOICE, (var json) {
         final higherLowerChoice = new HigherLowerChoice.fromJson(json);
-
         game.onHigherLowerChoice(higherLowerChoice);
       })
       ..on(SocketMessage_Type.HANDSWAP_CHOICE, (var json) {

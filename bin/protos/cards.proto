@@ -84,6 +84,8 @@ message TopSwapInfo {
 }
 
 message HandSwapInfo {
-    int32 userIndexToGiveTo = 1;
-    repeated Card receivedCards = 2;
+    int32 userIndex1 = 1;
+    int32 userIndex2 = 2;
+    repeated Card cards1 = 3;
+    repeated Card cards2 = 4;
 }

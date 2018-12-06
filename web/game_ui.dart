@@ -26,7 +26,7 @@ class GameUI {
 
   static final Point<num> midPoint = new Point(gameWidth / 2, gameHeight / 2);
 
-  static const defaultDeckLength = 55; //56;
+  static const defaultDeckLength = 56;
 
   final ClientWebSocket socket;
 
@@ -154,11 +154,28 @@ class GameUI {
     stage.onMouseMove.listen((MouseEvent e) {
       final objects = stage.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
 
+      final cardsTouched = objects.where((e) => e.parent is ClientCard);
+
+      for (var card in playedCards) {
+        if (!stage.juggler.containsTweens(card)) {
+          card.alpha = 1;
+        }
+      }
+
+      for (var card in cardsTouched) {
+        final parent = card.parent as ClientCard;
+
+        if (playedCards.contains(parent) &&
+            parent.cardInfo.type != Card_Type.BASIC &&
+            parent.cardInfo.type != Card_Type.HIGHER_LOWER &&
+            parent.cardInfo.type != Card_Type.WILD) {
+          parent.alpha = 0.1;
+        }
+      }
+
       if (hands.isEmpty) return;
 
       final hand = hands.first;
-
-      final cardsTouched = objects.where((e) => e.parent is ClientCard);
 
       if (cardsTouched.isEmpty) return;
 
@@ -243,6 +260,8 @@ class GameUI {
   }
 
   sendSelectedCards() {
+    if (SelectableManager.shared.selectedIDs.isEmpty) return;
+
     final cardIDs = new CardIDs()
       ..ids.addAll(SelectableManager.shared.selectedIDs);
 
@@ -280,6 +299,7 @@ class GameUI {
       for (var userIndex = 0; userIndex < usersLength; userIndex++) {
         final newCard =
             drawFromDeck(info.topTowers[userIndex].cards[cardIndex]);
+        newCard.hidden = false;
         dealTowerAnim(newCard, topTowers, userIndex, cardIndex, .6);
         await new Future.delayed(const Duration(milliseconds: 100));
       }
@@ -425,6 +445,12 @@ class GameUI {
           pickedUpCard, info.userIndex, 1, Transition.easeInOutCubic);
       await new Future.delayed(const Duration(milliseconds: 125));
     }
+
+    for (var card in playedCards) {
+      card.alpha = 1;
+    }
+
+    playedCards.clear();
   }
 
   onDiscardInfo(DiscardInfo info) {
@@ -446,10 +472,16 @@ class GameUI {
             stage.juggler.addTween(discardedCard, 2, Transition.easeOutQuintic);
         tween.animate.alpha.to(0);
         tween.animate.y.by(-100);
+        tween.onComplete = () {
+          discardedCard.removeFromParent();
+        };
       } else {
         final tween =
             stage.juggler.addTween(discardedCard, 1, Transition.easeOutQuintic);
         tween.animate.alpha.to(0);
+        tween.onComplete = () {
+          discardedCard.removeFromParent();
+        };
       }
 
       cardRegistry.remove(cardInfo.id);
@@ -682,33 +714,92 @@ class GameUI {
   }
 
   void onHandSwapInfo(HandSwapInfo handSwapInfo) {
-    final tempMyHand = hands.first;
-    final otherHand = hands[handSwapInfo.userIndexToGiveTo];
-    hands.first = otherHand;
-    hands[handSwapInfo.userIndexToGiveTo] = tempMyHand;
+    final revealedCards1 = <ClientCard>[];
 
-    for (var card in handSwapInfo.receivedCards) {
+    for (var card in handSwapInfo.cards1) {
       final revealedCard = cardRegistry[card.id];
       revealedCard.cardInfo = card;
-      revealedCard.interactable = true;
-      revealedCard.hidden = false;
+
+      if (handSwapInfo.userIndex1 == 0) {
+        revealedCard.interactable = true;
+        revealedCard.hidden = false;
+      } else {
+        revealedCard.interactable = false;
+        revealedCard.hidden = true;
+      }
+
+      revealedCards1.add(revealedCard);
     }
 
-    for (var i = 0; i < hands.first.length; i++) {
-      final card = hands.first[i];
+    hands[handSwapInfo.userIndex1] = revealedCards1;
 
-      animateCardToHand(card, 0, 1, Transition.easeInOutCubic);
+    final revealedCards2 = <ClientCard>[];
+
+    for (var card in handSwapInfo.cards2) {
+      final revealedCard = cardRegistry[card.id];
+      revealedCard.cardInfo = card;
+
+      if (handSwapInfo.userIndex2 == 0) {
+        revealedCard.interactable = true;
+        revealedCard.hidden = false;
+      } else {
+        revealedCard.interactable = false;
+        revealedCard.hidden = true;
+      }
+
+      revealedCards2.add(revealedCard);
     }
 
-    for (var i = 0; i < hands[handSwapInfo.userIndexToGiveTo].length; i++) {
-      final card = hands[handSwapInfo.userIndexToGiveTo][i];
-      card.interactable = false;
-      card.hidden = true;
+    hands[handSwapInfo.userIndex2] = revealedCards2;
+
+    for (var i = 0; i < hands[handSwapInfo.userIndex1].length; i++) {
+      final card = hands[handSwapInfo.userIndex1][i];
 
       animateCardToHand(
-          card, handSwapInfo.userIndexToGiveTo, 1, Transition.easeInOutCubic);
+          card, handSwapInfo.userIndex1, 1, Transition.easeInOutCubic);
     }
+
+    for (var i = 0; i < hands[handSwapInfo.userIndex2].length; i++) {
+      final card = hands[handSwapInfo.userIndex2][i];
+
+      animateCardToHand(
+          card, handSwapInfo.userIndex2, 1, Transition.easeInOutCubic);
+    }
+
+    bringHandCardsToTop();
   }
 
-  void onTopSwapInfo(TopSwapInfo topSwapInfo) {}
+  void onTopSwapInfo(TopSwapInfo topSwapInfo) {
+    final card1 = cardRegistry[topSwapInfo.card1.id];
+    final card2 = cardRegistry[topSwapInfo.card2.id];
+
+    int card1TowerIndex;
+    List<List<ClientCard>> card1Towers;
+    if (topTowers.where((tower) => tower.contains(card1)).isNotEmpty) {
+      card1TowerIndex = topTowers.indexWhere((tower) => tower.contains(card1));
+      card1Towers = topTowers;
+    }
+    if (botTowers.where((tower) => tower.contains(card1)).isNotEmpty) {
+      card1TowerIndex = botTowers.indexWhere((tower) => tower.contains(card1));
+      card1Towers = botTowers;
+    }
+
+    int card2TowerIndex;
+    List<List<ClientCard>> card2Towers;
+    if (topTowers.where((tower) => tower.contains(card2)).isNotEmpty) {
+      card2TowerIndex = topTowers.indexWhere((tower) => tower.contains(card2));
+      card2Towers = topTowers;
+    }
+    if (botTowers.where((tower) => tower.contains(card2)).isNotEmpty) {
+      card2TowerIndex = botTowers.indexWhere((tower) => tower.contains(card2));
+      card2Towers = botTowers;
+    }
+    final card1Index = card1Towers[card1TowerIndex].indexOf(card1);
+    final card2Index = card2Towers[card2TowerIndex].indexOf(card2);
+
+    dealTowerAnim(card1, card2Towers, card2TowerIndex, card2Index, 1);
+    dealTowerAnim(card2, card1Towers, card1TowerIndex, card1Index, 1);
+
+    bringHandCardsToTop();
+  }
 }

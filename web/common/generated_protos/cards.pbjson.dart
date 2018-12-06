@@ -139,8 +139,10 @@ const TopSwapInfo$json = const {
 const HandSwapInfo$json = const {
   '1': 'HandSwapInfo',
   '2': const [
-    const {'1': 'userIndexToGiveTo', '3': 1, '4': 1, '5': 5, '10': 'userIndexToGiveTo'},
-    const {'1': 'receivedCards', '3': 2, '4': 3, '5': 11, '6': '.palace.Card', '10': 'receivedCards'},
+    const {'1': 'userIndex1', '3': 1, '4': 1, '5': 5, '10': 'userIndex1'},
+    const {'1': 'userIndex2', '3': 2, '4': 1, '5': 5, '10': 'userIndex2'},
+    const {'1': 'cards1', '3': 3, '4': 3, '5': 11, '6': '.palace.Card', '10': 'cards1'},
+    const {'1': 'cards2', '3': 4, '4': 3, '5': 11, '6': '.palace.Card', '10': 'cards2'},
   ],
 };
 

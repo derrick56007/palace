@@ -185,6 +185,13 @@ class MatchManager {
     final players = <CommonWebSocket>[lobby.host];
     players.addAll(lobby.getReadyPlayers());
 
+    // add bots
+    while (players.length < 4) {
+      final botSocket = new BotSocket();
+      SocketReceiver.handle(botSocket);
+      players.add(botSocket);
+    }
+
     final match = new Match(players);
 
     for (var socket in lobby.players) {
