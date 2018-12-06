@@ -46,20 +46,21 @@ class BotSocket extends CommonWebSocket {
         final selectableCardIDs = generatedMessage as CardIDs;
 
         final lowCardIDs = new CardIDs();
-//        final myHand = match.cardListFromCardIDList(selectableCardIDs.ids);
         final selectedCard = match.cardRegistry[selectableCardIDs.ids.first];
 
         lowCardIDs.ids.add(selectableCardIDs.ids.first);
-//
-//        for (var selectableID in selectableCardIDs.ids.sublist(1)) {
-//         final card = match.cardRegistry[selectableID];
-//
-//         if (card.id != selectedCard.id &&
-//             card.type == selectedCard.type &&
-//             card.value == selectedCard.value) {
-//           lowCardIDs.ids.add(selectableID);
-//         }
-//        }
+
+        // choose multiple if not bottom tower card
+        if (!match.bottomTowers[this].cards.contains(selectedCard)) {
+          for (var selectableID in selectableCardIDs.ids.sublist(1)) {
+            final card = match.cardRegistry[selectableID];
+
+            if (card.type == selectedCard.type &&
+                card.value == selectedCard.value) {
+              lowCardIDs.ids.add(selectableID);
+            }
+          }
+        }
 
         match.userPlay(this, lowCardIDs);
         break;
@@ -84,8 +85,15 @@ class BotSocket extends CommonWebSocket {
 
         final lowCardIDs = new CardIDs();
 
-        lowCardIDs.ids.add(selectableCardIDs.ids.first);
-        lowCardIDs.ids.add(selectableCardIDs.ids.last);
+        final random = new Random();
+        lowCardIDs.ids.add(selectableCardIDs
+            .ids[random.nextInt(selectableCardIDs.ids.length)]);
+
+        var nextIndex = random.nextInt(selectableCardIDs.ids.length);
+        while (lowCardIDs.ids.contains(selectableCardIDs.ids[nextIndex])) {
+          nextIndex = random.nextInt(selectableCardIDs.ids.length);
+        }
+        lowCardIDs.ids.add(selectableCardIDs.ids[nextIndex]);
 
         match.userPlay(this, lowCardIDs);
         break;

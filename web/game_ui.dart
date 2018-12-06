@@ -107,8 +107,9 @@ class GameUI {
     lowerChoice.y = midPoint.y;
     lowerChoice.mouseCursor = MouseCursor.POINTER;
     lowerChoice.filters = [
-      new GlowFilter(Color.Gold, 20, 20),
-      new DropShadowFilter(1)
+      new DropShadowFilter(1),
+      new GlowFilter(Color.LimeGreen, 15, 15, 2),
+      new GlowFilter(Color.LimeGreen, 15, 15, 2)
     ];
     lowerChoice.onMouseClick.listen((_) {
       chooseHigherLower(HigherLowerChoice_Type.LOWER);
@@ -123,8 +124,9 @@ class GameUI {
     higherChoice.y = midPoint.y;
     higherChoice.mouseCursor = MouseCursor.POINTER;
     higherChoice.filters = [
-      new GlowFilter(Color.Gold, 20, 20),
-      new DropShadowFilter(1)
+      new DropShadowFilter(1),
+      new GlowFilter(Color.LimeGreen, 15, 15, 2),
+      new GlowFilter(Color.LimeGreen, 15, 15, 2)
     ];
     higherChoice.onMouseClick.listen((_) {
       chooseHigherLower(HigherLowerChoice_Type.HIGHER);
@@ -471,7 +473,7 @@ class GameUI {
         final tween =
             stage.juggler.addTween(discardedCard, 2, Transition.easeOutQuintic);
         tween.animate.alpha.to(0);
-        tween.animate.pivotY.by(-100);
+        tween.animate.pivotY.by(300);
         tween.onComplete = () {
           discardedCard.removeFromParent();
         };

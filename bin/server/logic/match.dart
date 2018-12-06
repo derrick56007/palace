@@ -125,9 +125,13 @@ class Match {
     }
 
     // check for topswap
-    final exposedTowerCards = cardListFromCardIDList(getAllExposedTowerCardIDs());
-    if (chosenCards.length == 2 && exposedTowerCards.contains(chosenCards.first) &&
-        exposedTowerCards.contains(chosenCards.last)) {
+    final exposedTowerCards =
+        cardListFromCardIDList(getAllExposedTowerCardIDs());
+    if (chosenCards.length == 2 &&
+        exposedTowerCards.contains(chosenCards.first) &&
+        exposedTowerCards.contains(chosenCards.last) &&
+        playedCards.last is Card &&
+        playedCards.last.type == Card_Type.TOP_SWAP) {
       onTopSwapChoice(socket, userPlay);
       return;
     }
@@ -284,6 +288,8 @@ class Match {
     }
 
     if (card.type == Card_Type.DISCARD_OR_ROCK) {
+      await new Future.delayed(const Duration(seconds: 1));
+
       final drawNum = hand.cards.length;
       discardCards(hand.cards);
 
@@ -713,16 +719,21 @@ class Match {
       }
 
       // check top swap
-      if (card.type == Card_Type.TOP_SWAP && playableCardIDs.isNotEmpty) {
-        playableCardIDs.add('${card.id}');
-        continue;
-      }
+      if (card.type == Card_Type.TOP_SWAP) {
+        // has other cards to play
+        if (playableCardIDs.isNotEmpty) {
+          playableCardIDs.add('${card.id}');
+          continue;
+        }
 
-
-      // TODO check if there are available cards after playing
-      // getplayablebottomcards
-      if (card.type == Card_Type.TOP_SWAP && getExposedTowerCardIDs(socket).isNotEmpty) {
-        playableCardIDs.add('${card.id}');
+        // TODO check if there are available cards after playing
+        // getplayablebottomcards
+        if (hand.cards.length == 1 &&
+            hand.cards.first == card &&
+            getExposedTowerCardIDs(socket).isNotEmpty) {
+          playableCardIDs.add('${card.id}');
+          continue;
+        }
         continue;
       }
 
@@ -1143,7 +1154,6 @@ class Match {
       }
 
       for (var socketToSendTo in players) {
-
         final topSwapInfo = new TopSwapInfo()
           ..card1 = card1
           ..card2 = card2;
