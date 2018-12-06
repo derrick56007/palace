@@ -453,6 +453,8 @@ class GameUI {
     }
 
     playedCards.clear();
+
+    bringHandCardsToTop();
   }
 
   onDiscardInfo(DiscardInfo info) {
