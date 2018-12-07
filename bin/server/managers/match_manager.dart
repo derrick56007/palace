@@ -8,7 +8,10 @@ class Lobby {
 
   Iterable<CommonWebSocket> get players => _invitedPlayersReadyStatus.keys;
 
-  bool playerReady(CommonWebSocket socket) => _invitedPlayersReadyStatus[socket];
+  bool playerReady(CommonWebSocket socket) =>
+      _invitedPlayersReadyStatus.containsKey(socket)
+          ? _invitedPlayersReadyStatus[socket]
+          : false;
 
   List<CommonWebSocket> getReadyPlayers() {
     final readyPlayers = <CommonWebSocket>[];
@@ -22,7 +25,6 @@ class Lobby {
   }
 
   addPlayer(CommonWebSocket socket) {
-
     final lobbyInfo = new LobbyInfo()
       ..host = LoginManager.shared.userIDFromSocket(host)
       ..canJoin = true
@@ -56,6 +58,7 @@ class Lobby {
 
     if (_invitedPlayersReadyStatus.isNotEmpty && socket == host) {
       host = _invitedPlayersReadyStatus.keys.first;
+      _invitedPlayersReadyStatus.remove(host);
     }
 
     _sendInfoToPlayers();
@@ -123,7 +126,7 @@ class MatchManager {
       lobby = _lobbyBySocket[socket];
 
       // can't add user until accepts or declines match invite
-      if (!lobby.playerReady(socket)) return;
+      if (!lobby.playerReady(socket) && socket != lobby.host) return;
 
       // can't add more if lobby full
       if (lobby.players.length == Lobby.maxPlayers) return;
@@ -197,11 +200,13 @@ class MatchManager {
     for (var socket in lobby.players) {
       _lobbyBySocket.remove(socket);
     }
+    _lobbyBySocket.remove(socket);
 
     for (var socket in players) {
       _matchBySocket[socket] = match;
       socket.send(SocketMessage_Type.MATCH_START);
     }
+    _matchBySocket[socket] = match;
 
     lobby.host.send(SocketMessage_Type.MATCH_START);
     _lobbyBySocket.remove(lobby);
@@ -234,12 +239,19 @@ class MatchManager {
 
       final botSocket = new BotSocket();
       SocketReceiver.handle(botSocket);
+      _matchBySocket[botSocket] = match;
 
       final indexOfPlayer = match.players.indexOf(socket);
 
       if (indexOfPlayer == -1) return;
 
       match.players[indexOfPlayer] = botSocket;
+      match.hands[botSocket] = match.hands[socket];
+      match.hands.remove(socket);
+      match.topTowers[botSocket] = match.topTowers[socket];
+      match.topTowers.remove(socket);
+      match.bottomTowers[botSocket] = match.bottomTowers[socket];
+      match.bottomTowers.remove(socket);
 
       if (match.activePlayer != socket) return;
 
