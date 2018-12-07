@@ -630,7 +630,7 @@ class GameUI {
   }
 
   bringHandCardsToTop() {
-    for (var hand in hands) {
+    for (var hand in hands.reversed) {
       for (var card in hand) {
         stage.setChildIndex(card, stage.children.length - 1);
       }
@@ -805,8 +805,8 @@ class GameUI {
     final card1Index = card1Towers[card1TowerIndex].indexOf(card1);
     final card2Index = card2Towers[card2TowerIndex].indexOf(card2);
 
-    dealTowerAnim(card1, card2Towers, card2TowerIndex, card2Index, 1);
-    dealTowerAnim(card2, card1Towers, card1TowerIndex, card1Index, 1);
+    dealTowerAnim(card1, card2Towers, card2TowerIndex, card2Index, 1.25);
+    dealTowerAnim(card2, card1Towers, card1TowerIndex, card1Index, 1.25);
 
     bringHandCardsToTop();
   }
