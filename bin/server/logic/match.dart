@@ -117,6 +117,7 @@ class Match {
     }
 
     // check for handswap
+    // TODO fix this
     final cardIDsInOtherHands = getCardIDsInOtherHands(socket);
     if (chosenCards.length == 1 &&
         cardIDsInOtherHands.contains(userPlay.ids.first)) {
@@ -125,6 +126,7 @@ class Match {
     }
 
     // check for topswap
+    // TODO fix this
     final exposedTowerCards =
         cardListFromCardIDList(getAllExposedTowerCardIDs());
     if (chosenCards.length == 2 &&
@@ -727,11 +729,13 @@ class Match {
           continue;
         }
 
-        // TODO check if there are available cards after playing
-        // getplayablebottomcards
+        final cardsToPlayAfter = getFaceUpTowerCards(socket)
+            .where((card) => isSelectableCard(card))
+            .toList()
+              ..addAll(getExposedBottomTowerCards(socket));
         if (hand.cards.length == 1 &&
             hand.cards.first == card &&
-            getExposedTowerCardIDs(socket).isNotEmpty) {
+            cardsToPlayAfter.isNotEmpty) {
           playableCardIDs.add('${card.id}');
           continue;
         }
@@ -1248,7 +1252,7 @@ class Match {
         }
       }
 
-      await new Future.delayed(const Duration(milliseconds: 1500));
+      await new Future.delayed(const Duration(milliseconds: 1250));
 
       startPlayerTurn(socket);
     }
