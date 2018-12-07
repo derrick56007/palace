@@ -43,27 +43,48 @@ class BotSocket extends CommonWebSocket {
 
         final match = MatchManager.shared.matchFromSocket(this);
 
-        final selectableCardIDs = generatedMessage as CardIDs;
+        final selectableDs = generatedMessage as CardIDs;
+        final cards = match.cardListFromCardIDList(selectableDs.ids);
 
-        final lowCardIDs = new CardIDs();
-        final selectedCard = match.cardRegistry[selectableCardIDs.ids.first];
+        final selectedIDs = new CardIDs();
 
-        lowCardIDs.ids.add(selectableCardIDs.ids.first);
+        // TODO make smarter
+        final handSwapIndex =
+            cards.indexWhere((card) => card.type == Card_Type.HAND_SWAP);
+        if (handSwapIndex > 0) {
+          selectedIDs.ids.add(selectableDs.ids[handSwapIndex]);
+          match.userPlay(this, selectedIDs);
+          break;
+        }
+
+        final topSwapIndex =
+            cards.indexWhere((card) => card.type == Card_Type.TOP_SWAP);
+        if (topSwapIndex > 0) {
+          // TODO make smarter
+          selectedIDs.ids.add(selectableDs.ids[topSwapIndex]);
+          match.userPlay(this, selectedIDs);
+          break;
+        }
+        // check for handswap
+
+        final selectedCard = match.cardRegistry[selectableDs.ids.first];
+
+        selectedIDs.ids.add(selectableDs.ids.first);
 
         // choose multiple if not bottom tower card
         if (!match.bottomTowers[this].cards.contains(selectedCard) &&
             !match.topTowers[this].cards.contains(selectedCard)) {
-          for (var selectableID in selectableCardIDs.ids.sublist(1)) {
+          for (var selectableID in selectableDs.ids.sublist(1)) {
             final card = match.cardRegistry[selectableID];
 
             if (card.type == selectedCard.type &&
                 card.value == selectedCard.value) {
-              lowCardIDs.ids.add(selectableID);
+              selectedIDs.ids.add(selectableID);
             }
           }
         }
 
-        match.userPlay(this, lowCardIDs);
+        match.userPlay(this, selectedIDs);
         break;
       case SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE:
         await new Future.delayed(const Duration(milliseconds: 1500));
