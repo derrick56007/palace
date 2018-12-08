@@ -17,6 +17,8 @@ message Card {
     string id = 2;
     int32 value = 3;
     bool hidden = 4;
+    int32 playerIndex = 5;
+    bool activated = 6;
 }
 
 message Tower {

@@ -11,6 +11,8 @@ const Card$json = const {
     const {'1': 'id', '3': 2, '4': 1, '5': 9, '10': 'id'},
     const {'1': 'value', '3': 3, '4': 1, '5': 5, '10': 'value'},
     const {'1': 'hidden', '3': 4, '4': 1, '5': 8, '10': 'hidden'},
+    const {'1': 'playerIndex', '3': 5, '4': 1, '5': 5, '10': 'playerIndex'},
+    const {'1': 'activated', '3': 6, '4': 1, '5': 8, '10': 'activated'},
   ],
   '4': const [Card_Type$json],
 };

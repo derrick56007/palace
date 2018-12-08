@@ -46,6 +46,9 @@ message SocketMessage {
         LOBBY_INFO = 35;
         LOGOUT_SUCCESSFULL = 36;
         CHANGE_DISCARD_TO_ROCK = 37;
+
+        // To server
+        REQUEST_PICK_UP = 38;
     }
 
     Type type = 1;

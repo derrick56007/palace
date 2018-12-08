@@ -54,6 +54,7 @@ const SocketMessage_Type$json = const {
     const {'1': 'LOBBY_INFO', '2': 35},
     const {'1': 'LOGOUT_SUCCESSFULL', '2': 36},
     const {'1': 'CHANGE_DISCARD_TO_ROCK', '2': 37},
+    const {'1': 'REQUEST_PICK_UP', '2': 38},
   ],
 };
 

@@ -39,7 +39,8 @@ class SocketReceiver {
       ..on(SocketMessage_Type.MATCH_ACCEPT, _matchAccept)
       ..on(SocketMessage_Type.MATCH_DECLINE, _matchDecline)
       ..on(SocketMessage_Type.USER_PLAY, _userPlay)
-      ..on(SocketMessage_Type.HIGHERLOWER_CHOICE, _higherLowerChoice);
+      ..on(SocketMessage_Type.HIGHERLOWER_CHOICE, _higherLowerChoice)
+      ..on(SocketMessage_Type.REQUEST_PICK_UP, _requestPickUp);
   }
 
   _onClose() {
@@ -107,6 +108,14 @@ class SocketReceiver {
       final match = _matchManager.matchFromSocket(_socket);
 
       match.onHigherLowerChoice(_socket, higherLowerChoice);
+    }
+  }
+
+  _requestPickUp() {
+    if (_matchManager.socketInMatch(_socket)) {
+      final match = _matchManager.matchFromSocket(_socket);
+
+      match.onRequestPickup(_socket);
     }
   }
 }

@@ -19,6 +19,8 @@ class Card extends $pb.GeneratedMessage {
     ..aOS(2, 'id')
     ..a<int>(3, 'value', $pb.PbFieldType.O3)
     ..aOB(4, 'hidden')
+    ..a<int>(5, 'playerIndex', $pb.PbFieldType.O3)
+    ..aOB(6, 'activated')
     ..hasRequiredFields = false
   ;
 
@@ -55,6 +57,16 @@ class Card extends $pb.GeneratedMessage {
   set hidden(bool v) { $_setBool(3, v); }
   bool hasHidden() => $_has(3);
   void clearHidden() => clearField(4);
+
+  int get playerIndex => $_get(4, 0);
+  set playerIndex(int v) { $_setSignedInt32(4, v); }
+  bool hasPlayerIndex() => $_has(4);
+  void clearPlayerIndex() => clearField(5);
+
+  bool get activated => $_get(5, false);
+  set activated(bool v) { $_setBool(5, v); }
+  bool hasActivated() => $_has(5);
+  void clearActivated() => clearField(6);
 }
 
 class Tower extends $pb.GeneratedMessage {

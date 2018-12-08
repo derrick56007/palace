@@ -153,6 +153,27 @@ class GameUI {
       });
     stage.addChild(sendButton);
 
+    final pickUpButton =
+        new TextField("Pick Up", new TextFormat('Arial', 50, Color.Black));
+    pickUpButton
+      ..x = midPoint.x + 300
+      ..y = midPoint.y
+      ..height = 50
+      ..width = 200
+      ..pivotX = pickUpButton.width / 2
+      ..pivotY = pickUpButton.height / 2 + 60
+      ..onMouseClick.listen((_) {
+        sendPickUp();
+      })
+      ..onMouseOver.listen((_) {
+        if (playedCards.isNotEmpty && selectableCardIDs.isNotEmpty) {
+          pickUpButton.mouseCursor = MouseCursor.POINTER;
+        } else {
+          pickUpButton.mouseCursor = MouseCursor.DEFAULT;
+        }
+      });
+    stage.addChild(pickUpButton);
+
     stage.onMouseMove.listen((MouseEvent e) {
       final objects = stage.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
 
@@ -809,5 +830,14 @@ class GameUI {
     dealTowerAnim(card2, card1Towers, card1TowerIndex, card1Index, 1.25);
 
     bringHandCardsToTop();
+  }
+
+  void sendPickUp() {
+    if (playedCards.isNotEmpty &&
+        selectableCardIDs.isNotEmpty) {
+      socket.send(SocketMessage_Type.REQUEST_PICK_UP);
+
+      clearSelectableCards();
+    }
   }
 }
