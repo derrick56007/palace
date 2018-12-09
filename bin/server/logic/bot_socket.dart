@@ -25,6 +25,8 @@ class BotSocket extends CommonWebSocket {
 
         final match = MatchManager.shared.matchFromSocket(this);
 
+        if (match == null) break;
+
         final lowCardThreshold = 5;
         final lowCardIDs = new CardIDs();
 

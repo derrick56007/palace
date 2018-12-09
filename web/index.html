@@ -10,11 +10,11 @@
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta name="scaffolded-by" content="https://github.com/google/stagehand">
     <title>palace_ui</title>
 
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">   
     <script defer src="main.dart.js"></script>
 </head>
 
@@ -80,62 +80,22 @@
                 </div>
             </div>
 
-            <!--<div class="card matches-card">-->
-            <!--<h5>Matches</h5>-->
-
-            <!--<ul id="matches-list">-->
-            <!--<li class="collection-item card">-->
-            <!--<div class="collection-item-text">-->
-            <!--<div class="collection-item-title">Invite</div>-->
-            <!--derp merp yerp herp awdk-->
-            <!--</div>-->
-            <!--<div class="collection-item-btns">-->
-            <!--<a href="#!" class="secondary-content">-->
-            <!--<a class="btn-floating btn-small waves-effect waves-light teal">-->
-            <!--<i class="material-icons">check</i>-->
-            <!--</a>-->
-            <!--<a class="btn-floating btn-small waves-effect waves-light red">-->
-            <!--<i class="material-icons">close</i>-->
-            <!--</a>-->
-            <!--</a>-->
-            <!--</div>-->
-            <!--</li>-->
-
-            <!--</ul>-->
-            <!--</div>-->
-
             <div class="card friends-card">
                 <h5>Friends</h5>
+                <ul id="friend-request-list"></ul>
+                <ul id="friends-list"></ul>
+            </div>
 
-                <ul id="friend-request-list">
-
-                </ul>
-
-                <ul id="friends-list">
-
-                </ul>
+            <div class="card quick-card">
+                <h5>Quick Match</h5>
+                <div id="quick-btn" class="btn">
+                    Start
+                </div>
             </div>
 
             <div id="lobby-card" class="card" style="display: none">
                 <div class="card-title">Lobby Info</div>
-                <ul id="lobby-list">
-                    <li class="lobby-item collection-item z-depth-1">
-                        <div class="lobby-item-text">
-                            derp merp yerp herp awdk
-                        </div>
-                        <div class="lobby-item-status card teal white-text" style="margin: auto">
-                            Ready!
-                        </div>
-                    </li>
-                    <li class="lobby-item collection-item z-depth-1">
-                        <div class="lobby-item-text">
-                            derp merp yerp herp awdk
-                        </div>
-                        <div class="lobby-item-status card red white-text" style="margin: auto">
-                            Waiting
-                        </div>
-                    </li>
-                </ul>
+                <ul id="lobby-list"></ul>
                 <div id="lobby-btn" class="btn disabled">
                     Waiting for players...
                 </div>
@@ -148,12 +108,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var elems = document.querySelectorAll('.modal');
-
-        var options = {dismissable: false};
-        var instances = M.Modal.init(elems, options);
-    });
 </script>
 
 </html>

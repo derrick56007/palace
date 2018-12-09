@@ -5,6 +5,7 @@ export 'generated_protos/match_invite.pb.dart' show LobbyInfo;
 export 'generated_protos/match_invite.pb.dart' show PlayerEntry;
 export 'generated_protos/simple_info.pb.dart' show SimpleInfo;
 export 'generated_protos/socket_message.pb.dart' show SocketMessage;
+export 'generated_protos/socket_message.pb.dart' show RequestHigherLowerChoiceInfo;
 export 'generated_protos/socket_message.pb.dart' show SocketMessage_Type;
 export 'generated_protos/socket_message.pb.dart' show ActivePlayerIndex;
 export 'generated_protos/socket_message.pb.dart' show FriendItemInfo;

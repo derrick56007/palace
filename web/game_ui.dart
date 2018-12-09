@@ -48,7 +48,7 @@ class GameUI {
   Bitmap currentPlayerToken;
 
   final Bitmap blackOverlay =
-      new Bitmap(new BitmapData(gameWidth, gameHeight, Color.Black));
+      new Bitmap(new BitmapData(gameWidth * 2, gameHeight * 2, Color.Black));
 
   Sprite higherChoice;
   Sprite lowerChoice;
@@ -63,6 +63,11 @@ class GameUI {
 
     stage = new Stage(canvas,
         width: gameWidth, height: gameHeight, options: options);
+
+    blackOverlay.pivotX = blackOverlay.width / 2;
+    blackOverlay.pivotY = blackOverlay.height / 2;
+    blackOverlay.x = gameWidth / 2;
+    blackOverlay.y = gameHeight / 2;
 
     final renderLoop = new RenderLoop();
     renderLoop.addStage(stage);
@@ -103,7 +108,7 @@ class GameUI {
         .add(new Bitmap(resourceManager.getBitmapData("LOWER_CHOICE")));
     lowerChoice.pivotX = lowerChoice.width / 2;
     lowerChoice.pivotY = lowerChoice.height / 2;
-    lowerChoice.x = midPoint.x - lowerChoice.width / 2 - 25;
+    lowerChoice.x = midPoint.x - lowerChoice.width / 2 - 100;
     lowerChoice.y = midPoint.y;
     lowerChoice.mouseCursor = MouseCursor.POINTER;
     lowerChoice.filters = [
@@ -120,7 +125,7 @@ class GameUI {
         .add(new Bitmap(resourceManager.getBitmapData("HIGHER_CHOICE")));
     higherChoice.pivotX = higherChoice.width / 2;
     higherChoice.pivotY = higherChoice.height / 2;
-    higherChoice.x = midPoint.x + higherChoice.width / 2 + 25;
+    higherChoice.x = midPoint.x + higherChoice.width / 2 + 100;
     higherChoice.y = midPoint.y;
     higherChoice.mouseCursor = MouseCursor.POINTER;
     higherChoice.filters = [
@@ -158,7 +163,7 @@ class GameUI {
     pickUpButton
       ..x = midPoint.x + 300
       ..y = midPoint.y
-      ..height = 50
+      ..height = 60
       ..width = 200
       ..pivotX = pickUpButton.width / 2
       ..pivotY = pickUpButton.height / 2 + 60
@@ -178,22 +183,32 @@ class GameUI {
       final objects = stage.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
 
       final cardsTouched = objects.where((e) => e.parent is ClientCard);
-
-      for (var card in playedCards) {
-        if (!stage.juggler.containsTweens(card)) {
-          card.alpha = 1;
-        }
-      }
+      final parents = <ClientCard>[];
 
       for (var card in cardsTouched) {
         final parent = card.parent as ClientCard;
 
-        if (playedCards.contains(parent) &&
+        parents.add(parent);
+
+        if (parent.cardInfo != null &&
             parent.cardInfo.type != Card_Type.BASIC &&
             parent.cardInfo.type != Card_Type.HIGHER_LOWER &&
-            parent.cardInfo.type != Card_Type.WILD) {
-          parent.alpha = 0.1;
+            parent.cardInfo.type != Card_Type.WILD &&
+            playedCards.contains(parent)) {
+          final tween =
+              stage.juggler.addTween(parent, .25, Transition.easeOutQuintic);
+          tween.animate.alpha.to(0.1);
         }
+      }
+
+      for (var card in playedCards) {
+        if (parents.contains(card)) continue;
+
+        if (card.alpha != 0.1) continue;
+
+        final tween =
+            stage.juggler.addTween(card, .25, Transition.easeOutQuintic);
+        tween.animate.alpha.to(1);
       }
 
       if (hands.isEmpty) return;
@@ -289,7 +304,6 @@ class GameUI {
       ..ids.addAll(SelectableManager.shared.selectedIDs);
 
     socket.send(SocketMessage_Type.USER_PLAY, cardIDs);
-    print('sent $cardIDs');
 
     clearSelectableCards();
 
@@ -456,6 +470,9 @@ class GameUI {
       final pickedUpCard = cardRegistry[cardInfo.id];
       pickedUpCard.cardInfo = cardInfo;
 
+      stage.juggler.removeTweens(pickedUpCard);
+      pickedUpCard.alpha = 1;
+
       hands[info.userIndex].add(pickedUpCard);
       pickedUpCards.add(pickedUpCard);
     }
@@ -549,12 +566,9 @@ class GameUI {
   }
 
   onDrawInfo(DrawInfo info) async {
-    print('draw info');
-    print(info);
-
     final newCards = <ClientCard>[];
 
-    final initalHandLength = hands[info.userIndex].length;
+    final initialHandLength = hands[info.userIndex].length;
 
     for (var cardInfo in info.cards) {
       final newCard = drawFromDeck(cardInfo);
@@ -564,7 +578,7 @@ class GameUI {
     }
 
     animateCardsInHand(
-        info.userIndex, .75, Transition.easeOutQuintic, initalHandLength);
+        info.userIndex, .75, Transition.easeOutQuintic, initialHandLength);
     await new Future.delayed(const Duration(milliseconds: 500));
 
     for (var cCard in newCards) {
@@ -685,7 +699,7 @@ class GameUI {
     return new Point(nx, ny);
   }
 
-  onRequest_HigherLowerChoice() {
+  onRequest_HigherLowerChoice(int value) {
     blackOverlay.alpha = 0;
 
     stage.addChild(blackOverlay);
@@ -706,6 +720,25 @@ class GameUI {
     final tween3 =
         stage.juggler.addTween(lowerChoice, .5, Transition.easeOutQuintic);
     tween3.animate.alpha.to(1);
+    tween3.onComplete = () {
+      final cardInfo = new Card()
+        ..type = Card_Type.BASIC
+        ..value = value
+        ..id = playedCards.last.cardInfo.id;
+      playedCards.last.cardInfo = cardInfo;
+
+      final tween4 = stage.juggler
+          .addTween(playedCards.last, .5, Transition.easeOutQuintic);
+      tween4.animate.rotation.to(0);
+      tween4.animate.x.to(gameWidth / 2);
+      tween4.animate.y.to(gameHeight / 2);
+    };
+
+    stage.setChildIndex(playedCards.last, stage.children.length - 1);
+    playedCards.last.filters.addAll([
+      new GlowFilter(Color.Gold, 15, 15, 2),
+      new GlowFilter(Color.Gold, 15, 15, 2)
+    ]);
   }
 
   chooseHigherLower(HigherLowerChoice_Type type) {
@@ -715,11 +748,11 @@ class GameUI {
 
     final higherLowerChoice = new HigherLowerChoice()..choice = type;
     socket.send(SocketMessage_Type.HIGHERLOWER_CHOICE, higherLowerChoice);
+
+    playedCards.last.filters.removeWhere((filter) => filter is GlowFilter);
   }
 
   onHigherLowerChoice(HigherLowerChoice choice) {
-    assert(playedCards.last.cardInfo.type == Card_Type.HIGHER_LOWER);
-
     final card = playedCards.last;
     card.front.removeFromParent();
     card.front = new Bitmap(
@@ -833,8 +866,7 @@ class GameUI {
   }
 
   void sendPickUp() {
-    if (playedCards.isNotEmpty &&
-        selectableCardIDs.isNotEmpty) {
+    if (playedCards.isNotEmpty && selectableCardIDs.isNotEmpty) {
       socket.send(SocketMessage_Type.REQUEST_PICK_UP);
 
       clearSelectableCards();

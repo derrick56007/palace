@@ -121,3 +121,29 @@ class FriendItemInfo extends $pb.GeneratedMessage {
   void clearColor() => clearField(5);
 }
 
+class RequestHigherLowerChoiceInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RequestHigherLowerChoiceInfo', package: const $pb.PackageName('palace'))
+    ..a<int>(1, 'value', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  RequestHigherLowerChoiceInfo() : super();
+  RequestHigherLowerChoiceInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RequestHigherLowerChoiceInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RequestHigherLowerChoiceInfo clone() => new RequestHigherLowerChoiceInfo()..mergeFromMessage(this);
+  RequestHigherLowerChoiceInfo copyWith(void Function(RequestHigherLowerChoiceInfo) updates) => super.copyWith((message) => updates(message as RequestHigherLowerChoiceInfo));
+  $pb.BuilderInfo get info_ => _i;
+  static RequestHigherLowerChoiceInfo create() => new RequestHigherLowerChoiceInfo();
+  static $pb.PbList<RequestHigherLowerChoiceInfo> createRepeated() => new $pb.PbList<RequestHigherLowerChoiceInfo>();
+  static RequestHigherLowerChoiceInfo getDefault() => _defaultInstance ??= create()..freeze();
+  static RequestHigherLowerChoiceInfo _defaultInstance;
+  static void $checkItem(RequestHigherLowerChoiceInfo v) {
+    if (v is! RequestHigherLowerChoiceInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  int get value => $_get(0, 0);
+  set value(int v) { $_setSignedInt32(0, v); }
+  bool hasValue() => $_has(0);
+  void clearValue() => clearField(1);
+}
+

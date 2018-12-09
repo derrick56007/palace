@@ -168,3 +168,11 @@ div .lobby-item-status {
     display: flex;
     line-height: 2em;
 }
+
+.quick-card {
+    display: flex;
+    flex-direction: column;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-bottom: 4px;
+}

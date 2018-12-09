@@ -49,6 +49,12 @@ message SocketMessage {
 
         // To server
         REQUEST_PICK_UP = 38;
+
+        //To client
+        CLOSE_LOBBY_CARD = 39;
+
+        //To server
+        QUICK_JOIN = 40;
     }
 
     Type type = 1;
@@ -65,4 +71,8 @@ message FriendItemInfo {
     bool invitable = 3;
     string statusText = 4;
     string color = 5;
+}
+
+message RequestHigherLowerChoiceInfo {
+    int32 value = 1;
 }

@@ -367,7 +367,8 @@ class Match {
         return;
       }
 
-      socket.send(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE);
+      final requestInfo = new RequestHigherLowerChoiceInfo()..value = resolvePileState();
+      socket.send(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE, requestInfo);
       return;
     }
   }
@@ -631,7 +632,13 @@ class Match {
     }
 
     // return 0 if no value cards
-    if (valueCards.isEmpty) return 0;
+    if (valueCards.isEmpty) {
+      // if last card is higher lower
+      if (playedCards.last == Card_Type.HIGHER_LOWER) {
+        return playedCards.last.value;
+      }
+      return 0;
+    }
 
     return valueCards.last.value;
   }
@@ -1329,14 +1336,13 @@ class Match {
   Future onRequestPickup(CommonWebSocket socket) async {
     if (activePlayer == socket) {
       final last = playedCards.last;
-      if (getSelectableCardIDs(socket).isNotEmpty &&
-          playedCards.isNotEmpty) {
-
+      if (getSelectableCardIDs(socket).isNotEmpty && playedCards.isNotEmpty) {
         // deny picking up immediately after playing
         if (last is Card &&
             last.playerIndex == players.indexOf(socket) &&
             (last.type == Card_Type.HAND_SWAP ||
-                last.type == Card_Type.TOP_SWAP)) {
+                last.type == Card_Type.TOP_SWAP ||
+                last.type == Card_Type.DISCARD_OR_ROCK)) {
           sendSelectableCards(socket);
           return;
         }

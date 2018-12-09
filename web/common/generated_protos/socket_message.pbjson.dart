@@ -55,6 +55,8 @@ const SocketMessage_Type$json = const {
     const {'1': 'LOGOUT_SUCCESSFULL', '2': 36},
     const {'1': 'CHANGE_DISCARD_TO_ROCK', '2': 37},
     const {'1': 'REQUEST_PICK_UP', '2': 38},
+    const {'1': 'CLOSE_LOBBY_CARD', '2': 39},
+    const {'1': 'QUICK_JOIN', '2': 40},
   ],
 };
 
@@ -73,6 +75,13 @@ const FriendItemInfo$json = const {
     const {'1': 'invitable', '3': 3, '4': 1, '5': 8, '10': 'invitable'},
     const {'1': 'statusText', '3': 4, '4': 1, '5': 9, '10': 'statusText'},
     const {'1': 'color', '3': 5, '4': 1, '5': 9, '10': 'color'},
+  ],
+};
+
+const RequestHigherLowerChoiceInfo$json = const {
+  '1': 'RequestHigherLowerChoiceInfo',
+  '2': const [
+    const {'1': 'value', '3': 1, '4': 1, '5': 5, '10': 'value'},
   ],
 };
 

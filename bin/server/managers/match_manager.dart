@@ -174,6 +174,34 @@ class MatchManager {
     lobby.acceptInvite(socket);
   }
 
+  quickMatch(CommonWebSocket socket) {
+    if (socketInLobby(socket) || socketInMatch(socket)) {
+      // TODO send error
+      return;
+    }
+
+//    final bot = _matchBySocket.keys.firstWhere((_socket) => _socket is BotSocket);
+//
+//    if (bot != null) {
+//      //TODO replace bot
+//    } else {
+    final players = <CommonWebSocket>[socket];
+
+    // add bots
+    while (players.length < 4) {
+      final botSocket = new BotSocket();
+      SocketReceiver.handle(botSocket);
+      players.add(botSocket);
+    }
+    final match = new Match(players);
+
+    for (var player in players) {
+      _matchBySocket[player] = match;
+    }
+    socket.send(SocketMessage_Type.MATCH_START);
+//    }
+  }
+
   startMatch(CommonWebSocket socket) {
     if (!socketInLobby(socket) || socketInMatch(socket)) {
       // TODO send error
@@ -236,6 +264,16 @@ class MatchManager {
     if (socketInMatch(socket)) {
       final match = matchFromSocket(socket);
       _matchBySocket.remove(socket);
+
+      // if there is currently 2 players, and replacing one with bot
+      if (match.players.where((socket) => socket is ServerWebSocket).length <=
+          1) {
+        // close game, no more players
+        match.gameEnded = true;
+        _matchBySocket.removeWhere((ws, _match) => _match == match);
+        print('closed game');
+        return;
+      }
 
       final botSocket = new BotSocket();
       SocketReceiver.handle(botSocket);

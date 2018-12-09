@@ -9,9 +9,17 @@ class MatchHandler {
   final UListElement lobbyList = querySelector('#lobby-list');
   final Element lobbyBtn = querySelector('#lobby-btn');
   final Element lobbyCard = querySelector('#lobby-card');
+  final Element quickBtn = querySelector('#quick-btn');
 //  final Element lobbyCancelBtn = querySelector('#lobby-cancel-btn');
 
   MatchHandler(this.client) {
+    quickBtn.onClick.listen((_) {
+      if (quickBtn.classes.contains('disabled')) return;
+      quickBtn.classes.add('disabled');
+
+      client.send(SocketMessage_Type.QUICK_JOIN);
+    });
+
     lobbyBtn.onClick.listen((_) {
       if (lobbyBtn.classes.contains('disabled')) return;
 
@@ -27,6 +35,9 @@ class MatchHandler {
     });
 
     client
+      ..on(SocketMessage_Type.CLOSE_LOBBY_CARD, () {
+        lobbyCard.style.display = 'none';
+      })
       ..on(SocketMessage_Type.MATCH_START, () {
         lobbyCard.style.display = 'none';
 

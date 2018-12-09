@@ -40,7 +40,8 @@ class SocketReceiver {
       ..on(SocketMessage_Type.MATCH_DECLINE, _matchDecline)
       ..on(SocketMessage_Type.USER_PLAY, _userPlay)
       ..on(SocketMessage_Type.HIGHERLOWER_CHOICE, _higherLowerChoice)
-      ..on(SocketMessage_Type.REQUEST_PICK_UP, _requestPickUp);
+      ..on(SocketMessage_Type.REQUEST_PICK_UP, _requestPickUp)
+      ..on(SocketMessage_Type.QUICK_JOIN, _quickJoinMatch);
   }
 
   _onClose() {
@@ -117,5 +118,9 @@ class SocketReceiver {
 
       match.onRequestPickup(_socket);
     }
+  }
+  
+  _quickJoinMatch() {
+    MatchManager.shared.quickMatch(_socket);
   }
 }

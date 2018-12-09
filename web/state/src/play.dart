@@ -64,8 +64,9 @@ class Play extends State {
         final cardIDs = new CardIDs.fromJson(json);
         game.setSelectableCards(cardIDs);
       })
-      ..on(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE, () {
-        game.onRequest_HigherLowerChoice();
+      ..on(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE, (var json) {
+        final requestInfo = new RequestHigherLowerChoiceInfo.fromJson(json);
+        game.onRequest_HigherLowerChoice(requestInfo.value);
       })
       ..on(SocketMessage_Type.ACTIVE_PLAYER_INDEX, (var json) {
         final activePlayerIndex = new ActivePlayerIndex.fromJson(json);
