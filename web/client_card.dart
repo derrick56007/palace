@@ -28,7 +28,9 @@ class ClientCard extends Sprite {
 //    addChild(crossOut);
     addChild(back);
 
-    filters = [new DropShadowFilter(1)];
+    if (!StageXL.environment.isMobileDevice) {
+      filters = [new DropShadowFilter(1)];
+    }
 
     pivotX = cardWidth / 2;
     pivotY = cardHeight / 2;
