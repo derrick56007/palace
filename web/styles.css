@@ -176,3 +176,7 @@ div .lobby-item-status {
     padding-right: 3px;
     padding-bottom: 4px;
 }
+
+html {
+    touch-action: manipulation;
+}
