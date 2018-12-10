@@ -1,10 +1,9 @@
-
-
 import 'package:stagexl/stagexl.dart';
 
 import 'common/generated_protos/cards.pb.dart';
 import 'game_ui.dart';
 import 'selectable_manager.dart';
+import 'dart:html';
 
 class ClientCard extends Sprite {
   static const cardWidth = 140;
@@ -18,36 +17,47 @@ class ClientCard extends Sprite {
   bool draggable = false;
   bool interactable = false;
 
+  isMobileDevice() =>
+      window.orientation != null ||
+      window.navigator.userAgent.contains('IEMobile');
+
   ClientCard() {
-    crossOut =
-        new Bitmap(new BitmapData(cardWidth, cardHeight, Color.Green));
+    crossOut = new Bitmap(new BitmapData(cardWidth, cardHeight, Color.Green));
     crossOut.alpha = 50;
     crossOut.userData = "crossOut";
-//    bd.blendMode = BlendMode.SCREEN;
 
-//    addChild(crossOut);
     addChild(back);
 
-//    filters = [new DropShadowFilter(1)];
+    if (!isMobileDevice()) {
+      filters = [new DropShadowFilter(1)];
+    }
 
     pivotX = cardWidth / 2;
     pivotY = cardHeight / 2;
 
     onMouseClick.listen((_) {
-      if (selectable && _card != null && _card.id != null) {
-        // deselect
-        if (SelectableManager.shared.selectedIDs.contains(_card.id)) {
-          SelectableManager.shared.selectedIDs.remove(_card.id);
-
-          children.remove(crossOut);
-        } else {
-          // select
-          SelectableManager.shared.selectedIDs.add(_card.id);
-
-          children.add(crossOut);
-        }
-      }
+      _onClick();
     });
+
+    onTouchTap.listen((_) {
+      _onClick();
+    });
+  }
+  
+  _onClick() {
+    if (selectable && _card != null && _card.id != null) {
+      // deselect
+      if (SelectableManager.shared.selectedIDs.contains(_card.id)) {
+        SelectableManager.shared.selectedIDs.remove(_card.id);
+
+        children.remove(crossOut);
+      } else {
+        // select
+        SelectableManager.shared.selectedIDs.add(_card.id);
+
+        children.add(crossOut);
+      }
+    }
   }
 
   set cardInfo(Card card) {
