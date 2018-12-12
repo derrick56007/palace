@@ -15,6 +15,7 @@ main() async {
 
   StateManager.shared.addAll({
     'login': new Login(client),
+    'register': new Register(client),
     'play': new Play(client)
   });
 

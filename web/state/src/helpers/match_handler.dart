@@ -10,6 +10,8 @@ class MatchHandler {
   final Element lobbyBtn = querySelector('#lobby-btn');
   final Element lobbyCard = querySelector('#lobby-card');
   final Element quickBtn = querySelector('#quick-btn');
+  final Element quickCard = querySelector('#quick-card');
+
 //  final Element lobbyCancelBtn = querySelector('#lobby-cancel-btn');
 
   MatchHandler(this.client) {
@@ -36,9 +38,11 @@ class MatchHandler {
 
     client
       ..on(SocketMessage_Type.CLOSE_LOBBY_CARD, () {
+        quickCard.style.display = 'none';
         lobbyCard.style.display = 'none';
       })
       ..on(SocketMessage_Type.MATCH_START, () {
+        quickCard.style.display = 'none';
         lobbyCard.style.display = 'none';
 
         print('match started!');
@@ -46,6 +50,7 @@ class MatchHandler {
         (querySelector('#toggle-1') as InputElement).checked = false;
       })
       ..on(SocketMessage_Type.MATCH_INVITE, (var json) {
+        quickCard.style.display = 'none';
         lobbyCard.style.display = '';
 
         final matchInvite = new LobbyInfo.fromJson(json);
@@ -70,6 +75,7 @@ class MatchHandler {
         print('match invitation canceled by $friendID');
       })
       ..on(SocketMessage_Type.LOBBY_INFO, (var json) {
+        quickCard.style.display = 'none';
         lobbyCard.style.display = '';
 
         final lobbyInfo = new LobbyInfo.fromJson(json);

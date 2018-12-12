@@ -9,7 +9,7 @@ html, body, .stage--fullscreen, #play-card {
     overflow: hidden;
 }
 
-#login-card {
+#login-card, #register-card {
     display: flex;
     justify-content: center;
 }
@@ -46,11 +46,10 @@ canvas {
     width: 40px;
     height: 34px;
     padding-top: 4px;
-    color: black;
+    color: white;
     text-align: center;
     line-height: 2.5em;
     border-radius: 3px;
-    background: white;
     cursor: pointer;
     user-select: none;
     pointer-events: all;
@@ -90,8 +89,11 @@ input[type=checkbox]:checked ~ #side-bar {
 
 .friends-card {
     flex-grow: 1;
-    overflow: auto;
     padding: 5px;
+    position: relative;
+    height: 50vh;
+    min-height: 50vh;
+    overflow-y: hidden;
 }
 
 .friend-card h5 {
@@ -157,6 +159,7 @@ div .collection-item-friend-header {
 
 div .lobby-item-status {
     padding: 3px 5px;
+    width: 70px;
 }
 
 #lobby-btn {
@@ -189,5 +192,40 @@ html {
     -ms-user-select:none;
     user-select:none;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
-    -webkit-touch-callout: none;
+}
+
+#login-card p, #register-card p {
+    margin-top: 5px;
+    margin-bottom: 2px;
+}
+
+#add_friend_username, .card-title, .card, input {
+    color: white;
+}
+
+#login-card p, #register-card p {
+    color: #848484;
+}
+
+.card, .side-bar-btn {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.collection-item {
+    background: #ffffff1f;
+}
+
+.collection-item-text {
+    color: #f3f3f3;
+}
+
+.collection-item-btn .btn-small {
+    width: 65px;
+    justify-content: center;
+}
+
+#friends-list {
+    max-height: 100%;
+    overflow-y: auto;
+    padding-bottom: 60px;
 }

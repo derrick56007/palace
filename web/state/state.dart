@@ -11,6 +11,7 @@ import 'src/helpers/friend_handler.dart';
 import 'src/helpers/match_handler.dart';
 
 part 'src/play.dart';
+part 'src/register.dart';
 part 'src/login.dart';
 part 'state_manager.dart';
 

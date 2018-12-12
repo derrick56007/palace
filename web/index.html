@@ -22,7 +22,7 @@
 
 <div id="login-card" class="darken-1" style="display: none">
 
-    <div class="card" style="height: 310px">
+    <div class="card" style="height: 360px">
         <div class="card-content black-text" style="padding-bottom: 14px; text-align: center">
             <div class="card-title">Login</div>
             <div class="input-field col s6" style="height: 80px">
@@ -34,10 +34,16 @@
                 <label for="login_password">Password</label>
             </div>
             <a id="login-btn" class="waves-effect waves-light btn">Login</a>
+            <p>Don't have an account yet?</p>
+            <div id="sign-up-btn" style="color: teal; cursor: pointer; font-weight: 600;">Sign Up</div>
         </div>
     </div>
 
-    <div class="card" style="margin-left: 5px;">
+</div>
+
+<div id="register-card" class="darken-1" style="display: none">
+
+    <div class="card">
         <div class="card-content black-text" style="padding-bottom: 14px; text-align: center">
             <div class="card-title">Register</div>
             <div class="input-field col s6" style="height: 80px">
@@ -54,6 +60,8 @@
                 <label for="register_password_retype">Retype Password</label>
             </div>
             <a id="register-btn" class="waves-effect waves-light btn">Register</a>
+            <p>Already have an account?</p>
+            <div id="back-to-login-btn" style="color: teal; cursor: pointer; font-weight: 600;">Login In</div>
         </div>
     </div>
 
@@ -86,7 +94,7 @@
                 <ul id="friends-list"></ul>
             </div>
 
-            <div class="card quick-card">
+            <div id="quick-card" class="card quick-card">
                 <h5>Quick Match</h5>
                 <div id="quick-btn" class="btn">
                     Start
