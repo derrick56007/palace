@@ -293,7 +293,7 @@ class GameUI {
     }
 
     cardsInDeckTextField.text = '${deck.length} Card(s)';
-    cardsInPileTextField.text = '${deck.length} Card(s)';
+    cardsInPileTextField.text = '${playedCards.length} Card(s)';
   }
 
   ClientCard dealTowerAnim(ClientCard newCard, List<List<ClientCard>> towers,
