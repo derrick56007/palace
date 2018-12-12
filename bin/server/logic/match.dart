@@ -537,12 +537,20 @@ class Match {
     final tower = topTowers[socket];
     final hand = hands[socket];
 
+
+    for (var card in tower.cards) {
+      if (cards.contains(card)) {
+        hand.cards.add(card);
+      }
+    }
+
     for (var card in cards) {
       if (tower.cards.contains(card)) {
-        hand.cards.add(card);
         tower.cards[tower.cards.indexOf(card)] = _emptyCard;
       }
     }
+
+    cards = hand.cards;
 
     final socketIndex = players.indexOf(socket);
 
