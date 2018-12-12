@@ -87,6 +87,10 @@ class Play extends State {
       ..on(SocketMessage_Type.CHANGE_DISCARD_TO_ROCK, (var json) {
         final card = new Card.fromJson(json);
         game.onChangeDiscardToRock(card);
+      })
+      ..on(SocketMessage_Type.MULLIGAN_TIMER_UPDATE, (var json) {
+        final mulliganTimerUpdateInfo = new SimpleInfo.fromJson(json);
+        game.onMulliganTimerUpdate(mulliganTimerUpdateInfo.info);
       });
   }
 

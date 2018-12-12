@@ -367,7 +367,8 @@ class Match {
         return;
       }
 
-      final requestInfo = new RequestHigherLowerChoiceInfo()..value = resolvePileState();
+      final requestInfo = new RequestHigherLowerChoiceInfo()
+        ..value = resolvePileState();
       socket.send(SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE, requestInfo);
       return;
     }
@@ -555,24 +556,34 @@ class Match {
     }
   }
 
-  static const mulliganDuration = Duration(seconds: 10);
+  static const mulliganDuration = Duration(seconds: 12);
 
   startMulliganWindow() async {
     mulliganWindowActive = true;
 
-    // send respective cards to mulligan
-    print('open mulligan window');
+    final emptyInfo = new SimpleInfo()..info = '';
 
     final completer = new Completer();
     new CountdownTimer(mulliganDuration, const Duration(seconds: 1)).listen(
         (CountdownTimer timer) {
-      print('${timer.remaining.inSeconds} seconds left to mulligan');
 
+      final mulliganTimerUpdateInfo = new SimpleInfo()
+        ..info = '${timer.remaining.inSeconds} seconds left to mulligan';
+
+      for (var socket in players) {
+        if (hands[socket].cards.isEmpty) {
+          socket.send(SocketMessage_Type.MULLIGAN_TIMER_UPDATE,
+              mulliganTimerUpdateInfo);
+        } else {
+          socket.send(SocketMessage_Type.MULLIGAN_TIMER_UPDATE, emptyInfo);
+        }
+      }
       //
     }, onDone: () {
       mulliganWindowActive = false;
 
       for (var socket in players) {
+        socket.send(SocketMessage_Type.MULLIGAN_TIMER_UPDATE, emptyInfo);
         socket.send(SocketMessage_Type.CLEAR_SELECTABLE_CARDS);
       }
 

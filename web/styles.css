@@ -175,6 +175,7 @@ div .lobby-item-status {
     padding-left: 3px;
     padding-right: 3px;
     padding-bottom: 4px;
+    min-height: 100px;
 }
 
 html {

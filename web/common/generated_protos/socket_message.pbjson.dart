@@ -57,6 +57,7 @@ const SocketMessage_Type$json = const {
     const {'1': 'REQUEST_PICK_UP', '2': 38},
     const {'1': 'CLOSE_LOBBY_CARD', '2': 39},
     const {'1': 'QUICK_JOIN', '2': 40},
+    const {'1': 'MULLIGAN_TIMER_UPDATE', '2': 41},
   ],
 };
 

@@ -56,6 +56,10 @@ class GameUI {
   Bitmap higher;
   Bitmap lower;
 
+  TextField mulliganTimerTextField;
+  TextField cardsInDeckTextField;
+  TextField cardsInPileTextField;
+
   init() async {
     canvas.onClick.listen((_) {
       (html.querySelector('#toggle-1') as html.InputElement).checked = false;
@@ -137,8 +141,8 @@ class GameUI {
       chooseHigherLower(HigherLowerChoice_Type.HIGHER);
     });
 
-    final sendButton =
-        new TextField("Send", new TextFormat('Arial', 50, Color.Black));
+    final textFormat = new TextFormat('Arial', 50, Color.Black);
+    final sendButton = new TextField("Send", textFormat);
     sendButton
       ..x = midPoint.x + 300
       ..y = midPoint.y
@@ -158,8 +162,7 @@ class GameUI {
       });
     stage.addChild(sendButton);
 
-    final pickUpButton =
-        new TextField("Pick Up", new TextFormat('Arial', 50, Color.Black));
+    final pickUpButton = new TextField("Pick Up", textFormat);
     pickUpButton
       ..x = midPoint.x + 300
       ..y = midPoint.y
@@ -179,16 +182,45 @@ class GameUI {
       });
     stage.addChild(pickUpButton);
 
+    final textFormat2 =
+        new TextFormat('Arial', 30, Color.Black, align: TextFormatAlign.CENTER);
+    mulliganTimerTextField = new TextField('', textFormat2)
+      ..height = 40
+      ..width = 400;
+    mulliganTimerTextField
+      ..pivotX = mulliganTimerTextField.width / 2
+      ..pivotY = mulliganTimerTextField.height / 2
+      ..x = gameWidth / 2
+      ..y = gameHeight - 20;
+    stage.addChild(mulliganTimerTextField);
+
+    cardsInDeckTextField = new TextField('', textFormat2)
+      ..height = 40
+      ..width = 200;
+    cardsInDeckTextField
+      ..pivotX = cardsInDeckTextField.width / 2
+      ..pivotY = cardsInDeckTextField.height / 2
+      ..x = gameWidth / 2 - cardWidth - 100
+      ..y = gameHeight / 2 + cardHeight / 2 + 25;
+    stage.addChild(cardsInDeckTextField);
+
+    cardsInPileTextField = new TextField('', textFormat2)
+      ..height = 40
+      ..width = 200;
+    cardsInPileTextField
+      ..pivotX = cardsInPileTextField.width / 2
+      ..pivotY = cardsInPileTextField.height / 2
+      ..x = gameWidth / 2
+      ..y = gameHeight / 2 + cardHeight / 2 + 25;
+    stage.addChild(cardsInPileTextField);
+
     stage.onMouseMove.listen((MouseEvent e) {
       final objects = stage.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
 
       final cardsTouched = objects.where((e) => e.parent is ClientCard);
-      final parents = <ClientCard>[];
 
       for (var card in cardsTouched) {
         final parent = card.parent as ClientCard;
-
-        parents.add(parent);
 
         if (parent.cardInfo != null &&
             parent.cardInfo.type != Card_Type.BASIC &&
@@ -201,14 +233,10 @@ class GameUI {
         }
       }
 
-      for (var card in playedCards) {
-        if (parents.contains(card)) continue;
-
-        if (card.alpha != 0.1) continue;
-
-        final tween =
-            stage.juggler.addTween(card, .25, Transition.easeOutQuintic);
-        tween.animate.alpha.to(1);
+      if (cardsTouched.isEmpty) {
+        for (var card in playedCards) {
+          card.alpha = 1;
+        }
       }
 
       if (hands.isEmpty) return;
@@ -263,6 +291,9 @@ class GameUI {
       stage.children.add(cardSprite);
       deck.add(cardSprite);
     }
+
+    cardsInDeckTextField.text = '${deck.length} Card(s)';
+    cardsInPileTextField.text = '${deck.length} Card(s)';
   }
 
   ClientCard dealTowerAnim(ClientCard newCard, List<List<ClientCard>> towers,
@@ -311,10 +342,11 @@ class GameUI {
   }
 
   onDealTowerInfo(DealTowerInfo info) async {
-    createDeck();
     hands.clear();
     topTowers.clear();
     botTowers.clear();
+    playedCards.clear();
+    createDeck();
 
     final usersLength = info.topTowers.length;
 
@@ -433,6 +465,7 @@ class GameUI {
       revealedCard.interactable = false;
 
       playedCards.add(revealedCard);
+      cardsInPileTextField.text = '${playedCards.length} Card(s)';
       revealedCards.add(revealedCard);
 
       hands[info.userIndex].remove(revealedCard);
@@ -452,7 +485,7 @@ class GameUI {
       final offSetRotation = rand.nextDouble() / 2 * (rand.nextBool() ? -1 : 1);
 
       tween.animate.x.to(midPoint.x + offSetX);
-      tween.animate.y.to(midPoint.y + offSetY);
+      tween.animate.y.to(midPoint.y + offSetY - 15);
       tween.animate.rotation.by(offSetRotation);
 
       stage.setChildIndex(revealedCard, stage.children.length - 1);
@@ -492,6 +525,8 @@ class GameUI {
 
     playedCards.clear();
 
+    cardsInPileTextField.text = '${playedCards.length} Card(s)';
+
     bringHandCardsToTop();
   }
 
@@ -530,6 +565,8 @@ class GameUI {
 
       if (playedCards.contains(discardedCard)) {
         playedCards.remove(discardedCard);
+
+        cardsInPileTextField.text = '${playedCards.length} Card(s)';
       }
     }
   }
@@ -592,6 +629,8 @@ class GameUI {
   ClientCard drawFromDeck(Card cardInfo) {
     final cCard = deck.removeLast()..cardInfo = cardInfo;
     cardRegistry[cardInfo.id] = cCard;
+
+    cardsInDeckTextField.text = '${deck.length} Card(s)';
 
     return cCard;
   }
@@ -871,5 +910,9 @@ class GameUI {
 
       clearSelectableCards();
     }
+  }
+
+  void onMulliganTimerUpdate(String info) {
+    mulliganTimerTextField.text = info;
   }
 }

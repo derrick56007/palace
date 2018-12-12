@@ -50,6 +50,7 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
   static const SocketMessage_Type REQUEST_PICK_UP = const SocketMessage_Type._(38, 'REQUEST_PICK_UP');
   static const SocketMessage_Type CLOSE_LOBBY_CARD = const SocketMessage_Type._(39, 'CLOSE_LOBBY_CARD');
   static const SocketMessage_Type QUICK_JOIN = const SocketMessage_Type._(40, 'QUICK_JOIN');
+  static const SocketMessage_Type MULLIGAN_TIMER_UPDATE = const SocketMessage_Type._(41, 'MULLIGAN_TIMER_UPDATE');
 
   static const List<SocketMessage_Type> values = const <SocketMessage_Type> [
     ERROR,
@@ -93,6 +94,7 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     REQUEST_PICK_UP,
     CLOSE_LOBBY_CARD,
     QUICK_JOIN,
+    MULLIGAN_TIMER_UPDATE,
   ];
 
   static final Map<int, SocketMessage_Type> _byValue = $pb.ProtobufEnum.initByValue(values);

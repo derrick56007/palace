@@ -55,6 +55,9 @@ message SocketMessage {
 
         //To server
         QUICK_JOIN = 40;
+
+        //To client
+        MULLIGAN_TIMER_UPDATE = 41;
     }
 
     Type type = 1;
