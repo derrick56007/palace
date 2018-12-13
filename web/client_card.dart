@@ -103,11 +103,15 @@ class ClientCard extends Sprite {
 
     if (_selectable) {
       filters.add(glowFilter);
-      filters.add(glowFilter2);
+      if (!isMobileDevice()) {
+        filters.add(glowFilter2);
+      }
       mouseCursor = MouseCursor.POINTER;
     } else {
       filters.remove(glowFilter);
-      filters.remove(glowFilter2);
+      if (!isMobileDevice()) {
+        filters.remove(glowFilter2);
+      }
       mouseCursor = MouseCursor.DEFAULT;
     }
 
