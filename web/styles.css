@@ -46,6 +46,7 @@ canvas {
     margin-right: 5px;
     pointer-events: none;
     right: 0;
+    z-index: 1;
 }
 
 .side-bar-container .card, .setting-bar-container .card {
@@ -253,7 +254,7 @@ html {
 }
 
 #friends-list {
-    max-height: 100%;
+    height: calc(100vh - 270px);
     overflow-y: auto;
     padding-bottom: 60px;
 }
