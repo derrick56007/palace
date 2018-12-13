@@ -44,6 +44,10 @@ class BotSocket extends CommonWebSocket {
         await new Future.delayed(const Duration(milliseconds: 1500));
 
         final match = MatchManager.shared.matchFromSocket(this);
+        
+        if (match == null) {
+          break;
+        }
 
         final selectableDs = generatedMessage as CardIDs;
         final cards = match.cardListFromCardIDList(selectableDs.ids);
