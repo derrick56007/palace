@@ -67,6 +67,22 @@ class GameUI {
       (html.querySelector('#toggle-2') as html.InputElement).checked = false;
     });
 
+    var fullscreen = false;
+    final fullscreenIcon = html.querySelector('#fullscreen-icon');
+    html.querySelector('#fullscreen-btn').onClick.listen((_) {
+      if (fullscreen) {
+        // make not fullscreen
+        fullscreenIcon.text = 'fullscreen';
+        html.document.exitFullscreen();
+      } else {
+        // make fullscreen
+        fullscreenIcon.text = 'fullscreen_exit';
+        html.document.body.requestFullscreen();
+      }
+
+      fullscreen = !fullscreen;
+    });
+
     stage = new Stage(canvas,
         width: gameWidth, height: gameHeight, options: options);
 
