@@ -130,7 +130,9 @@ class BotSocket extends CommonWebSocket {
 
         final lowCardIDs = new CardIDs();
 
-        lowCardIDs.ids.add(selectableCardIDs.ids.first);
+        final random = new Random();
+        final nextIndex = random.nextInt(selectableCardIDs.ids.length);
+        lowCardIDs.ids.add(selectableCardIDs.ids[nextIndex]);
         match.userPlay(this, lowCardIDs);
         break;
       default:
