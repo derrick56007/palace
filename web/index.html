@@ -10,7 +10,7 @@
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
     <meta name="scaffolded-by" content="https://github.com/google/stagehand">
     <title>palace_ui</title>
 
@@ -125,8 +125,126 @@
         <input type="checkbox" id="toggle-2">
         <div id="setting-bar">
 
-            <div class="card">
-                <div class="card-title">Derp</div>
+            <div class="rule-card card">
+                <div class="card-content">
+                    <div class="card-title" style="text-align: center">Rules of Palace</div>
+                    <div class="rule-content">
+                        1. The goal of Palace is to get rid of all your cards by beating the current state of the pile.
+                        <br><br>
+                        2. If you have no playable cards, you must pick up the entire pile and end your turn.
+                        <br><br>
+                        3. At the end of your turn, draw from the deck until you have 3 cards. If there are no more
+                        cards in the deck, no more cards are drawn.
+                        <br><br>
+                        4. You start with 3 cards facing down and 3 cards facing up. These are your tower cards and they
+                        are not playable until there are no cards in your hand. Face down cards can not be played until
+                        the card above it is removed.
+                        <div style="display: flex; justify-content: center;">
+                            <div class="rule-demo-card">2</div>
+                            <div class="rule-demo-card">B</div>
+                            <div class="rule-demo-card">7</div>
+                        </div>
+                        <br>
+                        5. At the start of the game, you can choose which cards to pick up and start with in your hand.
+                        The cards you do not choose will become your tower cards. After the window for choosing is over,
+                        cards are dealt until all towers and hands have 3 cards.
+                        <br><br>
+                        <p style="text-align: center">Regular Cards</p>
+                        <div style="display: flex; justify-content: center;">
+                            <div class="rule-demo-card">0</div>
+                            <div class="rule-demo-card">1</div>
+                            <div class="rule-demo-card">2</div>
+                            <div class="rule-demo-card">3</div>
+                            <div class="rule-demo-card">4</div>
+                            <div class="rule-demo-card">5</div>
+                            <div class="rule-demo-card">6</div>
+                            <div class="rule-demo-card">7</div>
+                            <div class="rule-demo-card">8</div>
+                            <div class="rule-demo-card">9</div>
+                        </div>
+                        6. These regular value cards can only be played when they can beat the current pile state.
+                        <br><br>
+
+                        <p style="text-align: center">Special Cards</p>
+                        <div style="display: flex">
+                            <div>7.&nbsp;</div>
+                            <div class="rule-demo-card">W</div>
+                            <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
+                                Wild. This card can be placed on anything. When played, the state of the pile is cleared
+                                and the player's turn is restarted.
+                            </div>
+                        </div>
+                        <br>
+
+                        <div style="display: flex">
+                            <div>8.&nbsp;</div>
+                            <div class="rule-demo-card">B</div>
+                            <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
+                                Bomb. This card can be placed on anything. When played, all cards in the pile including
+                                this card are discarded and
+                                the player's turn is ended.
+                            </div>
+                        </div>
+                        <br>
+
+                        <div style="display: flex">
+                            <div>9.&nbsp;</div>
+                            <div class="rule-demo-card">R</div>
+                            <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
+                                Reverse. This card can be placed on anything. When played the current game direction is
+                                reversed and the player's turn is ended.
+                            </div>
+                        </div>
+                        <br>
+
+                        <div style="display: flex">
+                            <div>10.&nbsp;</div>
+                            <div class="rule-demo-card">HL</div>
+                            <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
+                                Higher/Lower. This card can be placed on anything. When played, the player sets
+                                the current pile state to be higher or lower than the current state of the pile and the
+                                player's turn is ended. The next player must beat the current pile state by playing a
+                                card with a value equal to or Higher/Lower depending on what the previous player chose.
+                            </div>
+                        </div>
+                        <br>
+
+                        <div style="display: flex">
+                            <div>11.&nbsp;</div>
+                            <div class="rule-demo-card">D</div>
+                            <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
+                                Discard. This card can be placed on anything. When played, all cards in the player's
+                                hand are discarded, that amount is drawn from the deck, and the player's turn is
+                                restarted. If there is no cards remaining in the deck, this card becomes a regular value
+                                card 0
+                            </div>
+                        </div>
+                        <br>
+
+                        <div style="display: flex">
+                            <div>12.&nbsp;</div>
+                            <div class="rule-demo-card">T</div>
+                            <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
+                                Topswap. This card can only be played if the player has at least one more playable card.
+                                When played, the player chooses 2 tower cards to swap, and the player's turn restarts.
+                                The player must play another card after playing this card.
+                            </div>
+                        </div>
+                        <br>
+
+                        <div style="display: flex">
+                            <div>13.&nbsp;</div>
+                            <div class="rule-demo-card">H</div>
+                            <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
+                                Handswap. This card can only be played if there is at least one other player with a
+                                hand. When played, the player chooses 1 card from another player's hand and swaps hands
+                                with the owner of that card. The player's turn then restarts. The player must play
+                                another card after playing this card.
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
