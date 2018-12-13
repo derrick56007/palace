@@ -63,6 +63,7 @@ class GameUI {
   init() async {
     canvas.onClick.listen((_) {
       (html.querySelector('#toggle-1') as html.InputElement).checked = false;
+      (html.querySelector('#toggle-2') as html.InputElement).checked = false;
     });
 
     stage = new Stage(canvas,

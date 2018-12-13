@@ -39,7 +39,7 @@ class ClientCard extends Sprite {
       _onClick();
     });
 
-    onTouchTap.listen((_) {
+    onTouchBegin.listen((_) {
       _onClick();
     });
   }

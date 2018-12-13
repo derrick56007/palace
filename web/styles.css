@@ -30,11 +30,24 @@ canvas {
     pointer-events: none;
 }
 
-.side-bar-container .card {
+.setting-bar-container {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 250px;
+    position: absolute;
+    height: 100vh;
+    justify-content: flex-start;
+    top: 0;
+    margin-right: 5px;
+    pointer-events: none;
+    right: 0;
+}
+
+.side-bar-container .card, .setting-bar-container .card {
     margin-bottom: 0;
 }
 
-#side-bar {
+#side-bar, #setting-bar {
     flex-grow: 1;
     margin-bottom: 5px;
     display: none;
@@ -42,7 +55,11 @@ canvas {
     flex-direction: column;
 }
 
-.side-bar-btn {
+.setting-bar-btn {
+    margin-left: auto;
+}
+
+.side-bar-btn, .setting-bar-btn {
     width: 40px;
     height: 34px;
     padding-top: 4px;
@@ -55,6 +72,10 @@ canvas {
     pointer-events: all;
 }
 
+#setting-bar {
+    flex-direction: column-reverse;
+}
+
 input[type=checkbox] {
     position: absolute;
     top: -9999px;
@@ -64,7 +85,7 @@ input[type=checkbox] {
 }
 
 /* Toggled State */
-input[type=checkbox]:checked ~ #side-bar {
+input[type=checkbox]:checked ~ #side-bar,  input[type=checkbox]:checked ~ #setting-bar{
     display: flex;
     pointer-events: all;
 }
@@ -72,6 +93,10 @@ input[type=checkbox]:checked ~ #side-bar {
 #side-bar h5 {
     text-align: center;
     padding-top: 5px;
+}
+
+#add-friend-btn {
+    margin-top: 6px;
 }
 
 #side-bar .input-field {
@@ -178,7 +203,7 @@ div .lobby-item-status {
     padding-left: 3px;
     padding-right: 3px;
     padding-bottom: 4px;
-    min-height: 100px;
+    min-height: 94px;
 }
 
 html {
@@ -207,7 +232,7 @@ html {
     color: #848484;
 }
 
-.card, .side-bar-btn {
+.card, .side-bar-btn, .setting-bar-btn {
     background: rgba(0, 0, 0, 0.6);
 }
 
@@ -228,4 +253,17 @@ html {
     max-height: 100%;
     overflow-y: auto;
     padding-bottom: 60px;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    position:absolute;
+}
+
+::-webkit-scrollbar-track {
+}
+
+::-webkit-scrollbar-thumb {
+    background:#FEF0FF;
+    border-radius:10px;
 }
