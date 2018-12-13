@@ -538,6 +538,7 @@ class GameUI {
     for (var cardInfo in info.cards) {
       final discardedCard = cardRegistry[cardInfo.id];
       discardedCard.cardInfo = cardInfo;
+      discardedCard.hidden = false;
 
       List<ClientCard> cardHand;
 
