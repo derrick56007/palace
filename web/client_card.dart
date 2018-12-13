@@ -11,7 +11,7 @@ class ClientCard extends Sprite {
   Card _card;
 
   Bitmap front;
-  final back = new Bitmap(GameUI.resourceManager.getBitmapData("back"));
+  final back = new Bitmap(GameUI.textureAtlas.getBitmapData("card_back"));
   Bitmap crossOut;
 
   bool draggable = false;
@@ -65,13 +65,13 @@ class ClientCard extends Sprite {
 
     if (card.type != null) {
       if (card.type == Card_Type.BASIC && card.value != null) {
-        front = new Bitmap(GameUI.resourceManager
+        front = new Bitmap(GameUI.textureAtlas
             .getBitmapData("${card.type.name}${card.value}"));
       }
 
       if (card.type != Card_Type.BASIC) {
         front = new Bitmap(
-            GameUI.resourceManager.getBitmapData("${card.type.name}"));
+            GameUI.textureAtlas.getBitmapData("${card.type.name}"));
       }
     }
 

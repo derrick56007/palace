@@ -32,7 +32,8 @@ class GameUI {
 
   GameUI(this.socket);
 
-  static final resourceManager = new ResourceManager();
+  static TextureAtlas textureAtlas;
+
   final options = new StageOptions()
     ..backgroundColor = Color.Transparent
     ..transparent = true
@@ -77,31 +78,17 @@ class GameUI {
     final renderLoop = new RenderLoop();
     renderLoop.addStage(stage);
 
-    resourceManager.addBitmapData("crown", "images/crown.png");
-    resourceManager.addBitmapData("LOWER_CHOICE", "images/LOWER_CHOICE.png");
-    resourceManager.addBitmapData("LOWER", "images/LOWER.png");
-    resourceManager.addBitmapData("HIGHER_CHOICE", "images/HIGHER_CHOICE.png");
-    resourceManager.addBitmapData("HIGHER", "images/HIGHER.png");
-    resourceManager.addBitmapData("back", "images/card_back.png");
-    // 10 because of rock
-    const basicCardLength = 10;
-    for (var i = 0; i < basicCardLength; i++) {
-      resourceManager.addBitmapData("BASIC$i", "images/BASIC$i.png");
-    }
-    resourceManager.addBitmapData("REVERSE", "images/REVERSE.png");
-    resourceManager.addBitmapData("BOMB", "images/BOMB.png");
-    resourceManager.addBitmapData("HIGHER_LOWER", "images/HIGHER_LOWER.png");
-    resourceManager.addBitmapData("WILD", "images/WILD.png");
-    resourceManager.addBitmapData("TOP_SWAP", "images/TOP_SWAP.png");
-    resourceManager.addBitmapData("HAND_SWAP", "images/HAND_SWAP.png");
-    resourceManager.addBitmapData(
-        "DISCARD_OR_ROCK", "images/DISCARD_OR_ROCK.png");
+    final resourceManager = new ResourceManager();
+    resourceManager.addTextureAtlas(
+        'spritesheet', 'images/spritesheet.json', TextureAtlasFormat.JSONARRAY);
     await resourceManager.load();
 
-    lower = new Bitmap(resourceManager.getBitmapData("LOWER"));
-    higher = new Bitmap(resourceManager.getBitmapData("HIGHER"));
+    textureAtlas = resourceManager.getTextureAtlas('spritesheet');
 
-    currentPlayerToken = new Bitmap(resourceManager.getBitmapData("crown"));
+    lower = new Bitmap(textureAtlas.getBitmapData("LOWER"));
+    higher = new Bitmap(textureAtlas.getBitmapData("HIGHER"));
+
+    currentPlayerToken = new Bitmap(textureAtlas.getBitmapData("crown"));
     currentPlayerToken.x = midPoint.x;
     currentPlayerToken.y = midPoint.y;
     currentPlayerToken.pivotX = currentPlayerToken.width / 2;
@@ -110,7 +97,7 @@ class GameUI {
 
     lowerChoice = new Sprite();
     lowerChoice.children
-        .add(new Bitmap(resourceManager.getBitmapData("LOWER_CHOICE")));
+        .add(new Bitmap(textureAtlas.getBitmapData("LOWER_CHOICE")));
     lowerChoice.pivotX = lowerChoice.width / 2;
     lowerChoice.pivotY = lowerChoice.height / 2;
     lowerChoice.x = midPoint.x - lowerChoice.width / 2 - 100;
@@ -127,7 +114,7 @@ class GameUI {
 
     higherChoice = new Sprite();
     higherChoice.children
-        .add(new Bitmap(resourceManager.getBitmapData("HIGHER_CHOICE")));
+        .add(new Bitmap(textureAtlas.getBitmapData("HIGHER_CHOICE")));
     higherChoice.pivotX = higherChoice.width / 2;
     higherChoice.pivotY = higherChoice.height / 2;
     higherChoice.x = midPoint.x + higherChoice.width / 2 + 100;
@@ -667,8 +654,6 @@ class GameUI {
         cCard.interactable = true;
       }
     };
-
-//    stage.setChildIndex(cCard, stage.children.length - 1);
   }
 
   animateCardsInHand(
@@ -795,8 +780,8 @@ class GameUI {
   onHigherLowerChoice(HigherLowerChoice choice) {
     final card = playedCards.last;
     card.front.removeFromParent();
-    card.front = new Bitmap(
-        GameUI.resourceManager.getBitmapData("BASIC${choice.value}"));
+    card.front =
+        new Bitmap(GameUI.textureAtlas.getBitmapData("BASIC${choice.value}"));
     card.addChild(card.front);
 
     if (choice.choice == HigherLowerChoice_Type.HIGHER) {
