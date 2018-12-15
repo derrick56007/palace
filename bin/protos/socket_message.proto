@@ -4,6 +4,7 @@ package palace;
 message SocketMessage {
 
     enum Type {
+        // To client
         ERROR = 0;
         LOGIN_SUCCESSFUL = 1;
         FRIEND_REQUEST = 2;
@@ -25,39 +26,29 @@ message SocketMessage {
         REQUEST_TOPSWAP_CHOICE = 18;
         REQUEST_HIGHERLOWER_CHOICE = 19;
         ACTIVE_PLAYER_INDEX = 20;
+        FRIEND_ITEM_INFO = 21;
+        LOBBY_INFO = 22;
+        LOGOUT_SUCCESSFUL = 23;
+        CHANGE_DISCARD_TO_ROCK = 24;
+        MULLIGAN_TIMER_UPDATE = 25;
 
         // to server
-        LOGIN = 21;
-        REGISTER = 22;
-        ADD_FRIEND = 23;
-        ACCEPT_FRIEND_REQUEST = 24;
-        SEND_MATCH_INVITE = 25;
-        MATCH_ACCEPT = 26;
-        MATCH_DECLINE = 27;
-        USER_PLAY = 28;
-        HANDSWAP_CHOICE = 29;
-        TOPSWAP_CHOICE = 30;
-        HIGHERLOWER_CHOICE = 31;
-        DECLINE_FRIEND_REQUEST = 32;
-        START = 33;
-
-        // to client
-        FRIEND_ITEM_INFO = 34;
-        LOBBY_INFO = 35;
-        LOGOUT_SUCCESSFULL = 36;
-        CHANGE_DISCARD_TO_ROCK = 37;
-
-        // To server
-        REQUEST_PICK_UP = 38;
-
-        //To client
-        CLOSE_LOBBY_CARD = 39;
-
-        //To server
+        LOGIN = 26;
+        REGISTER = 27;
+        ADD_FRIEND = 28;
+        ACCEPT_FRIEND_REQUEST = 29;
+        SEND_MATCH_INVITE = 30;
+        MATCH_ACCEPT = 31;
+        MATCH_DECLINE = 32;
+        USER_PLAY = 33;
+        HANDSWAP_CHOICE = 34;
+        TOPSWAP_CHOICE = 35;
+        HIGHERLOWER_CHOICE = 36;
+        DECLINE_FRIEND_REQUEST = 37;
+        START = 38;
+        REQUEST_PICK_UP = 39;
         QUICK_JOIN = 40;
-
-        //To client
-        MULLIGAN_TIMER_UPDATE = 41;
+        LEAVE_GAME = 41;
     }
 
     Type type = 1;
