@@ -184,7 +184,7 @@ class LoginManager {
 
     _userIDForSocket.remove(userID);
 
-    socket.send(SocketMessage_Type.LOGOUT_SUCCESSFULL);
+    socket.send(SocketMessage_Type.LOGOUT_SUCCESSFUL);
 
     print('logged out $userID');
 
