@@ -30,27 +30,27 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
   static const SocketMessage_Type REQUEST_TOPSWAP_CHOICE = const SocketMessage_Type._(18, 'REQUEST_TOPSWAP_CHOICE');
   static const SocketMessage_Type REQUEST_HIGHERLOWER_CHOICE = const SocketMessage_Type._(19, 'REQUEST_HIGHERLOWER_CHOICE');
   static const SocketMessage_Type ACTIVE_PLAYER_INDEX = const SocketMessage_Type._(20, 'ACTIVE_PLAYER_INDEX');
-  static const SocketMessage_Type LOGIN = const SocketMessage_Type._(21, 'LOGIN');
-  static const SocketMessage_Type REGISTER = const SocketMessage_Type._(22, 'REGISTER');
-  static const SocketMessage_Type ADD_FRIEND = const SocketMessage_Type._(23, 'ADD_FRIEND');
-  static const SocketMessage_Type ACCEPT_FRIEND_REQUEST = const SocketMessage_Type._(24, 'ACCEPT_FRIEND_REQUEST');
-  static const SocketMessage_Type SEND_MATCH_INVITE = const SocketMessage_Type._(25, 'SEND_MATCH_INVITE');
-  static const SocketMessage_Type MATCH_ACCEPT = const SocketMessage_Type._(26, 'MATCH_ACCEPT');
-  static const SocketMessage_Type MATCH_DECLINE = const SocketMessage_Type._(27, 'MATCH_DECLINE');
-  static const SocketMessage_Type USER_PLAY = const SocketMessage_Type._(28, 'USER_PLAY');
-  static const SocketMessage_Type HANDSWAP_CHOICE = const SocketMessage_Type._(29, 'HANDSWAP_CHOICE');
-  static const SocketMessage_Type TOPSWAP_CHOICE = const SocketMessage_Type._(30, 'TOPSWAP_CHOICE');
-  static const SocketMessage_Type HIGHERLOWER_CHOICE = const SocketMessage_Type._(31, 'HIGHERLOWER_CHOICE');
-  static const SocketMessage_Type DECLINE_FRIEND_REQUEST = const SocketMessage_Type._(32, 'DECLINE_FRIEND_REQUEST');
-  static const SocketMessage_Type START = const SocketMessage_Type._(33, 'START');
-  static const SocketMessage_Type FRIEND_ITEM_INFO = const SocketMessage_Type._(34, 'FRIEND_ITEM_INFO');
-  static const SocketMessage_Type LOBBY_INFO = const SocketMessage_Type._(35, 'LOBBY_INFO');
-  static const SocketMessage_Type LOGOUT_SUCCESSFULL = const SocketMessage_Type._(36, 'LOGOUT_SUCCESSFULL');
-  static const SocketMessage_Type CHANGE_DISCARD_TO_ROCK = const SocketMessage_Type._(37, 'CHANGE_DISCARD_TO_ROCK');
-  static const SocketMessage_Type REQUEST_PICK_UP = const SocketMessage_Type._(38, 'REQUEST_PICK_UP');
-  static const SocketMessage_Type CLOSE_LOBBY_CARD = const SocketMessage_Type._(39, 'CLOSE_LOBBY_CARD');
+  static const SocketMessage_Type FRIEND_ITEM_INFO = const SocketMessage_Type._(21, 'FRIEND_ITEM_INFO');
+  static const SocketMessage_Type LOBBY_INFO = const SocketMessage_Type._(22, 'LOBBY_INFO');
+  static const SocketMessage_Type LOGOUT_SUCCESSFUL = const SocketMessage_Type._(23, 'LOGOUT_SUCCESSFUL');
+  static const SocketMessage_Type CHANGE_DISCARD_TO_ROCK = const SocketMessage_Type._(24, 'CHANGE_DISCARD_TO_ROCK');
+  static const SocketMessage_Type MULLIGAN_TIMER_UPDATE = const SocketMessage_Type._(25, 'MULLIGAN_TIMER_UPDATE');
+  static const SocketMessage_Type LOGIN = const SocketMessage_Type._(26, 'LOGIN');
+  static const SocketMessage_Type REGISTER = const SocketMessage_Type._(27, 'REGISTER');
+  static const SocketMessage_Type ADD_FRIEND = const SocketMessage_Type._(28, 'ADD_FRIEND');
+  static const SocketMessage_Type ACCEPT_FRIEND_REQUEST = const SocketMessage_Type._(29, 'ACCEPT_FRIEND_REQUEST');
+  static const SocketMessage_Type SEND_MATCH_INVITE = const SocketMessage_Type._(30, 'SEND_MATCH_INVITE');
+  static const SocketMessage_Type MATCH_ACCEPT = const SocketMessage_Type._(31, 'MATCH_ACCEPT');
+  static const SocketMessage_Type MATCH_DECLINE = const SocketMessage_Type._(32, 'MATCH_DECLINE');
+  static const SocketMessage_Type USER_PLAY = const SocketMessage_Type._(33, 'USER_PLAY');
+  static const SocketMessage_Type HANDSWAP_CHOICE = const SocketMessage_Type._(34, 'HANDSWAP_CHOICE');
+  static const SocketMessage_Type TOPSWAP_CHOICE = const SocketMessage_Type._(35, 'TOPSWAP_CHOICE');
+  static const SocketMessage_Type HIGHERLOWER_CHOICE = const SocketMessage_Type._(36, 'HIGHERLOWER_CHOICE');
+  static const SocketMessage_Type DECLINE_FRIEND_REQUEST = const SocketMessage_Type._(37, 'DECLINE_FRIEND_REQUEST');
+  static const SocketMessage_Type START = const SocketMessage_Type._(38, 'START');
+  static const SocketMessage_Type REQUEST_PICK_UP = const SocketMessage_Type._(39, 'REQUEST_PICK_UP');
   static const SocketMessage_Type QUICK_JOIN = const SocketMessage_Type._(40, 'QUICK_JOIN');
-  static const SocketMessage_Type MULLIGAN_TIMER_UPDATE = const SocketMessage_Type._(41, 'MULLIGAN_TIMER_UPDATE');
+  static const SocketMessage_Type LEAVE_GAME = const SocketMessage_Type._(41, 'LEAVE_GAME');
 
   static const List<SocketMessage_Type> values = const <SocketMessage_Type> [
     ERROR,
@@ -74,6 +74,11 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     REQUEST_TOPSWAP_CHOICE,
     REQUEST_HIGHERLOWER_CHOICE,
     ACTIVE_PLAYER_INDEX,
+    FRIEND_ITEM_INFO,
+    LOBBY_INFO,
+    LOGOUT_SUCCESSFUL,
+    CHANGE_DISCARD_TO_ROCK,
+    MULLIGAN_TIMER_UPDATE,
     LOGIN,
     REGISTER,
     ADD_FRIEND,
@@ -87,14 +92,9 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     HIGHERLOWER_CHOICE,
     DECLINE_FRIEND_REQUEST,
     START,
-    FRIEND_ITEM_INFO,
-    LOBBY_INFO,
-    LOGOUT_SUCCESSFULL,
-    CHANGE_DISCARD_TO_ROCK,
     REQUEST_PICK_UP,
-    CLOSE_LOBBY_CARD,
     QUICK_JOIN,
-    MULLIGAN_TIMER_UPDATE,
+    LEAVE_GAME,
   ];
 
   static final Map<int, SocketMessage_Type> _byValue = $pb.ProtobufEnum.initByValue(values);

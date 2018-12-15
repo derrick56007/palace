@@ -24,6 +24,7 @@ class Register extends State {
   show() {
     registerCard.style.display = '';
 
+    registerUsernameEl.autofocus = true;
     registerUsernameEl.select();
 
     submitSub = window.onKeyPress.listen((KeyboardEvent e) {

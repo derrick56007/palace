@@ -41,7 +41,8 @@ class SocketReceiver {
       ..on(SocketMessage_Type.USER_PLAY, _userPlay)
       ..on(SocketMessage_Type.HIGHERLOWER_CHOICE, _higherLowerChoice)
       ..on(SocketMessage_Type.REQUEST_PICK_UP, _requestPickUp)
-      ..on(SocketMessage_Type.QUICK_JOIN, _quickJoinMatch);
+      ..on(SocketMessage_Type.QUICK_JOIN, _quickJoinMatch)
+      ..on(SocketMessage_Type.LEAVE_GAME, _leaveGame);
   }
 
   _onClose() {
@@ -93,34 +94,39 @@ class SocketReceiver {
   }
 
   _userPlay(String json) {
+
+    if (!_matchManager.socketInMatch(_socket)) return;
+
     final userPlay = new CardIDs.fromJson(json);
 
-    if (_matchManager.socketInMatch(_socket)) {
-      final match = _matchManager.matchFromSocket(_socket);
+    final match = _matchManager.matchFromSocket(_socket);
 
-      match.userPlay(_socket, userPlay);
-    }
+    match.userPlay(_socket, userPlay);
   }
 
   _higherLowerChoice(String json) {
+    if (!_matchManager.socketInMatch(_socket)) return;
+
     final higherLowerChoice = new HigherLowerChoice.fromJson(json);
 
-    if (_matchManager.socketInMatch(_socket)) {
-      final match = _matchManager.matchFromSocket(_socket);
+    final match = _matchManager.matchFromSocket(_socket);
 
-      match.onHigherLowerChoice(_socket, higherLowerChoice);
-    }
+    match.onHigherLowerChoice(_socket, higherLowerChoice);
   }
 
   _requestPickUp() {
-    if (_matchManager.socketInMatch(_socket)) {
-      final match = _matchManager.matchFromSocket(_socket);
+    if (!_matchManager.socketInMatch(_socket)) return;
 
-      match.onRequestPickup(_socket);
-    }
+    final match = _matchManager.matchFromSocket(_socket);
+
+    match.onRequestPickup(_socket);
   }
-  
+
   _quickJoinMatch() {
-    MatchManager.shared.quickMatch(_socket);
+    _matchManager.quickMatch(_socket);
+  }
+
+  _leaveGame() {
+    _matchManager.logout(_socket);
   }
 }

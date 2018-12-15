@@ -298,3 +298,8 @@ html {
     max-height: 100%;
     overflow-y: auto;
 }
+
+#exit-card {
+    text-align: center;
+    padding: 5px;
+}

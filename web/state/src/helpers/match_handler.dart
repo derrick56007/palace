@@ -9,8 +9,13 @@ class MatchHandler {
   final UListElement lobbyList = querySelector('#lobby-list');
   final Element lobbyBtn = querySelector('#lobby-btn');
   final Element lobbyCard = querySelector('#lobby-card');
+  
   final Element quickBtn = querySelector('#quick-btn');
   final Element quickCard = querySelector('#quick-card');
+  
+  final Element matchMakingContainer = querySelector('#matchmaking-container');
+  final Element inGameContainer = querySelector('#in-game-container');
+  final Element exitGameBtn = querySelector('#exit-btn');
 
 //  final Element lobbyCancelBtn = querySelector('#lobby-cancel-btn');
 
@@ -26,24 +31,35 @@ class MatchHandler {
       if (lobbyBtn.classes.contains('disabled')) return;
 
       lobbyBtn.classes.add('disabled');
-      
+
       if (lobbyBtn.text == 'Start!') {
         client.send(SocketMessage_Type.START);
       }
-      
+
       if (lobbyBtn.text == 'Join') {
         client.send(SocketMessage_Type.MATCH_ACCEPT);
       }
     });
+    
+    exitGameBtn.onClick.listen((_) {
+      if (exitGameBtn.classes.contains('disabled')) return;
+      
+      exitGameBtn.classes.add('disabled');
+      inGameContainer.style.display = 'none';
+      matchMakingContainer.style.display = '';
+      
+      client.send(SocketMessage_Type.LEAVE_GAME);
+    });
 
     client
-      ..on(SocketMessage_Type.CLOSE_LOBBY_CARD, () {
-        quickCard.style.display = 'none';
-        lobbyCard.style.display = 'none';
-      })
       ..on(SocketMessage_Type.MATCH_START, () {
-        quickCard.style.display = 'none';
-        lobbyCard.style.display = 'none';
+//        quickCard.style.display = 'none';
+//        lobbyCard.style.display = 'none';
+
+        matchMakingContainer.style.display = 'none';
+        inGameContainer.style.display = '';
+        exitGameBtn.classes.remove('disabled');
+        quickBtn.classes.remove('disabled');
 
         print('match started!');
 

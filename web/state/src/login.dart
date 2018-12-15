@@ -14,7 +14,7 @@ class Login extends State {
           _logoutSuccessful();
         })
         ..on(SocketMessage_Type.LOGIN_SUCCESSFUL, _loginSuccessful)
-        ..on(SocketMessage_Type.LOGOUT_SUCCESSFULL, _logoutSuccessful);
+        ..on(SocketMessage_Type.LOGOUT_SUCCESSFUL, _logoutSuccessful);
 
     querySelector('#login-btn').onClick.listen((_) {
       submitLogin();
@@ -29,6 +29,7 @@ class Login extends State {
   show() {
     loginCard.style.display = '';
 
+    loginUsernameEl.autofocus = true;
     loginUsernameEl.select();
 
     submitSub = window.onKeyPress.listen((KeyboardEvent e) {

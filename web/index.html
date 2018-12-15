@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html>
+
 <head>
 
     <!--Import Google Icon Font-->
@@ -94,26 +95,33 @@
                 <ul id="friends-list"></ul>
             </div>
 
-            <div id="quick-card" class="card quick-card">
-                <h5>Quick Match</h5>
-                <div id="quick-btn" class="btn">
-                    Start
+            <div id="matchmaking-container">
+                <div id="quick-card" class="card quick-card">
+                    <h5>Quick Match</h5>
+                    <div id="quick-btn" class="btn">
+                        Start
+                    </div>
+                </div>
+
+                <div id="lobby-card" class="card" style="display: none">
+                    <div class="card-title">Lobby Info</div>
+                    <ul id="lobby-list"></ul>
+                    <div id="lobby-btn" class="btn disabled">
+                        Waiting for players...
+                    </div>
                 </div>
             </div>
 
-            <div id="lobby-card" class="card" style="display: none">
-                <div class="card-title">Lobby Info</div>
-                <ul id="lobby-list"></ul>
-                <div id="lobby-btn" class="btn disabled">
-                    Waiting for players...
+            <div id="in-game-container" style="display: none;">
+                <div id="exit-card" class="card">
+                    <div id="exit-btn" class="btn disabled">Exit Match</div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <div class="setting-bar-container">
-        <span style="display: flex">
+            <span style="display: flex">
             <div id="fullscreen-btn" class="fullscreen-btn">
                 <i id="fullscreen-icon" class="material-icons">fullscreen</i>
             </div>
@@ -130,25 +138,25 @@
                     <div class="card-title" style="text-align: center">Rules of Palace</div>
                     <div class="rule-content">
                         1. The goal of Palace is to get rid of all your cards by beating the current state of the pile.
-                        <br><br>
-                        2. If you have no playable cards, you must pick up the entire pile and end your turn.
-                        <br><br>
-                        3. At the end of your turn, draw from the deck until you have 3 cards. If there are no more
+                        <br>
+                        <br> 2. If you have no playable cards, you must pick up the entire pile and end your turn.
+                        <br>
+                        <br> 3. At the end of your turn, draw from the deck until you have 3 cards. If there are no more
                         cards in the deck, no more cards are drawn.
-                        <br><br>
-                        4. You start with 3 cards facing down and 3 cards facing up. These are your tower cards and they
-                        are not playable until there are no cards in your hand. Face down cards can not be played until
-                        the card above it is removed.
+                        <br>
+                        <br> 4. You start with 3 cards facing down and 3 cards facing up. These are your tower cards and
+                        they are not playable until there are no cards in your hand. Face down cards can not be played
+                        until the card above it is removed.
                         <div style="display: flex; justify-content: center;">
                             <div class="rule-demo-card">2</div>
                             <div class="rule-demo-card">B</div>
                             <div class="rule-demo-card">7</div>
                         </div>
+                        <br> 5. At the start of the game, you can choose which cards to pick up and start with in your
+                        hand. The cards you do not choose will become your tower cards. After the window for choosing is
+                        over, cards are dealt until all towers and hands have 3 cards.
                         <br>
-                        5. At the start of the game, you can choose which cards to pick up and start with in your hand.
-                        The cards you do not choose will become your tower cards. After the window for choosing is over,
-                        cards are dealt until all towers and hands have 3 cards.
-                        <br><br>
+                        <br>
                         <p style="text-align: center">Regular Cards</p>
                         <div style="display: flex; justify-content: center;">
                             <div class="rule-demo-card">0</div>
@@ -163,7 +171,8 @@
                             <div class="rule-demo-card">9</div>
                         </div>
                         6. These regular value cards can only be played when they can beat the current pile state.
-                        <br><br>
+                        <br>
+                        <br>
 
                         <p style="text-align: center">Special Cards</p>
                         <div style="display: flex">
@@ -181,8 +190,7 @@
                             <div class="rule-demo-card">B</div>
                             <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
                                 Bomb. This card can be placed on anything. When played, all cards in the pile including
-                                this card are discarded and
-                                the player's turn is ended.
+                                this card are discarded and the player's turn is ended.
                             </div>
                         </div>
                         <br>
@@ -201,8 +209,8 @@
                             <div>10.&nbsp;</div>
                             <div class="rule-demo-card">HL</div>
                             <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
-                                Higher/Lower. This card can be placed on anything. When played, the player sets
-                                the current pile state to be higher or lower than the current state of the pile and the
+                                Higher/Lower. This card can be placed on anything. When played, the player sets the
+                                current pile state to be higher or lower than the current state of the pile and the
                                 player's turn is ended. The next player must beat the current pile state by playing a
                                 card with a value equal to or Higher/Lower depending on what the previous player chose.
                             </div>
@@ -233,7 +241,7 @@
                         <br>
 
                         <div style="display: flex">
-                            <div>13.&nbsp;</div>
+                            <div>13.&nbsp</div>
                             <div class="rule-demo-card">H</div>
                             <div style=" width: 100px; flex-grow: 1; margin-left: 3px;">
                                 Handswap. This card can only be played if there is at least one other player with a
@@ -253,7 +261,5 @@
 </body>
 
 <script src="materialize.min.js"></script>
-<script>
-</script>
 
 </html>
