@@ -1,16 +1,15 @@
-import 'client_websocket.dart';
-
 import 'common/generated_protos.dart';
 import 'state/state.dart';
-
+import 'client_websocket.dart';
+import 'toast.dart';
 
 main() async {
   final client = new ClientWebSocket();
   await client.start();
 
   client.on(SocketMessage_Type.ERROR, (var json) {
-    final info = SimpleInfo.fromJson(json);
-    print(info.info);
+    final errorInfo = new SimpleInfo.fromJson(json);
+    toast(errorInfo.info);
   });
 
   StateManager.shared.addAll({

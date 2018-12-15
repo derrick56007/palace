@@ -9,12 +9,13 @@ class Login extends State {
   StreamSubscription submitSub;
 
   Login(ClientWebSocket client) : super(client) {
+    client.onClose.listen((_) {
+      _logoutSuccessful();
+    });
+
     client
-        ..onClose.listen((_){
-          _logoutSuccessful();
-        })
-        ..on(SocketMessage_Type.LOGIN_SUCCESSFUL, _loginSuccessful)
-        ..on(SocketMessage_Type.LOGOUT_SUCCESSFUL, _logoutSuccessful);
+      ..on(SocketMessage_Type.LOGIN_SUCCESSFUL, _loginSuccessful)
+      ..on(SocketMessage_Type.LOGOUT_SUCCESSFUL, _logoutSuccessful);
 
     querySelector('#login-btn').onClick.listen((_) {
       submitLogin();
