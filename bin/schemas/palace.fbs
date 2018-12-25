@@ -1,0 +1,210 @@
+namespace Palace;
+
+enum CardType:byte {
+    BASIC           = 0,
+    REVERSE         = 1,
+    BOMB            = 2,
+    HIGHER_LOWER    = 3,
+    WILD            = 4,
+    TOP_SWAP        = 5,
+    HAND_SWAP       = 6,
+    DISCARD_OR_ROCK = 7,
+}
+
+table Card {
+    type:CardType;
+    id:string;
+    value:byte;
+    hidden:bool;
+    playerIndex:byte;
+    activated:bool;
+}
+
+table Tower {
+    cards:[Card];
+}
+
+table CardIDs {
+    ids:[string];
+}
+
+enum HigherLowerChoiceType:byte {
+    HIGHER  = 0,
+    LOWER   = 1,
+}
+
+table HigherLowerChoice {
+    type:HigherLowerChoiceType;
+    value:byte;
+}
+
+table DealTowerInfo {
+    topTowers:[Tower];
+    bottomTowers:[Tower];
+}
+
+table SecondDealTowerInfo {
+    topTowers:[Tower];
+}
+
+table PlayFromHandInfo {
+    userIndex:byte;
+    cards:[Card];
+}
+
+table DiscardInfo {
+    cards:[Card];
+}
+
+table DrawInfo {
+    userIndex:byte;
+    cards:[Card];
+}
+
+table PickUpPileInfo {
+    userIndex:byte;
+    cards:[Card];
+}
+
+table Hand {
+    cards:[Card];
+}
+
+table TowerCardsToHandInfo {
+    userIndex:byte;
+    cardIDs:[string];
+}
+
+table FinalDealInfo {
+    hands:[Hand];
+}
+
+table TopSwapInfo {
+    card1:Card;
+    card2:Card;
+}
+
+table HandSwapInfo {
+    userIndex1:byte;
+    userIndex2:byte;
+    cards1:[Card];
+    cards2:[Card];
+}
+
+table LoginCredentials {
+    userID:string;
+    passCode:string;
+}
+
+table PlayerEntry {
+    userID:string;
+    ready:bool;
+}
+
+table LobbyInfo {
+    host:string;
+    players:[PlayerEntry];
+    canStart:bool;
+    canJoin:bool;
+}
+
+table UserIDs {
+    ids:[string];
+}
+
+table SimpleInfo {
+    info:string;
+}
+
+table ActivePlayerIndex {
+    index:byte;
+}
+
+table FriendItemInfo {
+    userID:string;
+    online:bool;
+    invitable:bool;
+    statusText:string;
+    color:string;
+}
+
+table RequestHigherLowerChoiceInfo {
+    value:byte;
+}
+
+enum MessageType:byte {
+        ERROR = 0,
+        LOGIN_SUCCESSFUL = 1,
+        FRIEND_REQUEST = 2,
+        MATCH_INVITE = 3,
+        MATCH_INVITE_CANCEL = 4,
+        MATCH_START = 5,
+        FIRST_DEAL_TOWER_INFO = 6,
+        SECOND_DEAL_TOWER_INFO = 7,
+        FINAL_DEAL_INFO = 8,
+        TOWER_CARD_IDS_TO_HAND = 9,
+        SET_SELECTABLE_CARDS = 10,
+        SET_MULLIGANABLE_CARDS = 11,
+        CLEAR_SELECTABLE_CARDS = 12,
+        DRAW_INFO = 13,
+        PLAY_FROM_HAND_INFO = 14,
+        PICK_UP_PILE_INFO = 15,
+        DISCARD_INFO = 16,
+        REQUEST_HANDSWAP_CHOICE = 17,
+        REQUEST_TOPSWAP_CHOICE = 18,
+        REQUEST_HIGHERLOWER_CHOICE = 19,
+        ACTIVE_PLAYER_INDEX = 20,
+        FRIEND_ITEM_INFO = 21,
+        LOBBY_INFO = 22,
+        LOGOUT_SUCCESSFUL = 23,
+        CHANGE_DISCARD_TO_ROCK = 24,
+        MULLIGAN_TIMER_UPDATE = 25,
+
+        // to server
+        LOGIN = 26,
+        REGISTER = 27,
+        ADD_FRIEND = 28,
+        ACCEPT_FRIEND_REQUEST = 29,
+        SEND_MATCH_INVITE = 30,
+        MATCH_ACCEPT = 31,
+        MATCH_DECLINE = 32,
+        USER_PLAY = 33,
+        HANDSWAP_CHOICE = 34,
+        TOPSWAP_CHOICE = 35,
+        HIGHERLOWER_CHOICE = 36,
+        DECLINE_FRIEND_REQUEST = 37,
+        START = 38,
+        REQUEST_PICK_UP = 39,
+        QUICK_JOIN = 40,
+        LEAVE_GAME = 41,
+}
+
+union Any {
+    Card,
+    Tower,
+    CardIDs,
+    HigherLowerChoice,
+    DealTowerInfo,
+    SecondDealTowerInfo,
+    PlayFromHandInfo,
+    DiscardInfo,
+    DrawInfo,
+    PickUpPileInfo,
+    Hand,
+    TowerCardsToHandInfo,
+    FinalDealInfo,
+    HandSwapInfo,
+    LoginCredentials,
+    PlayerEntry,
+    LobbyInfo,
+    UserIDs,
+    SimpleInfo,
+    ActivePlayerIndex,
+    FriendItemInfo,
+    RequestHigherLowerChoiceInfo,
+}
+
+table SocketMessage {
+    type:MessageType;
+    json:Any;
+}

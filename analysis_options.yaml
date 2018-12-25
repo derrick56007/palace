@@ -4,8 +4,8 @@
 #   https://www.dartlang.org/guides/language/analysis-options
 
  analyzer:
-#   exclude:
-#     - path/to/excluded/files/**
+   exclude:
+     - web/common/schemas/**
  linter:
    rules:
      - cancel_subscriptions
