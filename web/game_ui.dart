@@ -25,7 +25,7 @@ class GameUI {
   static const cardWidth = 140;
   static const cardHeight = 200;
 
-  static final Point<num> midPoint = new Point(gameWidth / 2, gameHeight / 2);
+  static const midPoint = const Vector2(gameWidth / 2, gameHeight / 2);
 
   static const defaultDeckLength = 56;
 
@@ -160,8 +160,8 @@ class GameUI {
       ..y = midPoint.y;
     stage.addChild(playedCardsHoverSprite);
 
-    final textFormat = new TextFormat('Arial', 50, Color.Black);
-    final sendButton = new TextField("Send", textFormat);
+    final textFormat = new TextFormat('Cardenio', 50, Color.Black);
+    final sendButton = new TextField('Send', textFormat);
     sendButton
       ..x = midPoint.x + 300
       ..y = midPoint.y
@@ -181,7 +181,7 @@ class GameUI {
       });
     stage.addChild(sendButton);
 
-    final pickUpButton = new TextField("Pick Up", textFormat);
+    final pickUpButton = new TextField('Pick Up', textFormat);
     pickUpButton
       ..x = midPoint.x + 300
       ..y = midPoint.y
@@ -201,8 +201,8 @@ class GameUI {
       });
     stage.addChild(pickUpButton);
 
-    final textFormat2 =
-        new TextFormat('Arial', 30, Color.Black, align: TextFormatAlign.CENTER);
+    final textFormat2 = new TextFormat('Cardenio', 30, Color.Black,
+        align: TextFormatAlign.CENTER);
     mulliganTimerTextField = new TextField('', textFormat2)
       ..height = 40
       ..width = 400;
@@ -267,15 +267,17 @@ class GameUI {
       final cardsTouched = objects.where((e) => e.parent is ClientCard);
 
       // reset card positions
-      if (cardsTouched.isEmpty && cardHovered != null) {
-        if (!SelectableManager.shared.selectedIDs
-            .contains(cardHovered.cardInfo.id)) {
-          final tween =
-              stage.juggler.addTween(cardHovered, 1, Transition.easeOutQuintic);
-          tween.animate.pivotY.to(cardHovered.userData.y);
-        }
+      if (cardsTouched.isEmpty) {
+        if (cardHovered != null) {
+          if (!SelectableManager.shared.selectedIDs
+              .contains(cardHovered.cardInfo.id)) {
+            final tween = stage.juggler
+                .addTween(cardHovered, 1, Transition.easeOutQuintic);
+            tween.animate.pivotY.to(cardHovered.userData);
+          }
 
-        cardHovered = null;
+          cardHovered = null;
+        }
 
         return;
       }
@@ -287,14 +289,14 @@ class GameUI {
       if (hand.contains(lastCardTouched)) {
         final tween = stage.juggler
             .addTween(lastCardTouched, 1, Transition.easeOutQuintic);
-        tween.animate.pivotY.to(lastCardTouched.userData.y + 100);
+        tween.animate.pivotY.to(lastCardTouched.userData + 100);
 
         if (cardHovered != null &&
             !SelectableManager.shared.selectedIDs
                 .contains(cardHovered.cardInfo.id)) {
           final tween =
               stage.juggler.addTween(cardHovered, 1, Transition.easeOutQuintic);
-          tween.animate.pivotY.to(cardHovered.userData.y);
+          tween.animate.pivotY.to(cardHovered.userData);
         }
 
         cardHovered = lastCardTouched;
@@ -677,29 +679,30 @@ class GameUI {
     return cCard;
   }
 
+  static const range = 1.5708;
+  static const leftCorner = const Vector2(0, cardHeight * .9);
+  static const rightCorner = const Vector2(cardWidth, cardHeight * .9);
+
   animateCardToHand(
-      ClientCard cCard, int handIndex, num animDuration, var transition) {
+      ClientCard cCard, int handIndex, num duration, var transition) {
     final hand = hands[handIndex];
 
     stage.juggler.removeTweens(cCard);
 
-    final tween = stage.juggler.addTween(cCard, animDuration, transition);
+    final tween = stage.juggler.addTween(cCard, duration, transition);
 
-    final range = toRadians(90);
     final increment = range / hand.length;
-//    final initialAngle = -increment * (hand.length / 2).floor();
     final initialAngle = hand.length % 2 == 0
         ? -increment / 2 + (-increment * (hand.length / 2 - 1))
         : -increment * (hand.length / 2).floor();
-    final leftCorner = new Vector2(0, cardHeight * .9);
-    final rightCorner = new Vector2(cardWidth, cardHeight * .9);
 
-    final angle = (hand.indexOf(cCard)) * increment;
-    final cardAngle = initialAngle + angle;
+    final cardIndex = hand.indexOf(cCard);
+    final angle = cardIndex * increment;
+    final cardAngle = initialAngle + angle + .3;
     final origin = lerp(rightCorner, leftCorner, angle / range);
 
-    final x = midPoint.x;
-    var y = gameHeight + 50;
+    final x = midPoint.x - (hand.length / 2 * 25) + cardIndex * 25;
+    var y = gameHeight;
 
     if (handIndex % 2 != 0) {
       y += ((gameWidth / 2) - (gameHeight / 2)).round() + 30;
@@ -713,9 +716,9 @@ class GameUI {
       ..y.to(rotatedPoint.y)
       ..rotation.to(cardAngle + handIndex * pi / 2)
       ..pivotX.to(origin.x)
-      ..pivotY.to(origin.y);
+      ..pivotY.to(origin.y / 2);
 
-    cCard.userData = origin;
+    cCard.userData = origin.y / 2;
 
     tween.onComplete = () {
       if (handIndex == 0) {
@@ -724,29 +727,25 @@ class GameUI {
     };
   }
 
-  animateCardsInHand(
-      int handIndex, num animDuration, var transition, int cards) {
+  animateCardsInHand(int handIndex, num duration, var transition, int cards) {
     final hand = hands[handIndex];
 
-    final range = toRadians(90);
     final increment = range / hand.length;
     final initialAngle = hand.length % 2 == 0
         ? -increment / 2 + (-increment * (hand.length / 2 - 1))
         : -increment * (hand.length / 2).floor();
-    final leftCorner = new Vector2(0, cardHeight * .9);
-    final rightCorner = new Vector2(cardWidth, cardHeight * .9);
 
     for (var j = 0; j < cards; j++) {
       final _card = hand[j];
 
-      final tween = stage.juggler.addTween(_card, animDuration, transition);
+      final tween = stage.juggler.addTween(_card, duration, transition);
 
       final angle = j * increment;
-      final cardAngle = initialAngle + angle;
+      final cardAngle = initialAngle + angle + .3;
       final origin = lerp(rightCorner, leftCorner, angle / range);
 
-      final x = midPoint.x;
-      var y = gameHeight + 50;
+      final x = midPoint.x - (hand.length / 2 * 25) + j * 25;
+      var y = gameHeight;
 
       if (handIndex % 2 != 0) {
         y += ((gameWidth / 2) - (gameHeight / 2)).round() + 30;
@@ -760,9 +759,9 @@ class GameUI {
         ..y.to(rotatedPoint.y)
         ..rotation.to(cardAngle + handIndex * pi / 2)
         ..pivotX.to(origin.x)
-        ..pivotY.to(origin.y);
+        ..pivotY.to(origin.y / 2);
 
-      _card.userData = origin;
+      _card.userData = origin.y / 2;
 
       for (var card in hand) {
         stage.setChildIndex(card, stage.children.length - 1);
