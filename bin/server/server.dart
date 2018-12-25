@@ -13,7 +13,7 @@ import 'package:protobuf/protobuf.dart' as pb;
 
 import '../../web/common/common_websocket.dart';
 import '../../web/common/regex_rules.dart';
-import '../../web/common/palace_schemas.dart';
+import '../../web/common/generated_protos.dart';
 
 part 'logic/match.dart';
 part 'logic/bot_socket.dart';
