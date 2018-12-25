@@ -244,7 +244,7 @@ class GameUI {
             if (card.cardInfo.type != Card_Type.BASIC &&
                 card.cardInfo.type != Card_Type.HIGHER_LOWER &&
                 card.cardInfo.type != Card_Type.WILD) {
-              card.alpha = .2;
+              card.alpha = .1;
             } else {
               break;
             }
@@ -519,6 +519,10 @@ class GameUI {
 
     for (var revealedCard in revealedCards) {
       stage.juggler.removeTweens(revealedCard);
+
+      revealedCard
+        ..pivotX = cardWidth / 2
+        ..pivotY = cardHeight / 2;
 
       final tween =
           stage.juggler.addTween(revealedCard, 1, Transition.easeOutQuintic);
