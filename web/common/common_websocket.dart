@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:protobuf/protobuf.dart' as pb;
 
-import 'generated_protos/socket_message.pbenum.dart';
+import 'generated_protos.dart';
 
 abstract class CommonWebSocket {
   Future done;

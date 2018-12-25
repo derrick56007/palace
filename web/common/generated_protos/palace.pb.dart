@@ -1,6 +1,6 @@
 ///
 //  Generated code. Do not modify.
-//  source: cards.proto
+//  source: palace.proto
 ///
 // ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
@@ -9,9 +9,9 @@ import 'dart:core' show int, bool, double, String, List, override;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'cards.pbenum.dart';
+import 'palace.pbenum.dart';
 
-export 'cards.pbenum.dart';
+export 'palace.pbenum.dart';
 
 class Card extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('Card', package: const $pb.PackageName('palace'))
@@ -449,5 +449,293 @@ class HandSwapInfo extends $pb.GeneratedMessage {
   List<Card> get cards1 => $_getList(2);
 
   List<Card> get cards2 => $_getList(3);
+}
+
+class LoginCredentials extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('LoginCredentials', package: const $pb.PackageName('palace'))
+    ..aOS(1, 'userID')
+    ..aOS(2, 'passCode')
+    ..hasRequiredFields = false
+  ;
+
+  LoginCredentials() : super();
+  LoginCredentials.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  LoginCredentials.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  LoginCredentials clone() => new LoginCredentials()..mergeFromMessage(this);
+  LoginCredentials copyWith(void Function(LoginCredentials) updates) => super.copyWith((message) => updates(message as LoginCredentials));
+  $pb.BuilderInfo get info_ => _i;
+  static LoginCredentials create() => new LoginCredentials();
+  static $pb.PbList<LoginCredentials> createRepeated() => new $pb.PbList<LoginCredentials>();
+  static LoginCredentials getDefault() => _defaultInstance ??= create()..freeze();
+  static LoginCredentials _defaultInstance;
+  static void $checkItem(LoginCredentials v) {
+    if (v is! LoginCredentials) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get userID => $_getS(0, '');
+  set userID(String v) { $_setString(0, v); }
+  bool hasUserID() => $_has(0);
+  void clearUserID() => clearField(1);
+
+  String get passCode => $_getS(1, '');
+  set passCode(String v) { $_setString(1, v); }
+  bool hasPassCode() => $_has(1);
+  void clearPassCode() => clearField(2);
+}
+
+class LobbyInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('LobbyInfo', package: const $pb.PackageName('palace'))
+    ..aOS(1, 'host')
+    ..pp<PlayerEntry>(2, 'players', $pb.PbFieldType.PM, PlayerEntry.$checkItem, PlayerEntry.create)
+    ..aOB(3, 'canStart')
+    ..aOB(4, 'canJoin')
+    ..hasRequiredFields = false
+  ;
+
+  LobbyInfo() : super();
+  LobbyInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  LobbyInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  LobbyInfo clone() => new LobbyInfo()..mergeFromMessage(this);
+  LobbyInfo copyWith(void Function(LobbyInfo) updates) => super.copyWith((message) => updates(message as LobbyInfo));
+  $pb.BuilderInfo get info_ => _i;
+  static LobbyInfo create() => new LobbyInfo();
+  static $pb.PbList<LobbyInfo> createRepeated() => new $pb.PbList<LobbyInfo>();
+  static LobbyInfo getDefault() => _defaultInstance ??= create()..freeze();
+  static LobbyInfo _defaultInstance;
+  static void $checkItem(LobbyInfo v) {
+    if (v is! LobbyInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get host => $_getS(0, '');
+  set host(String v) { $_setString(0, v); }
+  bool hasHost() => $_has(0);
+  void clearHost() => clearField(1);
+
+  List<PlayerEntry> get players => $_getList(1);
+
+  bool get canStart => $_get(2, false);
+  set canStart(bool v) { $_setBool(2, v); }
+  bool hasCanStart() => $_has(2);
+  void clearCanStart() => clearField(3);
+
+  bool get canJoin => $_get(3, false);
+  set canJoin(bool v) { $_setBool(3, v); }
+  bool hasCanJoin() => $_has(3);
+  void clearCanJoin() => clearField(4);
+}
+
+class PlayerEntry extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('PlayerEntry', package: const $pb.PackageName('palace'))
+    ..aOS(1, 'userID')
+    ..aOB(2, 'ready')
+    ..hasRequiredFields = false
+  ;
+
+  PlayerEntry() : super();
+  PlayerEntry.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  PlayerEntry.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  PlayerEntry clone() => new PlayerEntry()..mergeFromMessage(this);
+  PlayerEntry copyWith(void Function(PlayerEntry) updates) => super.copyWith((message) => updates(message as PlayerEntry));
+  $pb.BuilderInfo get info_ => _i;
+  static PlayerEntry create() => new PlayerEntry();
+  static $pb.PbList<PlayerEntry> createRepeated() => new $pb.PbList<PlayerEntry>();
+  static PlayerEntry getDefault() => _defaultInstance ??= create()..freeze();
+  static PlayerEntry _defaultInstance;
+  static void $checkItem(PlayerEntry v) {
+    if (v is! PlayerEntry) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get userID => $_getS(0, '');
+  set userID(String v) { $_setString(0, v); }
+  bool hasUserID() => $_has(0);
+  void clearUserID() => clearField(1);
+
+  bool get ready => $_get(1, false);
+  set ready(bool v) { $_setBool(1, v); }
+  bool hasReady() => $_has(1);
+  void clearReady() => clearField(2);
+}
+
+class UserIDs extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('UserIDs', package: const $pb.PackageName('palace'))
+    ..pPS(1, 'ids')
+    ..hasRequiredFields = false
+  ;
+
+  UserIDs() : super();
+  UserIDs.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  UserIDs.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  UserIDs clone() => new UserIDs()..mergeFromMessage(this);
+  UserIDs copyWith(void Function(UserIDs) updates) => super.copyWith((message) => updates(message as UserIDs));
+  $pb.BuilderInfo get info_ => _i;
+  static UserIDs create() => new UserIDs();
+  static $pb.PbList<UserIDs> createRepeated() => new $pb.PbList<UserIDs>();
+  static UserIDs getDefault() => _defaultInstance ??= create()..freeze();
+  static UserIDs _defaultInstance;
+  static void $checkItem(UserIDs v) {
+    if (v is! UserIDs) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  List<String> get ids => $_getList(0);
+}
+
+class SimpleInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('SimpleInfo', package: const $pb.PackageName('palace'))
+    ..aOS(1, 'info')
+    ..hasRequiredFields = false
+  ;
+
+  SimpleInfo() : super();
+  SimpleInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  SimpleInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  SimpleInfo clone() => new SimpleInfo()..mergeFromMessage(this);
+  SimpleInfo copyWith(void Function(SimpleInfo) updates) => super.copyWith((message) => updates(message as SimpleInfo));
+  $pb.BuilderInfo get info_ => _i;
+  static SimpleInfo create() => new SimpleInfo();
+  static $pb.PbList<SimpleInfo> createRepeated() => new $pb.PbList<SimpleInfo>();
+  static SimpleInfo getDefault() => _defaultInstance ??= create()..freeze();
+  static SimpleInfo _defaultInstance;
+  static void $checkItem(SimpleInfo v) {
+    if (v is! SimpleInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get info => $_getS(0, '');
+  set info(String v) { $_setString(0, v); }
+  bool hasInfo() => $_has(0);
+  void clearInfo() => clearField(1);
+}
+
+class SocketMessage extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('SocketMessage', package: const $pb.PackageName('palace'))
+    ..e<SocketMessage_Type>(1, 'type', $pb.PbFieldType.OE, SocketMessage_Type.ERROR, SocketMessage_Type.valueOf, SocketMessage_Type.values)
+    ..aOS(2, 'json')
+    ..hasRequiredFields = false
+  ;
+
+  SocketMessage() : super();
+  SocketMessage.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  SocketMessage.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  SocketMessage clone() => new SocketMessage()..mergeFromMessage(this);
+  SocketMessage copyWith(void Function(SocketMessage) updates) => super.copyWith((message) => updates(message as SocketMessage));
+  $pb.BuilderInfo get info_ => _i;
+  static SocketMessage create() => new SocketMessage();
+  static $pb.PbList<SocketMessage> createRepeated() => new $pb.PbList<SocketMessage>();
+  static SocketMessage getDefault() => _defaultInstance ??= create()..freeze();
+  static SocketMessage _defaultInstance;
+  static void $checkItem(SocketMessage v) {
+    if (v is! SocketMessage) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  SocketMessage_Type get type => $_getN(0);
+  set type(SocketMessage_Type v) { setField(1, v); }
+  bool hasType() => $_has(0);
+  void clearType() => clearField(1);
+
+  String get json => $_getS(1, '');
+  set json(String v) { $_setString(1, v); }
+  bool hasJson() => $_has(1);
+  void clearJson() => clearField(2);
+}
+
+class ActivePlayerIndex extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('ActivePlayerIndex', package: const $pb.PackageName('palace'))
+    ..a<int>(1, 'index', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  ActivePlayerIndex() : super();
+  ActivePlayerIndex.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  ActivePlayerIndex.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  ActivePlayerIndex clone() => new ActivePlayerIndex()..mergeFromMessage(this);
+  ActivePlayerIndex copyWith(void Function(ActivePlayerIndex) updates) => super.copyWith((message) => updates(message as ActivePlayerIndex));
+  $pb.BuilderInfo get info_ => _i;
+  static ActivePlayerIndex create() => new ActivePlayerIndex();
+  static $pb.PbList<ActivePlayerIndex> createRepeated() => new $pb.PbList<ActivePlayerIndex>();
+  static ActivePlayerIndex getDefault() => _defaultInstance ??= create()..freeze();
+  static ActivePlayerIndex _defaultInstance;
+  static void $checkItem(ActivePlayerIndex v) {
+    if (v is! ActivePlayerIndex) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  int get index => $_get(0, 0);
+  set index(int v) { $_setSignedInt32(0, v); }
+  bool hasIndex() => $_has(0);
+  void clearIndex() => clearField(1);
+}
+
+class FriendItemInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('FriendItemInfo', package: const $pb.PackageName('palace'))
+    ..aOS(1, 'userID')
+    ..aOB(2, 'online')
+    ..aOB(3, 'invitable')
+    ..aOS(4, 'statusText')
+    ..aOS(5, 'color')
+    ..hasRequiredFields = false
+  ;
+
+  FriendItemInfo() : super();
+  FriendItemInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  FriendItemInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  FriendItemInfo clone() => new FriendItemInfo()..mergeFromMessage(this);
+  FriendItemInfo copyWith(void Function(FriendItemInfo) updates) => super.copyWith((message) => updates(message as FriendItemInfo));
+  $pb.BuilderInfo get info_ => _i;
+  static FriendItemInfo create() => new FriendItemInfo();
+  static $pb.PbList<FriendItemInfo> createRepeated() => new $pb.PbList<FriendItemInfo>();
+  static FriendItemInfo getDefault() => _defaultInstance ??= create()..freeze();
+  static FriendItemInfo _defaultInstance;
+  static void $checkItem(FriendItemInfo v) {
+    if (v is! FriendItemInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get userID => $_getS(0, '');
+  set userID(String v) { $_setString(0, v); }
+  bool hasUserID() => $_has(0);
+  void clearUserID() => clearField(1);
+
+  bool get online => $_get(1, false);
+  set online(bool v) { $_setBool(1, v); }
+  bool hasOnline() => $_has(1);
+  void clearOnline() => clearField(2);
+
+  bool get invitable => $_get(2, false);
+  set invitable(bool v) { $_setBool(2, v); }
+  bool hasInvitable() => $_has(2);
+  void clearInvitable() => clearField(3);
+
+  String get statusText => $_getS(3, '');
+  set statusText(String v) { $_setString(3, v); }
+  bool hasStatusText() => $_has(3);
+  void clearStatusText() => clearField(4);
+
+  String get color => $_getS(4, '');
+  set color(String v) { $_setString(4, v); }
+  bool hasColor() => $_has(4);
+  void clearColor() => clearField(5);
+}
+
+class RequestHigherLowerChoiceInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RequestHigherLowerChoiceInfo', package: const $pb.PackageName('palace'))
+    ..a<int>(1, 'value', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  RequestHigherLowerChoiceInfo() : super();
+  RequestHigherLowerChoiceInfo.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RequestHigherLowerChoiceInfo.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RequestHigherLowerChoiceInfo clone() => new RequestHigherLowerChoiceInfo()..mergeFromMessage(this);
+  RequestHigherLowerChoiceInfo copyWith(void Function(RequestHigherLowerChoiceInfo) updates) => super.copyWith((message) => updates(message as RequestHigherLowerChoiceInfo));
+  $pb.BuilderInfo get info_ => _i;
+  static RequestHigherLowerChoiceInfo create() => new RequestHigherLowerChoiceInfo();
+  static $pb.PbList<RequestHigherLowerChoiceInfo> createRepeated() => new $pb.PbList<RequestHigherLowerChoiceInfo>();
+  static RequestHigherLowerChoiceInfo getDefault() => _defaultInstance ??= create()..freeze();
+  static RequestHigherLowerChoiceInfo _defaultInstance;
+  static void $checkItem(RequestHigherLowerChoiceInfo v) {
+    if (v is! RequestHigherLowerChoiceInfo) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  int get value => $_get(0, 0);
+  set value(int v) { $_setSignedInt32(0, v); }
+  bool hasValue() => $_has(0);
+  void clearValue() => clearField(1);
 }
 

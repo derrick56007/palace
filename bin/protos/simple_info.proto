@@ -1,6 +1,0 @@
-syntax = "proto3";
-package palace;
-
-message SimpleInfo {
-    string info = 1;
-}

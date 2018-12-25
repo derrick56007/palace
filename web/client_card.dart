@@ -1,6 +1,6 @@
 import 'package:stagexl/stagexl.dart';
 
-import 'common/generated_protos/cards.pb.dart';
+import 'common/generated_protos.dart';
 import 'game_ui.dart';
 import 'selectable_manager.dart';
 import 'dart:html';
