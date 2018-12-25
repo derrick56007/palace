@@ -46,7 +46,10 @@ class Match {
     deck.shuffle();
     firstTowerDeal();
 
-    await new Future.delayed(const Duration(seconds: 1));
+    // deal delay
+    await new Future.delayed(const Duration(milliseconds: 2750));
+
+    sendMulliganableCards();
 
     await startMulliganWindow();
     print('end mulligan window');
@@ -537,7 +540,6 @@ class Match {
     final tower = topTowers[socket];
     final hand = hands[socket];
 
-
     for (var card in tower.cards) {
       if (cards.contains(card)) {
         hand.cards.add(card);
@@ -569,29 +571,40 @@ class Match {
   startMulliganWindow() async {
     mulliganWindowActive = true;
 
-    final emptyInfo = new SimpleInfo()..info = '';
+    final mulliganTimerWaitingInfo = new SimpleInfo();
+
+    final mulliganTimerUpdateInfo = new SimpleInfo()
+      ..info = '${mulliganDuration.inSeconds} seconds left to mulligan';
+
+    for (var socket in players) {
+      socket.send(
+          SocketMessage_Type.MULLIGAN_TIMER_UPDATE, mulliganTimerUpdateInfo);
+    }
 
     final completer = new Completer();
     new CountdownTimer(mulliganDuration, const Duration(seconds: 1)).listen(
         (CountdownTimer timer) {
-
-      final mulliganTimerUpdateInfo = new SimpleInfo()
-        ..info = '${timer.remaining.inSeconds} seconds left to mulligan';
+      final secondsLeft = timer.remaining.inSeconds;
+      mulliganTimerUpdateInfo.info = '$secondsLeft seconds left to mulligan';
+      mulliganTimerWaitingInfo.info = 'Waiting for others...($secondsLeft)';
 
       for (var socket in players) {
         if (hands[socket].cards.isEmpty) {
           socket.send(SocketMessage_Type.MULLIGAN_TIMER_UPDATE,
               mulliganTimerUpdateInfo);
         } else {
-          socket.send(SocketMessage_Type.MULLIGAN_TIMER_UPDATE, emptyInfo);
+          socket.send(SocketMessage_Type.MULLIGAN_TIMER_UPDATE,
+              mulliganTimerWaitingInfo);
         }
       }
       //
     }, onDone: () {
       mulliganWindowActive = false;
 
+      final doneInfo = new SimpleInfo()..info = '';
+
       for (var socket in players) {
-        socket.send(SocketMessage_Type.MULLIGAN_TIMER_UPDATE, emptyInfo);
+        socket.send(SocketMessage_Type.MULLIGAN_TIMER_UPDATE, doneInfo);
         socket.send(SocketMessage_Type.CLEAR_SELECTABLE_CARDS);
       }
 
@@ -1084,8 +1097,9 @@ class Match {
 
       socket.send(SocketMessage_Type.FIRST_DEAL_TOWER_INFO, dealTowerInfo);
     }
+  }
 
-    // send selectable cards to mulligan
+  sendMulliganableCards() {
     for (var socket in players) {
       final cardIDs = new CardIDs()
         ..ids.addAll(topTowers[socket].cards.map((card) => card.id));
