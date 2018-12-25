@@ -201,7 +201,7 @@ class GameUI {
       });
     stage.addChild(pickUpButton);
 
-    final textFormat2 = new TextFormat('Cardenio', 30, Color.Black,
+    final textFormat2 = new TextFormat('Cardenio', 30, Color.White,
         align: TextFormatAlign.CENTER);
     mulliganTimerTextField = new TextField('', textFormat2)
       ..height = 40
@@ -210,10 +210,13 @@ class GameUI {
       ..pivotX = mulliganTimerTextField.width / 2
       ..pivotY = mulliganTimerTextField.height / 2
       ..x = gameWidth / 2
-      ..y = gameHeight - 20;
+      ..y = gameHeight - 20
+      ..filters = [new GlowFilter(Color.LimeGreen, 15, 15, 2)];
     stage.addChild(mulliganTimerTextField);
 
-    cardsInDeckTextField = new TextField('', textFormat2)
+    final textFormat3 = new TextFormat('Cardenio', 30, Color.Black,
+        align: TextFormatAlign.CENTER);
+    cardsInDeckTextField = new TextField('', textFormat3)
       ..height = 40
       ..width = 200;
     cardsInDeckTextField
@@ -223,7 +226,7 @@ class GameUI {
       ..y = gameHeight / 2 + cardHeight / 2 + 25;
     stage.addChild(cardsInDeckTextField);
 
-    cardsInPileTextField = new TextField('', textFormat2)
+    cardsInPileTextField = new TextField('', textFormat3)
       ..height = 40
       ..width = 200;
     cardsInPileTextField
@@ -416,10 +419,6 @@ class GameUI {
         await new Future.delayed(const Duration(milliseconds: 100));
       }
     }
-
-    final cardIDs = new CardIDs()
-      ..ids.addAll(topTowers.first.map((cCard) => cCard.cardInfo.id));
-    setSelectableCards(cardIDs);
   }
 
   onTowerCardsToHand(TowerCardsToHandInfo info) async {
@@ -456,6 +455,8 @@ class GameUI {
   }
 
   secondTowerDealInfo(SecondDealTowerInfo info) async {
+    hideBlackOverlay();
+
     for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
       for (var userIndex = 0; userIndex < info.topTowers.length; userIndex++) {
         if (info.topTowers[userIndex].cards.isEmpty) continue;
@@ -520,9 +521,9 @@ class GameUI {
     for (var revealedCard in revealedCards) {
       stage.juggler.removeTweens(revealedCard);
 
-      revealedCard
-        ..pivotX = cardWidth / 2
-        ..pivotY = cardHeight / 2;
+//      revealedCard
+//        ..pivotX = cardWidth / 2
+//        ..pivotY = cardHeight / 2;
 
       final tween =
           stage.juggler.addTween(revealedCard, 1, Transition.easeOutQuintic);
@@ -531,9 +532,11 @@ class GameUI {
       final offSetY = rand.nextInt(15) * (rand.nextBool() ? -1 : 1);
       final offSetRotation = rand.nextDouble() / 2 * (rand.nextBool() ? -1 : 1);
 
-      tween.animate.x.to(midPoint.x + offSetX);
-      tween.animate.y.to(midPoint.y + offSetY - 15);
-      tween.animate.rotation.by(offSetRotation);
+      tween.animate..x.to(midPoint.x + offSetX)
+      ..y.to(midPoint.y + offSetY - 15)
+      ..rotation.by(offSetRotation)
+      ..pivotY.to(cardHeight / 2)
+      ..pivotX.to(cardWidth / 2);
 
       stage.setChildIndex(revealedCard, stage.children.length - 1);
 
@@ -631,10 +634,13 @@ class GameUI {
   }
 
   setMulliganableCards(CardIDs cardIDs) {
+    displayBlackOverlay();
+
     for (var id in cardIDs.ids) {
       if (cardRegistry.containsKey(id)) {
         final card = cardRegistry[id];
         card.selectable = true;
+        stage.setChildIndex(card, stage.children.length - 1);
         selectableCardIDs.add(id);
       }
     }
@@ -645,6 +651,7 @@ class GameUI {
       if (cardRegistry.containsKey(id)) {
         final card = cardRegistry[id];
         card.selectable = true;
+
         selectableCardIDs.add(id);
       }
     }
@@ -702,10 +709,10 @@ class GameUI {
 
     final cardIndex = hand.indexOf(cCard);
     final angle = cardIndex * increment;
-    final cardAngle = initialAngle + angle + .3;
+    final cardAngle = initialAngle + angle + (hand.length == 1 ? 0 : .3);
     final origin = lerp(rightCorner, leftCorner, angle / range);
 
-    final x = midPoint.x - (hand.length / 2 * 25) + cardIndex * 25;
+    final x = midPoint.x - (hand.length / 2 * 25) + cardIndex * 25 + 25;
     var y = gameHeight;
 
     if (handIndex % 2 != 0) {
@@ -745,10 +752,10 @@ class GameUI {
       final tween = stage.juggler.addTween(_card, duration, transition);
 
       final angle = j * increment;
-      final cardAngle = initialAngle + angle + .3;
+      final cardAngle = initialAngle + angle + (hand.length == 1 ? 0 : .3);
       final origin = lerp(rightCorner, leftCorner, angle / range);
 
-      final x = midPoint.x - (hand.length / 2 * 25) + j * 25;
+      final x = midPoint.x - (hand.length / 2 * 25) + j * 25 + 25;
       var y = gameHeight;
 
       if (handIndex % 2 != 0) {
@@ -808,19 +815,37 @@ class GameUI {
     return new Point(nx, ny);
   }
 
-  onRequest_HigherLowerChoice(int value) {
+  displayBlackOverlay() {
     blackOverlay.alpha = 0;
 
     stage.addChild(blackOverlay);
+    stage.setChildIndex(blackOverlay, stage.children.length - 1);
 
     final tween =
         stage.juggler.addTween(blackOverlay, .5, Transition.easeOutQuintic);
     tween.animate.alpha.to(.75);
+  }
+
+  hideBlackOverlay() {
+    if (blackOverlay.parent == null) return;
+
+    final tween =
+        stage.juggler.addTween(blackOverlay, .5, Transition.easeOutQuintic);
+    tween.animate.alpha.to(0);
+    tween.onComplete = () {
+      blackOverlay.removeFromParent();
+    };
+  }
+
+  onRequest_HigherLowerChoice(int value) {
+    displayBlackOverlay();
 
     higherChoice.alpha = 0;
     lowerChoice.alpha = 0;
     stage.addChild(higherChoice);
     stage.addChild(lowerChoice);
+    stage.setChildIndex(higherChoice, stage.children.length - 1);
+    stage.setChildIndex(lowerChoice, stage.children.length - 1);
 
     final tween2 =
         stage.juggler.addTween(higherChoice, .5, Transition.easeOutQuintic);
@@ -851,7 +876,7 @@ class GameUI {
   }
 
   chooseHigherLower(HigherLowerChoice_Type type) {
-    blackOverlay.removeFromParent();
+    hideBlackOverlay();
     lowerChoice.removeFromParent();
     higherChoice.removeFromParent();
 
@@ -984,6 +1009,7 @@ class GameUI {
 
   void onMulliganTimerUpdate(String info) {
     mulliganTimerTextField.text = info;
+    stage.setChildIndex(mulliganTimerTextField, stage.children.length - 1);
   }
 
   void hideGame() {
