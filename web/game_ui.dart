@@ -64,11 +64,15 @@ class GameUI {
   TextField mulliganTimerTextField;
   TextField mulliganTitleTextField;
   TextField mulliganSubtitleTextField;
+  TextField sendButton;
+  TextField pickUpButton;
 
   TextField cardsInDeckTextField;
   TextField cardsInPileTextField;
 
   AlphaMaskFilter mask;
+
+  final greenGlowFilter = new GlowFilter(Color.LimeGreen, 15, 15, 2);
 
   init() async {
     canvas.onClick.listen((_) {
@@ -165,19 +169,19 @@ class GameUI {
 
     final textFormat = new TextFormat('Cardenio', 50, Color.White, weight: 500,
         strokeColor: Color.Black, strokeWidth: 3);
-    final sendButton = new TextField('Send', textFormat);
+    sendButton = new TextField('Send', textFormat);
     sendButton
-      ..x = midPoint.x + 330
-      ..y = midPoint.y + 300
+      ..x = midPoint.x + 280
+      ..y = midPoint.y + 200
       ..height = 60
-      ..width = 200
+      ..width = 90
       ..pivotX = sendButton.width / 2
       ..pivotY = sendButton.height / 2
       ..onMouseClick.listen((_) {
         sendSelectedCards();
       })
-      ..onMouseOver.listen((_) {
-        if (selectableCardIDs.isNotEmpty) {
+      ..onMouseMove.listen((_) {
+        if (SelectableManager.shared.selectedIDs.isNotEmpty) {
           sendButton.mouseCursor = MouseCursor.POINTER;
         } else {
           sendButton.mouseCursor = MouseCursor.DEFAULT;
@@ -185,12 +189,12 @@ class GameUI {
       });
     stage.addChild(sendButton);
 
-    final pickUpButton = new TextField('Pick Up', textFormat);
+    pickUpButton = new TextField('Pick Up', textFormat);
     pickUpButton
-      ..x = midPoint.x + 250
+      ..x = midPoint.x + 200
       ..y = midPoint.y
       ..height = 60
-      ..width = 200
+      ..width = 120
       ..pivotX = pickUpButton.width / 2
       ..pivotY = pickUpButton.height / 2
       ..onMouseClick.listen((_) {
@@ -365,7 +369,7 @@ class GameUI {
 
     deck.clear();
     for (var i = 0; i < defaultDeckLength; i++) {
-      final cardSprite = new ClientCard();
+      final cardSprite = new ClientCard(this);
       cardSprite.x = gameWidth / 2 - cardWidth - 100;
       cardSprite.y = gameHeight / 2;
 
@@ -473,7 +477,11 @@ class GameUI {
           card.hidden = true;
         }
 
-        stage.setChildIndex(card, stage.children.length - 1);
+        if (info.userIndex == 0) {
+          stage.setChildIndex(card, stage.children.length - 1);
+        } else {
+          stage.setChildIndex(card, stage.children.indexOf(blackOverlay) - 1);
+        }
 
         hands[info.userIndex].add(card);
 
@@ -675,6 +683,7 @@ class GameUI {
     }
 
     selectableCardIDs.clear();
+    sendButton.filters.clear();
   }
 
   setMulliganableCards(CardIDs cardIDs) {
@@ -686,7 +695,8 @@ class GameUI {
       ..addChild(mulliganSubtitleTextField)
       ..setChildIndex(mulliganSubtitleTextField, stage.children.length - 1)
       ..addChild(mulliganTimerTextField)
-      ..setChildIndex(mulliganTimerTextField, stage.children.length - 1);
+      ..setChildIndex(mulliganTimerTextField, stage.children.length - 1)
+      ..setChildIndex(sendButton, stage.children.length - 1);
 
     for (var id in cardIDs.ids) {
       if (cardRegistry.containsKey(id)) {

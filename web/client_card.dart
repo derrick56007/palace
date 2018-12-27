@@ -21,7 +21,9 @@ class ClientCard extends Sprite {
       window.orientation != null ||
       window.navigator.userAgent.contains('IEMobile');
 
-  ClientCard() {
+  final GameUI gameUI;
+
+  ClientCard(this.gameUI) {
     crossOut = new Bitmap(new BitmapData(cardWidth, cardHeight, Color.Green));
     crossOut.alpha = 50;
     crossOut.userData = "crossOut";
@@ -51,11 +53,18 @@ class ClientCard extends Sprite {
         SelectableManager.shared.selectedIDs.remove(_card.id);
 
         children.remove(crossOut);
+
+        if (SelectableManager.shared.selectedIDs.isEmpty) {
+          gameUI.sendButton.filters.clear();
+        }
+
       } else {
         // select
         SelectableManager.shared.selectedIDs.add(_card.id);
 
         children.add(crossOut);
+
+        gameUI.sendButton.filters = [glowFilter];
       }
     }
   }
