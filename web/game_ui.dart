@@ -57,7 +57,7 @@ class GameUI {
   Sprite playedCardsHoverSprite;
 
   final Bitmap playedCardsHoverBitmap =
-      new Bitmap(new BitmapData(cardHeight, cardHeight, Color.Black));
+      new Bitmap(new BitmapData(cardHeight, cardHeight, Color.Transparent));
   Bitmap higher;
   Bitmap lower;
 
