@@ -147,24 +147,26 @@ message SocketMessage {
         LOGOUT_SUCCESSFUL = 23;
         CHANGE_DISCARD_TO_ROCK = 24;
         MULLIGAN_TIMER_UPDATE = 25;
+        ENABLE_PICK_UP = 26;
+        DISABLE_PICK_UP = 27;
 
         // to server
-        LOGIN = 26;
-        REGISTER = 27;
-        ADD_FRIEND = 28;
-        ACCEPT_FRIEND_REQUEST = 29;
-        SEND_MATCH_INVITE = 30;
-        MATCH_ACCEPT = 31;
-        MATCH_DECLINE = 32;
-        USER_PLAY = 33;
-        HANDSWAP_CHOICE = 34;
-        TOPSWAP_CHOICE = 35;
-        HIGHERLOWER_CHOICE = 36;
-        DECLINE_FRIEND_REQUEST = 37;
-        START = 38;
-        REQUEST_PICK_UP = 39;
-        QUICK_JOIN = 40;
-        LEAVE_GAME = 41;
+        LOGIN = 28;
+        REGISTER = 29;
+        ADD_FRIEND = 30;
+        ACCEPT_FRIEND_REQUEST = 31;
+        SEND_MATCH_INVITE = 32;
+        MATCH_ACCEPT = 33;
+        MATCH_DECLINE = 34;
+        USER_PLAY = 35;
+        HANDSWAP_CHOICE = 36;
+        TOPSWAP_CHOICE = 37;
+        HIGHERLOWER_CHOICE = 38;
+        DECLINE_FRIEND_REQUEST = 39;
+        START = 40;
+        REQUEST_PICK_UP = 41;
+        QUICK_JOIN = 42;
+        LEAVE_GAME = 43;
     }
 
     Type type = 1;

@@ -83,22 +83,24 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
   static const SocketMessage_Type LOGOUT_SUCCESSFUL = const SocketMessage_Type._(23, 'LOGOUT_SUCCESSFUL');
   static const SocketMessage_Type CHANGE_DISCARD_TO_ROCK = const SocketMessage_Type._(24, 'CHANGE_DISCARD_TO_ROCK');
   static const SocketMessage_Type MULLIGAN_TIMER_UPDATE = const SocketMessage_Type._(25, 'MULLIGAN_TIMER_UPDATE');
-  static const SocketMessage_Type LOGIN = const SocketMessage_Type._(26, 'LOGIN');
-  static const SocketMessage_Type REGISTER = const SocketMessage_Type._(27, 'REGISTER');
-  static const SocketMessage_Type ADD_FRIEND = const SocketMessage_Type._(28, 'ADD_FRIEND');
-  static const SocketMessage_Type ACCEPT_FRIEND_REQUEST = const SocketMessage_Type._(29, 'ACCEPT_FRIEND_REQUEST');
-  static const SocketMessage_Type SEND_MATCH_INVITE = const SocketMessage_Type._(30, 'SEND_MATCH_INVITE');
-  static const SocketMessage_Type MATCH_ACCEPT = const SocketMessage_Type._(31, 'MATCH_ACCEPT');
-  static const SocketMessage_Type MATCH_DECLINE = const SocketMessage_Type._(32, 'MATCH_DECLINE');
-  static const SocketMessage_Type USER_PLAY = const SocketMessage_Type._(33, 'USER_PLAY');
-  static const SocketMessage_Type HANDSWAP_CHOICE = const SocketMessage_Type._(34, 'HANDSWAP_CHOICE');
-  static const SocketMessage_Type TOPSWAP_CHOICE = const SocketMessage_Type._(35, 'TOPSWAP_CHOICE');
-  static const SocketMessage_Type HIGHERLOWER_CHOICE = const SocketMessage_Type._(36, 'HIGHERLOWER_CHOICE');
-  static const SocketMessage_Type DECLINE_FRIEND_REQUEST = const SocketMessage_Type._(37, 'DECLINE_FRIEND_REQUEST');
-  static const SocketMessage_Type START = const SocketMessage_Type._(38, 'START');
-  static const SocketMessage_Type REQUEST_PICK_UP = const SocketMessage_Type._(39, 'REQUEST_PICK_UP');
-  static const SocketMessage_Type QUICK_JOIN = const SocketMessage_Type._(40, 'QUICK_JOIN');
-  static const SocketMessage_Type LEAVE_GAME = const SocketMessage_Type._(41, 'LEAVE_GAME');
+  static const SocketMessage_Type ENABLE_PICK_UP = const SocketMessage_Type._(26, 'ENABLE_PICK_UP');
+  static const SocketMessage_Type DISABLE_PICK_UP = const SocketMessage_Type._(27, 'DISABLE_PICK_UP');
+  static const SocketMessage_Type LOGIN = const SocketMessage_Type._(28, 'LOGIN');
+  static const SocketMessage_Type REGISTER = const SocketMessage_Type._(29, 'REGISTER');
+  static const SocketMessage_Type ADD_FRIEND = const SocketMessage_Type._(30, 'ADD_FRIEND');
+  static const SocketMessage_Type ACCEPT_FRIEND_REQUEST = const SocketMessage_Type._(31, 'ACCEPT_FRIEND_REQUEST');
+  static const SocketMessage_Type SEND_MATCH_INVITE = const SocketMessage_Type._(32, 'SEND_MATCH_INVITE');
+  static const SocketMessage_Type MATCH_ACCEPT = const SocketMessage_Type._(33, 'MATCH_ACCEPT');
+  static const SocketMessage_Type MATCH_DECLINE = const SocketMessage_Type._(34, 'MATCH_DECLINE');
+  static const SocketMessage_Type USER_PLAY = const SocketMessage_Type._(35, 'USER_PLAY');
+  static const SocketMessage_Type HANDSWAP_CHOICE = const SocketMessage_Type._(36, 'HANDSWAP_CHOICE');
+  static const SocketMessage_Type TOPSWAP_CHOICE = const SocketMessage_Type._(37, 'TOPSWAP_CHOICE');
+  static const SocketMessage_Type HIGHERLOWER_CHOICE = const SocketMessage_Type._(38, 'HIGHERLOWER_CHOICE');
+  static const SocketMessage_Type DECLINE_FRIEND_REQUEST = const SocketMessage_Type._(39, 'DECLINE_FRIEND_REQUEST');
+  static const SocketMessage_Type START = const SocketMessage_Type._(40, 'START');
+  static const SocketMessage_Type REQUEST_PICK_UP = const SocketMessage_Type._(41, 'REQUEST_PICK_UP');
+  static const SocketMessage_Type QUICK_JOIN = const SocketMessage_Type._(42, 'QUICK_JOIN');
+  static const SocketMessage_Type LEAVE_GAME = const SocketMessage_Type._(43, 'LEAVE_GAME');
 
   static const List<SocketMessage_Type> values = const <SocketMessage_Type> [
     ERROR,
@@ -127,6 +129,8 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     LOGOUT_SUCCESSFUL,
     CHANGE_DISCARD_TO_ROCK,
     MULLIGAN_TIMER_UPDATE,
+    ENABLE_PICK_UP,
+    DISABLE_PICK_UP,
     LOGIN,
     REGISTER,
     ADD_FRIEND,
