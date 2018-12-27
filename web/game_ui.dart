@@ -167,8 +167,8 @@ class GameUI {
       ..y = midPoint.y;
     stage.addChild(playedCardsHoverSprite);
 
-    final textFormat = new TextFormat('Cardenio', 50, Color.White, weight: 500,
-        strokeColor: Color.Black, strokeWidth: 3);
+    final textFormat = new TextFormat('Cardenio', 50, Color.White,
+        weight: 500, strokeColor: Color.Black, strokeWidth: 3);
     sendButton = new TextField('Send', textFormat);
     sendButton
       ..x = midPoint.x + 280
@@ -220,8 +220,7 @@ class GameUI {
       ..pivotX = mulliganTimerTextField.width / 2
       ..pivotY = mulliganTimerTextField.height / 2
       ..x = midPoint.x
-      ..y = midPoint.y + 120
-      ..filters = [new GlowFilter(Color.LimeGreen, 15, 15, 2)];
+      ..y = midPoint.y + 120;
 
     final mulliganTitleTextFormat = new TextFormat('Cardenio', 75, Color.White,
         weight: 500,
@@ -572,10 +571,6 @@ class GameUI {
     for (var revealedCard in revealedCards) {
       stage.juggler.removeTweens(revealedCard);
 
-//      revealedCard
-//        ..pivotX = cardWidth / 2
-//        ..pivotY = cardHeight / 2;
-
       final tween =
           stage.juggler.addTween(revealedCard, 1, Transition.easeOutQuintic);
 
@@ -643,6 +638,7 @@ class GameUI {
       for (var hand in hands) {
         if (hand.contains(discardedCard)) {
           cardHand = hand;
+          break;
         }
       }
 
@@ -651,7 +647,8 @@ class GameUI {
         final tween =
             stage.juggler.addTween(discardedCard, 2, Transition.easeOutQuintic);
         tween.animate.alpha.to(0);
-        tween.animate.pivotY.by(300);
+        tween.animate.y.by(250);
+        tween.animate.pivotY.by(25);
         tween.onComplete = () {
           discardedCard.removeFromParent();
         };
