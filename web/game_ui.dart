@@ -62,6 +62,9 @@ class GameUI {
   Bitmap lower;
 
   TextField mulliganTimerTextField;
+  TextField mulliganTitleTextField;
+  TextField mulliganSubtitleTextField;
+
   TextField cardsInDeckTextField;
   TextField cardsInPileTextField;
 
@@ -160,12 +163,13 @@ class GameUI {
       ..y = midPoint.y;
     stage.addChild(playedCardsHoverSprite);
 
-    final textFormat = new TextFormat('Cardenio', 50, Color.Black);
+    final textFormat = new TextFormat('Cardenio', 50, Color.White, weight: 500,
+        strokeColor: Color.Black, strokeWidth: 3);
     final sendButton = new TextField('Send', textFormat);
     sendButton
-      ..x = midPoint.x + 300
-      ..y = midPoint.y
-      ..height = 50
+      ..x = midPoint.x + 330
+      ..y = midPoint.y + 300
+      ..height = 60
       ..width = 200
       ..pivotX = sendButton.width / 2
       ..pivotY = sendButton.height / 2
@@ -183,12 +187,12 @@ class GameUI {
 
     final pickUpButton = new TextField('Pick Up', textFormat);
     pickUpButton
-      ..x = midPoint.x + 300
+      ..x = midPoint.x + 250
       ..y = midPoint.y
       ..height = 60
       ..width = 200
       ..pivotX = pickUpButton.width / 2
-      ..pivotY = pickUpButton.height / 2 + 60
+      ..pivotY = pickUpButton.height / 2
       ..onMouseClick.listen((_) {
         sendPickUp();
       })
@@ -201,22 +205,57 @@ class GameUI {
       });
     stage.addChild(pickUpButton);
 
-    final textFormat2 = new TextFormat('Cardenio', 30, Color.White,
-        align: TextFormatAlign.CENTER);
-    mulliganTimerTextField = new TextField('', textFormat2)
-      ..height = 40
-      ..width = 400;
+    final mulliganTimerTextFormat = new TextFormat('Cardenio', 50, Color.White,
+        align: TextFormatAlign.CENTER,
+        strokeColor: Color.Black,
+        strokeWidth: 3);
+    mulliganTimerTextField = new TextField('', mulliganTimerTextFormat)
+      ..height = 60
+      ..width = 500;
     mulliganTimerTextField
       ..pivotX = mulliganTimerTextField.width / 2
       ..pivotY = mulliganTimerTextField.height / 2
-      ..x = gameWidth / 2
-      ..y = gameHeight - 20
+      ..x = midPoint.x
+      ..y = midPoint.y + 120
       ..filters = [new GlowFilter(Color.LimeGreen, 15, 15, 2)];
-    stage.addChild(mulliganTimerTextField);
 
-    final textFormat3 = new TextFormat('Cardenio', 30, Color.Black,
+    final mulliganTitleTextFormat = new TextFormat('Cardenio', 75, Color.White,
+        weight: 500,
+        align: TextFormatAlign.CENTER,
+        strokeColor: Color.Black,
+        strokeWidth: 5);
+    mulliganTitleTextField =
+        new TextField('Tower Cards', mulliganTitleTextFormat)
+          ..height = 100
+          ..width = 300;
+    mulliganTitleTextField
+      ..pivotX = mulliganTitleTextField.width / 2
+      ..pivotY = mulliganTitleTextField.height / 2
+      ..x = midPoint.x
+      ..y = midPoint.y - 70
+      ..filters = [new GlowFilter(Color.Gold, 15, 15, 2)];
+
+    final mulliganSubtitleTextFormat = new TextFormat(
+        'Cardenio', 50, Color.White,
+        weight: 500,
+        align: TextFormatAlign.CENTER,
+        strokeColor: Color.Black,
+        strokeWidth: 3);
+
+    mulliganSubtitleTextField =
+        new TextField('Keep or Replace Cards', mulliganSubtitleTextFormat)
+          ..height = 100
+          ..width = 400;
+    mulliganSubtitleTextField
+      ..pivotX = mulliganSubtitleTextField.width / 2
+      ..pivotY = mulliganSubtitleTextField.height / 2
+      ..x = midPoint.x
+      ..y = midPoint.y + 20
+      ..filters = [new GlowFilter(Color.Gold, 15, 15, 2)];
+
+    final cardsInPileTextFormat = new TextFormat('Cardenio', 30, Color.Black,
         align: TextFormatAlign.CENTER);
-    cardsInDeckTextField = new TextField('', textFormat3)
+    cardsInDeckTextField = new TextField('', cardsInPileTextFormat)
       ..height = 40
       ..width = 200;
     cardsInDeckTextField
@@ -226,7 +265,7 @@ class GameUI {
       ..y = gameHeight / 2 + cardHeight / 2 + 25;
     stage.addChild(cardsInDeckTextField);
 
-    cardsInPileTextField = new TextField('', textFormat3)
+    cardsInPileTextField = new TextField('', cardsInPileTextFormat)
       ..height = 40
       ..width = 200;
     cardsInPileTextField
@@ -455,6 +494,10 @@ class GameUI {
   }
 
   secondTowerDealInfo(SecondDealTowerInfo info) async {
+    mulliganTitleTextField.removeFromParent();
+    mulliganSubtitleTextField.removeFromParent();
+    mulliganTimerTextField.removeFromParent();
+
     hideBlackOverlay();
 
     for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
@@ -532,11 +575,12 @@ class GameUI {
       final offSetY = rand.nextInt(15) * (rand.nextBool() ? -1 : 1);
       final offSetRotation = rand.nextDouble() / 2 * (rand.nextBool() ? -1 : 1);
 
-      tween.animate..x.to(midPoint.x + offSetX)
-      ..y.to(midPoint.y + offSetY - 15)
-      ..rotation.by(offSetRotation)
-      ..pivotY.to(cardHeight / 2)
-      ..pivotX.to(cardWidth / 2);
+      tween.animate
+        ..x.to(midPoint.x + offSetX)
+        ..y.to(midPoint.y + offSetY - 15)
+        ..rotation.by(offSetRotation)
+        ..pivotY.to(cardHeight / 2)
+        ..pivotX.to(cardWidth / 2);
 
       stage.setChildIndex(revealedCard, stage.children.length - 1);
 
@@ -635,6 +679,14 @@ class GameUI {
 
   setMulliganableCards(CardIDs cardIDs) {
     displayBlackOverlay();
+
+    stage
+      ..addChild(mulliganTitleTextField)
+      ..setChildIndex(mulliganTitleTextField, stage.children.length - 1)
+      ..addChild(mulliganSubtitleTextField)
+      ..setChildIndex(mulliganSubtitleTextField, stage.children.length - 1)
+      ..addChild(mulliganTimerTextField)
+      ..setChildIndex(mulliganTimerTextField, stage.children.length - 1);
 
     for (var id in cardIDs.ids) {
       if (cardRegistry.containsKey(id)) {
@@ -1009,7 +1061,6 @@ class GameUI {
 
   void onMulliganTimerUpdate(String info) {
     mulliganTimerTextField.text = info;
-    stage.setChildIndex(mulliganTimerTextField, stage.children.length - 1);
   }
 
   void hideGame() {
