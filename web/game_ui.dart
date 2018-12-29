@@ -55,9 +55,13 @@ class GameUI {
   Sprite higherChoice;
   Sprite lowerChoice;
   Sprite playedCardsHoverSprite;
+  Sprite cardsLeftHoverSprite;
 
   final Bitmap playedCardsHoverBitmap =
       new Bitmap(new BitmapData(cardHeight, cardHeight, Color.Transparent));
+  final Bitmap cardsLeftHoverBitmap =
+      new Bitmap(new BitmapData(cardWidth, cardHeight, Color.Transparent));
+
   Bitmap higher;
   Bitmap lower;
 
@@ -67,14 +71,27 @@ class GameUI {
   TextField sendButton;
   TextField pickUpButton;
 
-  TextField cardsInDeckTextField;
-  TextField cardsInPileTextField;
-
   AlphaMaskFilter mask;
+
+  static final cardsInDeckEl = html.querySelector('#cards-in-deck');
+  static final cardsInPileEl = html.querySelector('#cards-in-pile');
+
+  final cardsInDeckToolTip = new HtmlObject(cardsInDeckEl);
+  final cardsInPileToolTip = new HtmlObject(cardsInPileEl);
 
   final greenGlowFilter = new GlowFilter(Color.LimeGreen, 15, 15, 2);
 
   init() async {
+    cardsInDeckToolTip
+      ..x = midPoint.x - cardWidth - 170 - cardWidth / 2
+      ..y = midPoint.y - cardHeight / 2 - 50;
+
+    updatePileToolTip();
+
+    cardsInPileToolTip
+      ..x = midPoint.x - cardWidth / 2 - 160
+      ..y = midPoint.y - cardHeight / 2 - 40;
+
     canvas.onClick.listen((_) {
       (html.querySelector('#toggle-1') as html.InputElement).checked = false;
       (html.querySelector('#toggle-2') as html.InputElement).checked = false;
@@ -167,12 +184,21 @@ class GameUI {
       ..y = midPoint.y;
     stage.addChild(playedCardsHoverSprite);
 
+    cardsLeftHoverSprite = new Sprite();
+    cardsLeftHoverSprite
+      ..children.add(cardsLeftHoverBitmap)
+      ..pivotX = cardWidth / 2
+      ..pivotY = cardHeight / 2
+      ..x = midPoint.x - cardWidth - 170
+      ..y = midPoint.y;
+    stage.addChild(cardsLeftHoverSprite);
+
     final textFormat = new TextFormat('Cardenio', 50, Color.White,
         weight: 500, strokeColor: Color.Black, strokeWidth: 3);
     sendButton = new TextField('Send', textFormat);
     sendButton
       ..x = midPoint.x + 280
-      ..y = midPoint.y + 200
+      ..y = midPoint.y + 180
       ..height = 60
       ..width = 90
       ..pivotX = sendButton.width / 2
@@ -256,33 +282,14 @@ class GameUI {
       ..y = midPoint.y + 20
       ..filters = [new GlowFilter(Color.Gold, 15, 15, 2)];
 
-    final cardsInPileTextFormat = new TextFormat('Cardenio', 30, Color.Black,
-        align: TextFormatAlign.CENTER);
-    cardsInDeckTextField = new TextField('', cardsInPileTextFormat)
-      ..height = 40
-      ..width = 200;
-    cardsInDeckTextField
-      ..pivotX = cardsInDeckTextField.width / 2
-      ..pivotY = cardsInDeckTextField.height / 2
-      ..x = gameWidth / 2 - cardWidth - 100
-      ..y = gameHeight / 2 + cardHeight / 2 + 25;
-    stage.addChild(cardsInDeckTextField);
-
-    cardsInPileTextField = new TextField('', cardsInPileTextFormat)
-      ..height = 40
-      ..width = 200;
-    cardsInPileTextField
-      ..pivotX = cardsInPileTextField.width / 2
-      ..pivotY = cardsInPileTextField.height / 2
-      ..x = gameWidth / 2
-      ..y = gameHeight / 2 + cardHeight / 2 + 25;
-    stage.addChild(cardsInPileTextField);
-
     var cardHovered = null;
     var pileHovered = false;
+    var deckHovered = false;
+
     stage.onMouseMove.listen((MouseEvent e) {
       final objects = stage.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
 
+      // check if mouse is hovering over played cards pile
       if (objects.contains(playedCardsHoverBitmap)) {
         if (!pileHovered) {
           for (var card in playedCards.reversed) {
@@ -295,14 +302,36 @@ class GameUI {
             }
           }
 
+          stage.addChild(cardsInPileToolTip);
+
           pileHovered = true;
         }
+        return;
       } else if (pileHovered) {
         for (var card in playedCards) {
           card.alpha = 1;
         }
 
+        cardsInPileToolTip.removeFromParent();
+
         pileHovered = false;
+      }
+
+      // check if mouse is hovering over cards left in the deck
+      if (objects.contains(cardsLeftHoverBitmap)) {
+        if (!deckHovered) {
+          // display number of cards left tooltip
+          stage.addChild(cardsInDeckToolTip);
+
+          deckHovered = true;
+        }
+
+        return;
+      } else if (deckHovered) {
+        // remove tooltip
+        cardsInDeckToolTip.removeFromParent();
+
+        deckHovered = false;
       }
 
       if (hands.isEmpty) return;
@@ -331,18 +360,20 @@ class GameUI {
 
       if (cardHovered == lastCardTouched) return;
 
+      if (cardHovered != null &&
+          !SelectableManager.shared.selectedIDs
+              .contains(cardHovered.cardInfo.id)) {
+        final tween =
+            stage.juggler.addTween(cardHovered, 1, Transition.easeOutQuintic);
+        tween.animate.pivotY.to(cardHovered.userData);
+
+        cardHovered = null;
+      }
+
       if (hand.contains(lastCardTouched)) {
         final tween = stage.juggler
             .addTween(lastCardTouched, 1, Transition.easeOutQuintic);
         tween.animate.pivotY.to(lastCardTouched.userData + 100);
-
-        if (cardHovered != null &&
-            !SelectableManager.shared.selectedIDs
-                .contains(cardHovered.cardInfo.id)) {
-          final tween =
-              stage.juggler.addTween(cardHovered, 1, Transition.easeOutQuintic);
-          tween.animate.pivotY.to(cardHovered.userData);
-        }
 
         cardHovered = lastCardTouched;
       }
@@ -369,15 +400,81 @@ class GameUI {
     deck.clear();
     for (var i = 0; i < defaultDeckLength; i++) {
       final cardSprite = new ClientCard(this);
-      cardSprite.x = gameWidth / 2 - cardWidth - 100;
-      cardSprite.y = gameHeight / 2;
+      cardSprite.x = midPoint.x - cardWidth - 170;
+      cardSprite.y = midPoint.y;
 
       stage.children.add(cardSprite);
       deck.add(cardSprite);
     }
+  }
 
-    cardsInDeckTextField.text = '${deck.length} Card(s)';
-    cardsInPileTextField.text = '${playedCards.length} Card(s)';
+  updatePileToolTip() {
+    final count = <String, int>{
+      '0': 0,
+      '1': 0,
+      '2': 0,
+      '3': 0,
+      '4': 0,
+      '5': 0,
+      '6': 0,
+      '7': 0,
+      '8': 0,
+      '9': 0,
+      'B': 0,
+      'R': 0,
+      'HL': 0,
+      'W': 0,
+      'D': 0,
+      'H': 0,
+      'T': 0,
+    };
+
+    for (var card in playedCards) {
+      final info = card.cardInfo;
+      switch (info.type) {
+        case Card_Type.BASIC:
+          count['${info.value}']++;
+          break;
+        case Card_Type.BOMB:
+          count['B']++;
+          break;
+        case Card_Type.REVERSE:
+          count['R']++;
+          break;
+        case Card_Type.WILD:
+          count['W']++;
+          break;
+        case Card_Type.HIGHER_LOWER:
+          count['HL']++;
+          break;
+        case Card_Type.DISCARD_OR_ROCK:
+          count['D']++;
+          break;
+        case Card_Type.TOP_SWAP:
+          count['T']++;
+          break;
+        case Card_Type.HAND_SWAP:
+          count['H']++;
+          break;
+        default:
+          break;
+      }
+    }
+
+    var html = '';
+
+    count.forEach((key, val) {
+      if (val > 0) {
+        html += '''
+            <div class="pile-card-collection-item">
+              <div class="pile-card-thumb">$key</div>
+              <div>&nbsp;x&nbsp;$val</div>
+            </div>
+        ''';
+      }
+    });
+
+    cardsInPileEl.innerHtml = '<div>$html</div>';
   }
 
   ClientCard dealTowerAnim(ClientCard newCard, List<List<ClientCard>> towers,
@@ -559,11 +656,12 @@ class GameUI {
       revealedCard.interactable = false;
 
       playedCards.add(revealedCard);
-      cardsInPileTextField.text = '${playedCards.length} Card(s)';
       revealedCards.add(revealedCard);
 
       hands[info.userIndex].remove(revealedCard);
     }
+
+    updatePileToolTip();
 
     animateCardsInHand(info.userIndex, .75, Transition.easeOutQuintic,
         hands[info.userIndex].length);
@@ -580,7 +678,7 @@ class GameUI {
 
       tween.animate
         ..x.to(midPoint.x + offSetX)
-        ..y.to(midPoint.y + offSetY - 15)
+        ..y.to(midPoint.y + offSetY)
         ..rotation.by(offSetRotation)
         ..pivotY.to(cardHeight / 2)
         ..pivotX.to(cardWidth / 2);
@@ -622,7 +720,7 @@ class GameUI {
 
     playedCards.clear();
 
-    cardsInPileTextField.text = '${playedCards.length} Card(s)';
+    updatePileToolTip();
 
     bringHandCardsToTop();
   }
@@ -647,8 +745,7 @@ class GameUI {
         final tween =
             stage.juggler.addTween(discardedCard, 2, Transition.easeOutQuintic);
         tween.animate.alpha.to(0);
-        tween.animate.y.by(250);
-        tween.animate.pivotY.by(25);
+        tween.animate.pivotY.by(250);
         tween.onComplete = () {
           discardedCard.removeFromParent();
         };
@@ -665,10 +762,10 @@ class GameUI {
 
       if (playedCards.contains(discardedCard)) {
         playedCards.remove(discardedCard);
-
-        cardsInPileTextField.text = '${playedCards.length} Card(s)';
       }
     }
+
+    updatePileToolTip();
   }
 
   clearSelectableCards() {
@@ -744,12 +841,13 @@ class GameUI {
     final cCard = deck.removeLast()..cardInfo = cardInfo;
     cardRegistry[cardInfo.id] = cCard;
 
-    cardsInDeckTextField.text = '${deck.length} Card(s)';
+    cardsInDeckEl.text =
+        '${deck.length} ${deck.length == 1 ? 'Card' : 'Cards'} Left';
 
     return cCard;
   }
 
-  static const range = 1.5708;
+  static const range = 1.5708 / 3;
   static const leftCorner = const Vector2(0, cardHeight * .9);
   static const rightCorner = const Vector2(cardWidth, cardHeight * .9);
 
@@ -768,10 +866,10 @@ class GameUI {
 
     final cardIndex = hand.indexOf(cCard);
     final angle = cardIndex * increment;
-    final cardAngle = initialAngle + angle + (hand.length == 1 ? 0 : .3);
+    final cardAngle = initialAngle + angle;
     final origin = lerp(rightCorner, leftCorner, angle / range);
 
-    final x = midPoint.x - (hand.length / 2 * 25) + cardIndex * 25 + 25;
+    final x = midPoint.x - (hand.length / 2 * 35) + cardIndex * 35 + 35;
     var y = gameHeight;
 
     if (handIndex % 2 != 0) {
@@ -811,10 +909,10 @@ class GameUI {
       final tween = stage.juggler.addTween(_card, duration, transition);
 
       final angle = j * increment;
-      final cardAngle = initialAngle + angle + (hand.length == 1 ? 0 : .3);
+      final cardAngle = initialAngle + angle;
       final origin = lerp(rightCorner, leftCorner, angle / range);
 
-      final x = midPoint.x - (hand.length / 2 * 25) + j * 25 + 25;
+      final x = midPoint.x - (hand.length / 2 * 35) + j * 35 + 35;
       var y = gameHeight;
 
       if (handIndex % 2 != 0) {

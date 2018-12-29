@@ -303,3 +303,39 @@ html {
     text-align: center;
     padding: 5px;
 }
+
+#cards-in-deck, #cards-in-pile {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 30px;
+    border-radius: 5px;
+    font-family: Cardenio, serif;
+    text-align: center;
+}
+
+#cards-in-deck {
+    width: 140px;
+}
+
+.pile-card-thumb {
+    background-color: white;
+    font-family: 'Cardenio', serif;
+    text-align: center;
+    width: 30px;
+    height: 38px;
+    margin: 2px;
+    border-radius: 3px;
+    color: black;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 38px;
+}
+
+.pile-card-collection-item {
+    display: flex;
+    margin: 5px;
+}
+
+#cards-in-pile {
+
+}
