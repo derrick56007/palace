@@ -99,6 +99,19 @@ class GameUI {
 
     var fullscreen = false;
     final fullscreenIcon = html.querySelector('#fullscreen-icon');
+
+    html.window.onKeyDown.listen((e) {
+      print('${e.keyCode} ${html.KeyCode.ESC}');
+
+      if (e.keyCode == html.KeyCode.ESC && fullscreen) {
+        // make not fullscreen
+        fullscreenIcon.text = 'fullscreen';
+        html.document.exitFullscreen();
+
+        fullscreen = false;
+      }
+    });
+
     html.querySelector('#fullscreen-btn').onClick.listen((_) {
       if (fullscreen) {
         // make not fullscreen
