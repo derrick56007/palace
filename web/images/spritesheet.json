@@ -526,7 +526,7 @@
 			}
 		},
 		{
-			"filename": "card_back.png",
+			"filename": "CARD_BACK.png",
 			"frame": {
 				"x": 711,
 				"y": 737,

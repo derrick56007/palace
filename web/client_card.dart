@@ -11,7 +11,7 @@ class ClientCard extends Sprite {
   Card _card;
 
   Bitmap front;
-  final back = new Bitmap(GameUI.textureAtlas.getBitmapData("card_back"));
+  final back = new Bitmap(GameUI.textureAtlas.getBitmapData("CARD_BACK"));
   Bitmap crossOut;
 
   bool draggable = false;
