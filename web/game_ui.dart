@@ -68,7 +68,8 @@ class GameUI {
   TextField mulliganTimerTextField;
   TextField mulliganTitleTextField;
   TextField mulliganSubtitleTextField;
-  TextField sendButton;
+
+//  TextField sendButton;
   TextField pickUpButton;
 
   AlphaMaskFilter mask;
@@ -80,6 +81,11 @@ class GameUI {
   final cardsInPileToolTip = new HtmlObject(cardsInPileEl);
 
   final greenGlowFilter = new GlowFilter(Color.LimeGreen, 15, 15, 2);
+
+  Sprite3D sendButton3D;
+
+  Bitmap sendButtonFrontBitmap;
+  Bitmap sendButtonBackBitmap;
 
   init() async {
     cardsInDeckToolTip
@@ -147,7 +153,7 @@ class GameUI {
     lower = new Bitmap(textureAtlas.getBitmapData("LOWER"));
     higher = new Bitmap(textureAtlas.getBitmapData("HIGHER"));
 
-    currentPlayerToken = new Bitmap(textureAtlas.getBitmapData("crown"));
+    currentPlayerToken = new Bitmap(textureAtlas.getBitmapData("CROWN"));
     currentPlayerToken.x = midPoint.x;
     currentPlayerToken.y = midPoint.y;
     currentPlayerToken.pivotX = currentPlayerToken.width / 2;
@@ -208,25 +214,28 @@ class GameUI {
 
     final textFormat = new TextFormat('Cardenio', 50, Color.White,
         weight: 500, strokeColor: Color.Black, strokeWidth: 3);
-    sendButton = new TextField('Send', textFormat);
-    sendButton
+
+    sendButtonFrontBitmap =
+        new Bitmap(textureAtlas.getBitmapData("SEND_BUTTON"));
+    sendButtonBackBitmap = new Bitmap(textureAtlas.getBitmapData("SEND_BACK"));
+    sendButton3D = new Sprite3D()
+      ..addChild(sendButtonBackBitmap)
       ..x = midPoint.x + 280
-      ..y = midPoint.y + 180
-      ..height = 60
-      ..width = 90
-      ..pivotX = sendButton.width / 2
-      ..pivotY = sendButton.height / 2
+      ..y = midPoint.y + 190
+      ..pivotX = sendButtonBackBitmap.width / 2
+      ..pivotY = sendButtonBackBitmap.height / 2
       ..onMouseClick.listen((_) {
         sendSelectedCards();
       })
       ..onMouseMove.listen((_) {
         if (SelectableManager.shared.selectedIDs.isNotEmpty) {
-          sendButton.mouseCursor = MouseCursor.POINTER;
+          sendButton3D.mouseCursor = MouseCursor.POINTER;
         } else {
-          sendButton.mouseCursor = MouseCursor.DEFAULT;
+          sendButton3D.mouseCursor = MouseCursor.DEFAULT;
         }
       });
-    stage.addChild(sendButton);
+    sendButton3D.userData = sendButton3D.pivotY;
+    stage.addChild(sendButton3D);
 
     pickUpButton = new TextField('Pick Up', textFormat);
     pickUpButton
@@ -532,6 +541,8 @@ class GameUI {
 
     clearSelectableCards();
 
+    animateSendButton(false);
+
     animateCardsInHand(0, .75, Transition.easeOutQuintic, hands.first.length);
 
     SelectableManager.shared.selectedIDs.clear();
@@ -790,7 +801,33 @@ class GameUI {
     }
 
     selectableCardIDs.clear();
-    sendButton.filters.clear();
+    sendButton3D.filters.clear();
+  }
+
+  animateSendButton(bool enable) {
+    stage.setChildIndex(sendButton3D, stage.children.length - 1);
+
+    final tween = stage.juggler.addTween(sendButton3D, 0.25)
+      ..animate3D.rotationX.to(pi / 2)
+      ..animate.scaleX.to(1.75)
+      ..animate.scaleY.to(1.75)
+      ..animate.pivotY.to(sendButton3D.userData - 50);
+
+    tween.onComplete = () {
+      sendButton3D.children.clear();
+
+      if (enable) {
+        sendButton3D.children.add(sendButtonFrontBitmap);
+      } else {
+        sendButton3D.children.add(sendButtonBackBitmap);
+      }
+
+      stage.juggler.addTween(sendButton3D, 0.25)
+        ..animate3D.rotationX.to(pi)
+        ..animate.scaleX.to(1)
+        ..animate.scaleY.to(1)
+        ..animate.pivotY.to(sendButton3D.userData);
+    };
   }
 
   setMulliganableCards(CardIDs cardIDs) {
@@ -802,8 +839,7 @@ class GameUI {
       ..addChild(mulliganSubtitleTextField)
       ..setChildIndex(mulliganSubtitleTextField, stage.children.length - 1)
       ..addChild(mulliganTimerTextField)
-      ..setChildIndex(mulliganTimerTextField, stage.children.length - 1)
-      ..setChildIndex(sendButton, stage.children.length - 1);
+      ..setChildIndex(mulliganTimerTextField, stage.children.length - 1);
 
     for (var id in cardIDs.ids) {
       if (cardRegistry.containsKey(id)) {
@@ -813,6 +849,8 @@ class GameUI {
         selectableCardIDs.add(id);
       }
     }
+
+    animateSendButton(true);
   }
 
   setSelectableCards(CardIDs cardIDs) {
@@ -824,6 +862,8 @@ class GameUI {
         selectableCardIDs.add(id);
       }
     }
+
+    animateSendButton(true);
   }
 
   onDrawInfo(DrawInfo info) async {

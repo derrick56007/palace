@@ -232,9 +232,51 @@
 			}
 		},
 		{
-			"filename": "DISCARD_OR_ROCK.png",
+			"filename": "CARD_BACK.png",
 			"frame": {
 				"x": 143,
+				"y": 405,
+				"w": 140,
+				"h": 200
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 140,
+				"h": 200
+			},
+			"sourceSize": {
+				"w": 140,
+				"h": 200
+			}
+		},
+		{
+			"filename": "CROWN.png",
+			"frame": {
+				"x": 711,
+				"y": 1,
+				"w": 50,
+				"h": 50
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 50,
+				"h": 50
+			},
+			"sourceSize": {
+				"w": 50,
+				"h": 50
+			}
+		},
+		{
+			"filename": "DISCARD_OR_ROCK.png",
+			"frame": {
+				"x": 285,
 				"y": 405,
 				"w": 140,
 				"h": 200
@@ -255,7 +297,7 @@
 		{
 			"filename": "HAND_SWAP.png",
 			"frame": {
-				"x": 285,
+				"x": 427,
 				"y": 405,
 				"w": 140,
 				"h": 200
@@ -276,7 +318,7 @@
 		{
 			"filename": "HIGHER.png",
 			"frame": {
-				"x": 427,
+				"x": 569,
 				"y": 405,
 				"w": 140,
 				"h": 200
@@ -297,8 +339,8 @@
 		{
 			"filename": "HIGHER_CHOICE.png",
 			"frame": {
-				"x": 569,
-				"y": 405,
+				"x": 763,
+				"y": 1,
 				"w": 140,
 				"h": 200
 			},
@@ -317,6 +359,48 @@
 		},
 		{
 			"filename": "HIGHER_LOWER.png",
+			"frame": {
+				"x": 711,
+				"y": 203,
+				"w": 140,
+				"h": 200
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 140,
+				"h": 200
+			},
+			"sourceSize": {
+				"w": 140,
+				"h": 200
+			}
+		},
+		{
+			"filename": "LOWER.png",
+			"frame": {
+				"x": 711,
+				"y": 405,
+				"w": 140,
+				"h": 200
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 140,
+				"h": 200
+			},
+			"sourceSize": {
+				"w": 140,
+				"h": 200
+			}
+		},
+		{
+			"filename": "LOWER_CHOICE.png",
 			"frame": {
 				"x": 1,
 				"y": 607,
@@ -337,7 +421,7 @@
 			}
 		},
 		{
-			"filename": "LOWER.png",
+			"filename": "REVERSE.png",
 			"frame": {
 				"x": 143,
 				"y": 607,
@@ -358,136 +442,52 @@
 			}
 		},
 		{
-			"filename": "LOWER_CHOICE.png",
+			"filename": "SEND_BACK.png",
 			"frame": {
 				"x": 285,
 				"y": 607,
-				"w": 140,
-				"h": 200
+				"w": 110,
+				"h": 70
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 140,
-				"h": 200
+				"w": 110,
+				"h": 70
 			},
 			"sourceSize": {
-				"w": 140,
-				"h": 200
+				"w": 110,
+				"h": 70
 			}
 		},
 		{
-			"filename": "REVERSE.png",
+			"filename": "SEND_BUTTON.png",
 			"frame": {
-				"x": 427,
+				"x": 397,
 				"y": 607,
-				"w": 140,
-				"h": 200
+				"w": 110,
+				"h": 70
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 140,
-				"h": 200
+				"w": 110,
+				"h": 70
 			},
 			"sourceSize": {
-				"w": 140,
-				"h": 200
-			}
-		},
-		{
-			"filename": "RunRight01.png",
-			"frame": {
-				"x": 569,
-				"y": 607,
-				"w": 128,
-				"h": 128
-			},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x": 0,
-				"y": 0,
-				"w": 128,
-				"h": 128
-			},
-			"sourceSize": {
-				"w": 128,
-				"h": 128
-			}
-		},
-		{
-			"filename": "RunRight02.png",
-			"frame": {
-				"x": 699,
-				"y": 607,
-				"w": 128,
-				"h": 128
-			},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x": 0,
-				"y": 0,
-				"w": 128,
-				"h": 128
-			},
-			"sourceSize": {
-				"w": 128,
-				"h": 128
-			}
-		},
-		{
-			"filename": "RunRight03.png",
-			"frame": {
-				"x": 711,
-				"y": 1,
-				"w": 128,
-				"h": 128
-			},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x": 0,
-				"y": 0,
-				"w": 128,
-				"h": 128
-			},
-			"sourceSize": {
-				"w": 128,
-				"h": 128
-			}
-		},
-		{
-			"filename": "RunRight04.png",
-			"frame": {
-				"x": 711,
-				"y": 131,
-				"w": 128,
-				"h": 128
-			},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x": 0,
-				"y": 0,
-				"w": 128,
-				"h": 128
-			},
-			"sourceSize": {
-				"w": 128,
-				"h": 128
+				"w": 110,
+				"h": 70
 			}
 		},
 		{
 			"filename": "TOP_SWAP.png",
 			"frame": {
-				"x": 711,
-				"y": 261,
+				"x": 509,
+				"y": 607,
 				"w": 140,
 				"h": 200
 			},
@@ -507,8 +507,8 @@
 		{
 			"filename": "WILD.png",
 			"frame": {
-				"x": 569,
-				"y": 737,
+				"x": 651,
+				"y": 607,
 				"w": 140,
 				"h": 200
 			},
@@ -523,48 +523,6 @@
 			"sourceSize": {
 				"w": 140,
 				"h": 200
-			}
-		},
-		{
-			"filename": "CARD_BACK.png",
-			"frame": {
-				"x": 711,
-				"y": 737,
-				"w": 140,
-				"h": 200
-			},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x": 0,
-				"y": 0,
-				"w": 140,
-				"h": 200
-			},
-			"sourceSize": {
-				"w": 140,
-				"h": 200
-			}
-		},
-		{
-			"filename": "crown.png",
-			"frame": {
-				"x": 841,
-				"y": 1,
-				"w": 50,
-				"h": 50
-			},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x": 0,
-				"y": 0,
-				"w": 50,
-				"h": 50
-			},
-			"sourceSize": {
-				"w": 50,
-				"h": 50
 			}
 		}
 	],
@@ -574,8 +532,8 @@
 		"image": "spritesheet.png",
 		"format": "RGBA8888",
 		"size": {
-			"w": 892,
-			"h": 938
+			"w": 904,
+			"h": 808
 		},
 		"scale": "1"
 	}

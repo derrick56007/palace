@@ -55,7 +55,7 @@ class ClientCard extends Sprite {
         children.remove(crossOut);
 
         if (SelectableManager.shared.selectedIDs.isEmpty) {
-          gameUI.sendButton.filters.clear();
+          gameUI.sendButton3D.filters.clear();
         }
 
       } else {
@@ -64,7 +64,7 @@ class ClientCard extends Sprite {
 
         children.add(crossOut);
 
-        gameUI.sendButton.filters = [glowFilter];
+        gameUI.sendButton3D.filters = [glowFilter];
       }
     }
   }

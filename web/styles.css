@@ -89,7 +89,7 @@ input[type=checkbox] {
 }
 
 /* Toggled State */
-input[type=checkbox]:checked ~ #side-bar,  input[type=checkbox]:checked ~ #setting-bar{
+input[type=checkbox]:checked ~ #side-bar, input[type=checkbox]:checked ~ #setting-bar {
     display: flex;
     pointer-events: all;
 }
@@ -215,12 +215,12 @@ html {
 }
 
 .noselect {
-    -webkit-touch-callout:none;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 #login-card p, #register-card p {
@@ -261,15 +261,15 @@ html {
 
 ::-webkit-scrollbar {
     width: 5px;
-    position:absolute;
+    position: absolute;
 }
 
 ::-webkit-scrollbar-track {
 }
 
 ::-webkit-scrollbar-thumb {
-    background:#FEF0FF;
-    border-radius:10px;
+    background: #FEF0FF;
+    border-radius: 10px;
 }
 
 .fullscreen-btn {
