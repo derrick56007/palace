@@ -1,9 +1,7 @@
 :start
 
-cls
-
 :: build dart files
-call webdev build --no-release --output web:build
+call webdev build --no-release --output web:build -v
 
 pause
 

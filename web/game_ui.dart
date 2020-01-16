@@ -45,8 +45,6 @@ class GameUI {
 
   final selectableCardIDs = <String>[];
 
-  final cardFaceBitmapDatum = <String, BitmapData>{};
-
   Bitmap currentPlayerToken;
 
   final Bitmap blackOverlay =
@@ -224,6 +222,7 @@ class GameUI {
       ..y = midPoint.y + 190
       ..pivotX = sendButtonBackBitmap.width / 2
       ..pivotY = sendButtonBackBitmap.height / 2
+      ..rotationX = -pi
       ..onMouseClick.listen((_) {
         sendSelectedCards();
       })
@@ -541,7 +540,6 @@ class GameUI {
 
     clearSelectableCards();
 
-    animateSendButton(false);
 
     animateCardsInHand(0, .75, Transition.easeOutQuintic, hands.first.length);
 
@@ -801,13 +799,20 @@ class GameUI {
     }
 
     selectableCardIDs.clear();
-    sendButton3D.filters.clear();
+
+    animateSendButton(false);
   }
 
+  bool sendButtonEnabled = false;
+
   animateSendButton(bool enable) {
+    if (sendButtonEnabled == enable) return;
+
     stage.setChildIndex(sendButton3D, stage.children.length - 1);
 
-    final tween = stage.juggler.addTween(sendButton3D, 0.25)
+    sendButtonEnabled = enable;
+
+    final tween = stage.juggler.addTween(sendButton3D, 0.2)
       ..animate3D.rotationX.to(pi / 2)
       ..animate.scaleX.to(1.75)
       ..animate.scaleY.to(1.75)
@@ -820,9 +825,10 @@ class GameUI {
         sendButton3D.children.add(sendButtonFrontBitmap);
       } else {
         sendButton3D.children.add(sendButtonBackBitmap);
+        sendButton3D.filters.clear();
       }
 
-      stage.juggler.addTween(sendButton3D, 0.25)
+      stage.juggler.addTween(sendButton3D, 0.2)
         ..animate3D.rotationX.to(pi)
         ..animate.scaleX.to(1)
         ..animate.scaleY.to(1)
@@ -830,7 +836,7 @@ class GameUI {
     };
   }
 
-  setMulliganableCards(CardIDs cardIDs) {
+  setMulliganableCards(CardIDs cardIDs) async {
     displayBlackOverlay();
 
     stage
@@ -850,10 +856,14 @@ class GameUI {
       }
     }
 
+    stage.setChildIndex(sendButton3D, stage.children.length - 1);
+
+    await new Future.delayed(const Duration(milliseconds: 400));
+
     animateSendButton(true);
   }
 
-  setSelectableCards(CardIDs cardIDs) {
+  setSelectableCards(CardIDs cardIDs) async {
     for (var id in cardIDs.ids) {
       if (cardRegistry.containsKey(id)) {
         final card = cardRegistry[id];
@@ -862,6 +872,8 @@ class GameUI {
         selectableCardIDs.add(id);
       }
     }
+
+    await new Future.delayed(const Duration(milliseconds: 400));
 
     animateSendButton(true);
   }
