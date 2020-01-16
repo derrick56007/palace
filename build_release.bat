@@ -1,7 +1,7 @@
 :start
 
 :: build dart files
-call webdev build --no-release --output web:build -v
+call webdev build --release --output web:build
 
 pause
 
