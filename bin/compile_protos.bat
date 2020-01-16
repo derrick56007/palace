@@ -1,1 +1,7 @@
-# protoc protos/palace.proto --plugin=protoc-gen-dart=c:\Users\derri\AppData\Roaming\Pub\Cache\bin\protoc-gen-dart.bat --dart_out=C:\Users\derri\WebstormProjects\palace\web\common\generated_protos
+:start
+
+call protoc --dart_out=../web/common protos/palace.proto --plugin=protoc-gen-dart=c:\Users\derri\AppData\Roaming\Pub\Cache\bin\protoc-gen-dart.bat
+
+pause
+
+goto start
