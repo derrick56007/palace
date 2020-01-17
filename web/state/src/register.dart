@@ -42,7 +42,7 @@ class Register extends State {
 
   submitRegister() {
     if (!client.isConnected()) {
-      print('Not connected');
+      toast('Not connected');
       return;
     }
 
@@ -51,12 +51,12 @@ class Register extends State {
       ..passCode = registerPassword.value.trim();
 
     if (loginInfo.userID.isEmpty || loginInfo.passCode.isEmpty) {
-      print('Not a valid username');
+      toast('Not a valid username');
       return;
     }
 
     if (loginInfo.passCode != registerPasswordRetype.value.trim()) {
-      print('Passwords don\'t match');
+      toast('Passwords don\'t match');
       return;
     }
 

@@ -2,6 +2,7 @@ import 'dart:html';
 
 import '../../../client_websocket.dart';
 import '../../../common/generated_protos.dart';
+import '../../../toast.dart';
 
 class FriendHandler {
   final Element addFriendBtn = querySelector('#add-friend-btn');
@@ -20,7 +21,7 @@ class FriendHandler {
       ..on(SocketMessage_Type.FRIEND_REQUEST, (var json) {
         final friendInfo = SimpleInfo.fromJson(json);
 
-        print('friend request from ${friendInfo.info}');
+        toast('friend request from ${friendInfo.info}');
 
         friendRequestList.children.add(createFriendRequestCard(friendInfo));
       })
@@ -145,13 +146,13 @@ class FriendHandler {
 
   declineFriendRequest(SimpleInfo userInfo) {
     if (!client.isConnected()) {
-      print('Not connected');
+      toast('Not connected');
       return;
     }
 
     // validate username
     if (userInfo.info == 'null' || userInfo.info.isEmpty) {
-      print('invalid username');
+      toast('invalid username');
       return;
     }
 
@@ -160,13 +161,13 @@ class FriendHandler {
 
   acceptFriendRequest(SimpleInfo userInfo) {
     if (!client.isConnected()) {
-      print('Not connected');
+      toast('Not connected');
       return;
     }
 
     // validate username
     if (userInfo.info == 'null' || userInfo.info.isEmpty) {
-      print('invalid username');
+      toast('invalid username');
       return;
     }
 
@@ -175,7 +176,7 @@ class FriendHandler {
 
   addFriend() {
     if (!client.isConnected()) {
-      print('Not connected');
+      toast('Not connected');
       return;
     }
 
@@ -183,7 +184,7 @@ class FriendHandler {
 
     // validate username
     if (username == 'null' || username.isEmpty) {
-      print('invalid username');
+      toast('invalid username');
       return;
     }
 

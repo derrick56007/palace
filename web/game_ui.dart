@@ -105,7 +105,7 @@ class GameUI {
     final fullscreenIcon = html.querySelector('#fullscreen-icon');
 
     html.window.onKeyDown.listen((e) {
-      print('${e.keyCode} ${html.KeyCode.ESC}');
+//      print('${e.keyCode} ${html.KeyCode.ESC}');
 
       if (e.keyCode == html.KeyCode.ESC && fullscreen) {
         // make not fullscreen

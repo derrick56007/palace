@@ -6,6 +6,7 @@ import 'dart:html';
 import '../client_websocket.dart';
 import '../common/generated_protos.dart';
 import '../game_ui.dart';
+import '../toast.dart';
 
 import 'src/helpers/friend_handler.dart';
 import 'src/helpers/match_handler.dart';

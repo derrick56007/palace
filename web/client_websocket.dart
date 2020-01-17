@@ -6,6 +6,7 @@ import 'package:protobuf/protobuf.dart' as pb;
 
 import 'common/common_websocket.dart';
 import 'common/generated_protos.dart';
+import 'toast.dart';
 
 class ClientWebSocket extends CommonWebSocket {
   WebSocket _webSocket;
@@ -16,24 +17,31 @@ class ClientWebSocket extends CommonWebSocket {
 
   Stream<Event> onOpen, onClose, onError;
 
-  ClientWebSocket();
+  String host = window.location.host;
+
+  ClientWebSocket() {
+    // check if in webdev serve mode
+    if (document.documentElement.outerHtml.contains('dev_compiler')) {
+      host =
+          'localhost:8080'; // replace this with your custom port for the server
+    }
+  }
 
   static const defaultRetrySeconds = 2;
   static const double = 2;
 
   @override
   Future start([int retrySeconds = defaultRetrySeconds]) {
-    final completer = new Completer();
+    final completer = Completer();
 
     var reconnectScheduled = false;
 
-    final host = window.location.host;
-    print('connecting to $host');
-    _webSocket = new WebSocket('wss://$host/');
+    toast('connecting to $host');
+    _webSocket = WebSocket('ws://$host/');
 
     _scheduleReconnect() {
       if (!reconnectScheduled) {
-        new Timer(new Duration(seconds: retrySeconds),
+        new Timer(Duration(seconds: retrySeconds),
             () async => await start(retrySeconds * double));
       }
       reconnectScheduled = true;
@@ -41,7 +49,7 @@ class ClientWebSocket extends CommonWebSocket {
 
     _webSocket
       ..onOpen.listen((Event e) {
-        print('connected');
+        toast('connected');
         _connected = true;
 
         completer.complete();
@@ -50,12 +58,12 @@ class ClientWebSocket extends CommonWebSocket {
         onMessageToDispatch(e.data);
       })
       ..onClose.listen((Event e) {
-        print('disconnected');
+        toast('disconnected');
         _connected = false;
         _scheduleReconnect();
       })
       ..onError.listen((Event e) {
-        print('error ${e.type}');
+        toast('error ${e.type}');
         _connected = false;
         _scheduleReconnect();
       });

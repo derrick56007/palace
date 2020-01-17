@@ -99,7 +99,7 @@
     },
     {
       "name": "built_value",
-      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/built_value-7.0.6",
+      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/built_value-7.0.8",
       "packageUri": "lib/",
       "languageVersion": "2.3"
     },
@@ -237,9 +237,9 @@
     },
     {
       "name": "logging",
-      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/logging-0.11.3+2",
+      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/logging-0.11.4",
       "packageUri": "lib/",
-      "languageVersion": "1.5"
+      "languageVersion": "2.0"
     },
     {
       "name": "matcher",
@@ -321,9 +321,9 @@
     },
     {
       "name": "petitparser",
-      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/petitparser-2.4.0",
+      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/petitparser-3.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.4"
+      "languageVersion": "2.7"
     },
     {
       "name": "pool",
@@ -417,9 +417,9 @@
     },
     {
       "name": "stagexl",
-      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/stagexl-1.4.1",
+      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/stagexl-1.4.2",
       "packageUri": "lib/",
-      "languageVersion": "2.4"
+      "languageVersion": "2.7"
     },
     {
       "name": "stream_channel",
@@ -495,9 +495,9 @@
     },
     {
       "name": "xml",
-      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/xml-3.6.1",
+      "rootUri": "file:///C:/Users/derri/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/xml-3.7.0",
       "packageUri": "lib/",
-      "languageVersion": "2.6"
+      "languageVersion": "2.7"
     },
     {
       "name": "yaml",
@@ -509,10 +509,10 @@
       "name": "palace",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "2.7"
+      "languageVersion": "2.8"
     }
   ],
-  "generated": "2020-01-16T07:37:05.154893Z",
+  "generated": "2020-01-17T00:41:33.442388Z",
   "generator": "pub",
-  "generatorVersion": "2.7.0-dev.2.1"
+  "generatorVersion": "2.8.0-dev.3.0"
 }

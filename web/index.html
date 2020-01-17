@@ -21,24 +21,32 @@
 
 <body class="blue accent-2">
 
-<div id="login-card" class="darken-1" style="display: none">
+<div id="login-card" style="display: none">
 
-    <div class="card" style="height: 360px">
-        <div class="card-content black-text" style="padding-bottom: 14px; text-align: center">
-            <div class="card-title">Login</div>
-            <div class="input-field col s6" style="height: 80px">
-                <input id="login_user_name" type="text" class="validate" data-length="16">
-                <label for="login_user_name">Username</label>
+    <div style="display: flex; justify-content: space-evenly">
+        <div id="landing-logo" style="display: flex; flex-direction: column; font-family: Supercraft,serif; color: white;
+    font-size: 9em; line-height: .8em; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black; margin-right: 50px">
+            <div id="landing-logo-text">Palace<br>Online</div>
+        </div>
+
+        <div class="card darken-1" style="height: 360px">
+            <div class="card-content black-text" style="padding-bottom: 14px; text-align: center">
+                <div class="card-title">Login</div>
+                <div class="input-field col s6" style="height: 80px">
+                    <input id="login_user_name" type="text" class="validate" data-length="16">
+                    <label for="login_user_name">Username</label>
+                </div>
+                <div class="input-field col s6" style="height: 80px">
+                    <input id="login_password" type="password" class="validate" data-length="16">
+                    <label for="login_password">Password</label>
+                </div>
+                <a id="login-btn" class="waves-effect waves-light btn">Login</a>
+                <p>Don't have an account yet?</p>
+                <div id="sign-up-btn" style="color: teal; cursor: pointer; font-weight: 600;">Sign Up</div>
             </div>
-            <div class="input-field col s6" style="height: 80px">
-                <input id="login_password" type="password" class="validate" data-length="16">
-                <label for="login_password">Password</label>
-            </div>
-            <a id="login-btn" class="waves-effect waves-light btn">Login</a>
-            <p>Don't have an account yet?</p>
-            <div id="sign-up-btn" style="color: teal; cursor: pointer; font-weight: 600;">Sign Up</div>
         </div>
     </div>
+
 
 </div>
 

@@ -1,6 +1,10 @@
-import 'dart:js';
+import 'dart:js' as js;
 
 toast(String message, [int duration = 2500]) {
   print(message);
-  context['Materialize'].callMethod('toast', [message, duration]);
+
+  final options = js.JsObject(js.context['Object']);
+  options['html'] = message;
+
+  (js.context['M'] as js.JsObject).callMethod('toast', [options]);
 }

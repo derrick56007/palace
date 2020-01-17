@@ -6,3 +6,5 @@ $objectdb{"version":1}
 {"userID":"derp4","passCode":"gJ8RK5hzniDdoGULUIF0neem17pZ9COL\u0018ÓjN\u0015W/¦Z¡q£0\u0011i5%;M·\u000fÅ\u0019ö¶L","friends":["derp1"],"friend_requests":[],"_id":"5c10fad8bde0fdba526ee94e"}
 {"userID":"derp5","passCode":"sp67LZ0Bjm7EERmoGAjiSwkfuSntAndpþTíÁÚ'acwø½u¢¾d·Uù]#D{­YÅ)RrÑrà","friends":["derp1"],"friend_requests":[],"_id":"5c10fb84bde0fdba526ee94f"}
 {"userID":"derp6","passCode":"glHFPcE5/y5C14uGeGmFmtUksxJQ05cO»ÿ!\u0000Ýp\u001d5ñ\u0015meÕ½y¾Ñ\"­Ejéù\u0002kÎd","friends":["derp1"],"friend_requests":[],"_id":"5c110336bde0fdba526ee950"}
+{"userID":"derp","passCode":"vBdcGKcqdufgxnKzkXXe+Nxpe/KzsIFC&&\u001bË_Üuv¢M®Zcïp_í\n²¬\u0007WL\u000bolÂ7ßq","friends":["jon98"],"friend_requests":[],"_id":"5d0ade5db757af66eb9f3f3c"}
+{"userID":"jon98","passCode":"tM372R2tvmsWA4k82ZZbe7uDAeDcmU0A £À\u0016«ìü\u000bü\"£ÁÕq¨½¿áþ©Ê\\ã|3òs","friends":["derp"],"friend_requests":[],"_id":"5e21075349690b96b453f879"}

@@ -48,7 +48,7 @@ class Login extends State {
 
   submitLogin() {
     if (!client.isConnected()) {
-      print('Not connected');
+      toast('Not connected');
       return;
     }
 
@@ -57,7 +57,7 @@ class Login extends State {
       ..passCode = loginPassword.value.trim();
 
     if (loginInfo.userID.isEmpty || loginInfo.passCode.isEmpty) {
-      print('Not a valid username');
+      toast('Not a valid username');
       return;
     }
 

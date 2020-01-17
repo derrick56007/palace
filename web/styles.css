@@ -5,6 +5,11 @@
     src: url("fonts/Cardenio Modern Std.ttf");
 }
 
+@font-face {
+    font-family: 'Supercraft';
+    src: url("fonts/Supercraft.otf");
+}
+
 html, body, .stage--fullscreen, #play-card {
     width: 100%;
     height: 100%;

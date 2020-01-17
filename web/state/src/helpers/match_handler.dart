@@ -2,6 +2,7 @@ import 'dart:html';
 
 import '../../../client_websocket.dart';
 import '../../../common/generated_protos.dart';
+import '../../../toast.dart';
 
 class MatchHandler {
   final ClientWebSocket client;
@@ -61,7 +62,7 @@ class MatchHandler {
         exitGameBtn.classes.remove('disabled');
         quickBtn.classes.remove('disabled');
 
-        print('match started!');
+        toast('match started!');
 
         (querySelector('#toggle-1') as InputElement).checked = false;
       })
@@ -70,7 +71,7 @@ class MatchHandler {
         lobbyCard.style.display = '';
 
         final matchInvite = new LobbyInfo.fromJson(json);
-        print('match invite');
+        toast('match invite');
 
         lobbyList.children.clear();
         lobbyList.children.add(createLobbyListItem(matchInvite.host, true));
@@ -88,7 +89,7 @@ class MatchHandler {
       ..on(SocketMessage_Type.MATCH_INVITE_CANCEL, (var json) {
         final friendID = SimpleInfo.fromJson(json);
 
-        print('match invitation canceled by $friendID');
+        toast('match invitation canceled by $friendID');
       })
       ..on(SocketMessage_Type.LOBBY_INFO, (var json) {
         quickCard.style.display = 'none';

@@ -4,5 +4,7 @@
 #   https://www.dartlang.org/guides/language/analysis-options
 
  analyzer:
-#   exclude:
-#     - path/to/excluded/files/**
+   exclude:
+     - build/**
+     - bin/protos/**
+     - databases/**
