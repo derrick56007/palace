@@ -37,7 +37,7 @@ class ClientWebSocket extends CommonWebSocket {
     var reconnectScheduled = false;
 
     toast('connecting to $host');
-    _webSocket = WebSocket('ws://$host/');
+    _webSocket = WebSocket('wss://$host/');
 
     _scheduleReconnect() {
       if (!reconnectScheduled) {
