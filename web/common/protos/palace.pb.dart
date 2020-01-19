@@ -915,3 +915,79 @@ class RequestHigherLowerChoiceInfo extends $pb.GeneratedMessage {
   void clearValue() => clearField(1);
 }
 
+class GameEndInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('GameEndInfo', package: const $pb.PackageName('palace'), createEmptyInstance: create)
+    ..a<$core.int>(1, 'eloPre', $pb.PbFieldType.O3, protoName: 'eloPre')
+    ..a<$core.int>(2, 'eloChanged', $pb.PbFieldType.O3, protoName: 'eloChanged')
+    ..a<$core.int>(3, 'eloPost', $pb.PbFieldType.O3, protoName: 'eloPost')
+    ..hasRequiredFields = false
+  ;
+
+  GameEndInfo._() : super();
+  factory GameEndInfo() => create();
+  factory GameEndInfo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GameEndInfo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  GameEndInfo clone() => GameEndInfo()..mergeFromMessage(this);
+  GameEndInfo copyWith(void Function(GameEndInfo) updates) => super.copyWith((message) => updates(message as GameEndInfo));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static GameEndInfo create() => GameEndInfo._();
+  GameEndInfo createEmptyInstance() => create();
+  static $pb.PbList<GameEndInfo> createRepeated() => $pb.PbList<GameEndInfo>();
+  @$core.pragma('dart2js:noInline')
+  static GameEndInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GameEndInfo>(create);
+  static GameEndInfo _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get eloPre => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set eloPre($core.int v) { $_setSignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasEloPre() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearEloPre() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get eloChanged => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set eloChanged($core.int v) { $_setSignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasEloChanged() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearEloChanged() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get eloPost => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set eloPost($core.int v) { $_setSignedInt32(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasEloPost() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearEloPost() => clearField(3);
+}
+
+class HandSwapChoiceInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('HandSwapChoiceInfo', package: const $pb.PackageName('palace'), createEmptyInstance: create)
+    ..pc<CardIDs>(1, 'hands', $pb.PbFieldType.PM, subBuilder: CardIDs.create)
+    ..hasRequiredFields = false
+  ;
+
+  HandSwapChoiceInfo._() : super();
+  factory HandSwapChoiceInfo() => create();
+  factory HandSwapChoiceInfo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory HandSwapChoiceInfo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  HandSwapChoiceInfo clone() => HandSwapChoiceInfo()..mergeFromMessage(this);
+  HandSwapChoiceInfo copyWith(void Function(HandSwapChoiceInfo) updates) => super.copyWith((message) => updates(message as HandSwapChoiceInfo));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static HandSwapChoiceInfo create() => HandSwapChoiceInfo._();
+  HandSwapChoiceInfo createEmptyInstance() => create();
+  static $pb.PbList<HandSwapChoiceInfo> createRepeated() => $pb.PbList<HandSwapChoiceInfo>();
+  @$core.pragma('dart2js:noInline')
+  static HandSwapChoiceInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<HandSwapChoiceInfo>(create);
+  static HandSwapChoiceInfo _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<CardIDs> get hands => $_getList(0);
+}
+

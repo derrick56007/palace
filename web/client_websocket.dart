@@ -19,9 +19,12 @@ class ClientWebSocket extends CommonWebSocket {
 
   String host = window.location.host;
 
+  bool devMode = false;
+
   ClientWebSocket() {
     // check if in webdev serve mode
     if (document.documentElement.outerHtml.contains('dev_compiler')) {
+      devMode = true;
       host =
           'localhost:8080'; // replace this with your custom port for the server
     }
@@ -37,7 +40,11 @@ class ClientWebSocket extends CommonWebSocket {
     var reconnectScheduled = false;
 
     toast('connecting to $host');
-    _webSocket = WebSocket('wss://$host/');
+    if (devMode) {
+      _webSocket = WebSocket('ws://$host/');
+    } else {
+      _webSocket = WebSocket('wss://$host/');
+    }
 
     void _scheduleReconnect() {
       if (!reconnectScheduled) {

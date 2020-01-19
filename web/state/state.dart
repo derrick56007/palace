@@ -5,6 +5,7 @@ import 'dart:html';
 
 import '../client_websocket.dart';
 import '../common/generated_protos.dart';
+import '../common/protos/palace.pb.dart';
 import '../game_ui.dart';
 import '../toast.dart';
 

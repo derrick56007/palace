@@ -9,6 +9,7 @@ import 'client_websocket.dart';
 import 'common/generated_protos.dart';
 import 'math_helper.dart';
 import 'selectable_manager.dart';
+import 'toast.dart';
 
 final hands = <List<ClientCard>>[];
 final topTowers = <List<ClientCard>>[];
@@ -672,10 +673,11 @@ class GameUI {
 
     for (var card in info.cards) {
       final revealedCard = cardRegistry[card.id];
+      playedCards.add(revealedCard);
+
       revealedCard.cardInfo = card;
       revealedCard.interactable = false;
 
-      playedCards.add(revealedCard);
       revealedCards.add(revealedCard);
 
       hands[info.userIndex].remove(revealedCard);
@@ -1257,5 +1259,10 @@ class GameUI {
 
   void revealGame() {
     stage.filters.clear();
+  }
+
+  void onGameEndInfo(GameEndInfo info) {
+    toast('Rank changed by ${info.eloChanged}');
+    toast('Rank now ${info.eloPost}');
   }
 }

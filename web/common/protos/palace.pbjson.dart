@@ -229,22 +229,24 @@ const SocketMessage_Type$json = const {
     const {'1': 'MULLIGAN_TIMER_UPDATE', '2': 25},
     const {'1': 'ENABLE_PICK_UP', '2': 26},
     const {'1': 'DISABLE_PICK_UP', '2': 27},
-    const {'1': 'LOGIN', '2': 28},
-    const {'1': 'REGISTER', '2': 29},
-    const {'1': 'ADD_FRIEND', '2': 30},
-    const {'1': 'ACCEPT_FRIEND_REQUEST', '2': 31},
-    const {'1': 'SEND_MATCH_INVITE', '2': 32},
-    const {'1': 'MATCH_ACCEPT', '2': 33},
-    const {'1': 'MATCH_DECLINE', '2': 34},
-    const {'1': 'USER_PLAY', '2': 35},
-    const {'1': 'HANDSWAP_CHOICE', '2': 36},
-    const {'1': 'TOPSWAP_CHOICE', '2': 37},
-    const {'1': 'HIGHERLOWER_CHOICE', '2': 38},
-    const {'1': 'DECLINE_FRIEND_REQUEST', '2': 39},
-    const {'1': 'START', '2': 40},
-    const {'1': 'REQUEST_PICK_UP', '2': 41},
-    const {'1': 'QUICK_JOIN', '2': 42},
-    const {'1': 'LEAVE_GAME', '2': 43},
+    const {'1': 'GAME_END_INFO', '2': 28},
+    const {'1': 'LOGIN', '2': 40},
+    const {'1': 'REGISTER', '2': 41},
+    const {'1': 'ADD_FRIEND', '2': 42},
+    const {'1': 'ACCEPT_FRIEND_REQUEST', '2': 43},
+    const {'1': 'SEND_MATCH_INVITE', '2': 44},
+    const {'1': 'MATCH_ACCEPT', '2': 45},
+    const {'1': 'MATCH_DECLINE', '2': 46},
+    const {'1': 'USER_PLAY', '2': 47},
+    const {'1': 'HANDSWAP_CHOICE', '2': 48},
+    const {'1': 'TOPSWAP_CHOICE', '2': 49},
+    const {'1': 'HIGHERLOWER_CHOICE', '2': 50},
+    const {'1': 'DECLINE_FRIEND_REQUEST', '2': 51},
+    const {'1': 'START', '2': 52},
+    const {'1': 'REQUEST_PICK_UP', '2': 53},
+    const {'1': 'QUICK_JOIN', '2': 54},
+    const {'1': 'LEAVE_GAME', '2': 55},
+    const {'1': 'RANKED_JOIN', '2': 56},
   ],
 };
 
@@ -270,6 +272,22 @@ const RequestHigherLowerChoiceInfo$json = const {
   '1': 'RequestHigherLowerChoiceInfo',
   '2': const [
     const {'1': 'value', '3': 1, '4': 1, '5': 5, '10': 'value'},
+  ],
+};
+
+const GameEndInfo$json = const {
+  '1': 'GameEndInfo',
+  '2': const [
+    const {'1': 'eloPre', '3': 1, '4': 1, '5': 5, '10': 'eloPre'},
+    const {'1': 'eloChanged', '3': 2, '4': 1, '5': 5, '10': 'eloChanged'},
+    const {'1': 'eloPost', '3': 3, '4': 1, '5': 5, '10': 'eloPost'},
+  ],
+};
+
+const HandSwapChoiceInfo$json = const {
+  '1': 'HandSwapChoiceInfo',
+  '2': const [
+    const {'1': 'hands', '3': 1, '4': 3, '5': 11, '6': '.palace.CardIDs', '10': 'hands'},
   ],
 };
 

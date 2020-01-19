@@ -80,22 +80,24 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
   static const SocketMessage_Type MULLIGAN_TIMER_UPDATE = SocketMessage_Type._(25, 'MULLIGAN_TIMER_UPDATE');
   static const SocketMessage_Type ENABLE_PICK_UP = SocketMessage_Type._(26, 'ENABLE_PICK_UP');
   static const SocketMessage_Type DISABLE_PICK_UP = SocketMessage_Type._(27, 'DISABLE_PICK_UP');
-  static const SocketMessage_Type LOGIN = SocketMessage_Type._(28, 'LOGIN');
-  static const SocketMessage_Type REGISTER = SocketMessage_Type._(29, 'REGISTER');
-  static const SocketMessage_Type ADD_FRIEND = SocketMessage_Type._(30, 'ADD_FRIEND');
-  static const SocketMessage_Type ACCEPT_FRIEND_REQUEST = SocketMessage_Type._(31, 'ACCEPT_FRIEND_REQUEST');
-  static const SocketMessage_Type SEND_MATCH_INVITE = SocketMessage_Type._(32, 'SEND_MATCH_INVITE');
-  static const SocketMessage_Type MATCH_ACCEPT = SocketMessage_Type._(33, 'MATCH_ACCEPT');
-  static const SocketMessage_Type MATCH_DECLINE = SocketMessage_Type._(34, 'MATCH_DECLINE');
-  static const SocketMessage_Type USER_PLAY = SocketMessage_Type._(35, 'USER_PLAY');
-  static const SocketMessage_Type HANDSWAP_CHOICE = SocketMessage_Type._(36, 'HANDSWAP_CHOICE');
-  static const SocketMessage_Type TOPSWAP_CHOICE = SocketMessage_Type._(37, 'TOPSWAP_CHOICE');
-  static const SocketMessage_Type HIGHERLOWER_CHOICE = SocketMessage_Type._(38, 'HIGHERLOWER_CHOICE');
-  static const SocketMessage_Type DECLINE_FRIEND_REQUEST = SocketMessage_Type._(39, 'DECLINE_FRIEND_REQUEST');
-  static const SocketMessage_Type START = SocketMessage_Type._(40, 'START');
-  static const SocketMessage_Type REQUEST_PICK_UP = SocketMessage_Type._(41, 'REQUEST_PICK_UP');
-  static const SocketMessage_Type QUICK_JOIN = SocketMessage_Type._(42, 'QUICK_JOIN');
-  static const SocketMessage_Type LEAVE_GAME = SocketMessage_Type._(43, 'LEAVE_GAME');
+  static const SocketMessage_Type GAME_END_INFO = SocketMessage_Type._(28, 'GAME_END_INFO');
+  static const SocketMessage_Type LOGIN = SocketMessage_Type._(40, 'LOGIN');
+  static const SocketMessage_Type REGISTER = SocketMessage_Type._(41, 'REGISTER');
+  static const SocketMessage_Type ADD_FRIEND = SocketMessage_Type._(42, 'ADD_FRIEND');
+  static const SocketMessage_Type ACCEPT_FRIEND_REQUEST = SocketMessage_Type._(43, 'ACCEPT_FRIEND_REQUEST');
+  static const SocketMessage_Type SEND_MATCH_INVITE = SocketMessage_Type._(44, 'SEND_MATCH_INVITE');
+  static const SocketMessage_Type MATCH_ACCEPT = SocketMessage_Type._(45, 'MATCH_ACCEPT');
+  static const SocketMessage_Type MATCH_DECLINE = SocketMessage_Type._(46, 'MATCH_DECLINE');
+  static const SocketMessage_Type USER_PLAY = SocketMessage_Type._(47, 'USER_PLAY');
+  static const SocketMessage_Type HANDSWAP_CHOICE = SocketMessage_Type._(48, 'HANDSWAP_CHOICE');
+  static const SocketMessage_Type TOPSWAP_CHOICE = SocketMessage_Type._(49, 'TOPSWAP_CHOICE');
+  static const SocketMessage_Type HIGHERLOWER_CHOICE = SocketMessage_Type._(50, 'HIGHERLOWER_CHOICE');
+  static const SocketMessage_Type DECLINE_FRIEND_REQUEST = SocketMessage_Type._(51, 'DECLINE_FRIEND_REQUEST');
+  static const SocketMessage_Type START = SocketMessage_Type._(52, 'START');
+  static const SocketMessage_Type REQUEST_PICK_UP = SocketMessage_Type._(53, 'REQUEST_PICK_UP');
+  static const SocketMessage_Type QUICK_JOIN = SocketMessage_Type._(54, 'QUICK_JOIN');
+  static const SocketMessage_Type LEAVE_GAME = SocketMessage_Type._(55, 'LEAVE_GAME');
+  static const SocketMessage_Type RANKED_JOIN = SocketMessage_Type._(56, 'RANKED_JOIN');
 
   static const $core.List<SocketMessage_Type> values = <SocketMessage_Type> [
     ERROR,
@@ -126,6 +128,7 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     MULLIGAN_TIMER_UPDATE,
     ENABLE_PICK_UP,
     DISABLE_PICK_UP,
+    GAME_END_INFO,
     LOGIN,
     REGISTER,
     ADD_FRIEND,
@@ -142,6 +145,7 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     REQUEST_PICK_UP,
     QUICK_JOIN,
     LEAVE_GAME,
+    RANKED_JOIN,
   ];
 
   static final $core.Map<$core.int, SocketMessage_Type> _byValue = $pb.ProtobufEnum.initByValue(values);

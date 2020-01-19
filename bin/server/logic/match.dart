@@ -30,7 +30,9 @@ class Match {
 
   final uuids = <String>[];
 
-  Match(this.players) {
+  final bool ranked;
+
+  Match(this.players, this.ranked) {
     newGame();
   }
 
@@ -125,7 +127,8 @@ class Match {
         playedCards.last.type == Card_Type.HAND_SWAP &&
         playedCards.last.playerIndex == players.indexOf(socket) &&
         !playedCards.last.activated) {
-      final cardIDsInOtherHands = getCardIDsInOtherHands(socket);
+      final cardIDsInOtherHands =
+          getCardIDsInOtherHands(socket).expand((i) => i).toList();
       if (chosenCards.length == 1 &&
           cardIDsInOtherHands.contains(userPlay.ids.first)) {
         await onHandSwapChoice(socket, userPlay);
@@ -288,9 +291,13 @@ class Match {
 
     if (card.type == Card_Type.HAND_SWAP) {
       final cardIDsInOtherHands = getCardIDsInOtherHands(socket);
-      final selectedCards = CardIDs()..ids.addAll(cardIDsInOtherHands);
 
-      socket.send(SocketMessage_Type.REQUEST_HANDSWAP_CHOICE, selectedCards);
+      final handswapChoiceInfo = HandSwapChoiceInfo();
+      handswapChoiceInfo.hands.addAll(
+          cardIDsInOtherHands.map((strs) => CardIDs()..ids.addAll(strs)));
+
+      socket.send(
+          SocketMessage_Type.REQUEST_HANDSWAP_CHOICE, handswapChoiceInfo);
       return;
     }
 
@@ -379,7 +386,32 @@ class Match {
 
   Future<void> onWin(CommonWebSocket socket) async {
     gameEnded = true;
-    print('win -> ${players.indexOf(socket)}');
+
+    if (ranked) {
+      final eloMatch = EloMatch();
+      for (final s in players) {
+        eloMatch.addPlayer(s, s == socket ? 1 : 2, socket.elo);
+      }
+      eloMatch.calculate();
+
+      for (final p
+          in eloMatch.players.where((p) => p.socket is ServerWebSocket)) {
+        final gameEndInfo = GameEndInfo();
+        gameEndInfo
+          ..eloPre = p.socket.elo
+          ..eloChanged = p.eloChange
+          ..eloPost = p.eloPost;
+        p.socket.send(SocketMessage_Type.GAME_END_INFO, gameEndInfo);
+
+        await DataBaseManager.shared.userDB.update(
+            {'userID': (p.socket as ServerWebSocket).userID},
+            {'elo': p.eloPost});
+        await DataBaseManager.shared.userDB.tidy();
+
+        // update elo
+        p.socket.elo = p.eloPost;
+      }
+    }
 
     await Future.delayed(const Duration(seconds: 3));
 
@@ -392,13 +424,33 @@ class Match {
       bottomTowers[socket].cards.where((card) => card == _emptyCard).length ==
           3;
 
-  List<String> getCardIDsInOtherHands(CommonWebSocket socket) {
-    final otherCardIDsInOtherHands = <String>[];
-    for (var hand in hands.values.where((hand) => hand != hands[socket])) {
+  // gets cards in clockwise pattern
+  List<List<String>> getCardIDsInOtherHands(CommonWebSocket socket) {
+    final otherCardIDsInOtherHands = <List<String>>[];
+
+    for (var i = 0; i < players.length; i++) {
+      if (i == players.indexOf(socket)) {
+        continue;
+      }
+
+      final hand = hands.values.elementAt(i);
+
+      final cards = <String>[];
+
       for (var card in hand.cards) {
-        otherCardIDsInOtherHands.add('${card.id}');
+        cards.add('${card.id}');
+      }
+
+      if (cards.isNotEmpty) {
+        otherCardIDsInOtherHands.add(cards);
       }
     }
+//
+//    for (var hand in hands.values.where((hand) => hand != hands[socket])) {
+//      for (var card in hand.cards) {
+//        otherCardIDsInOtherHands.add('${card.id}');
+//      }
+//    }
 
     return otherCardIDsInOtherHands;
   }
@@ -750,7 +802,8 @@ class Match {
         playedCards.last.type == Card_Type.HAND_SWAP &&
         playedCards.last.playerIndex == players.indexOf(socket) &&
         !playedCards.last.activated) {
-      return getCardIDsInOtherHands(socket);
+      print(getCardIDsInOtherHands(socket).expand((i) => i).toList());
+      return getCardIDsInOtherHands(socket).expand((i) => i).toList();
     }
 
     // check for topswap
@@ -974,10 +1027,6 @@ class Match {
 
   void registerCard(Card card) {
     final id = '${card.id}';
-
-    if (cardRegistry.containsKey(id)) {
-      print('error! overriding card id $id');
-    }
 
     cardRegistry[id] = card;
   }

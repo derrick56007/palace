@@ -7,6 +7,8 @@ class ServerWebSocket extends CommonWebSocket {
 
   ServerWebSocket.upgradeRequest(this._req);
 
+  String userID;
+
   @override
   Future<void> start() async {
     _webSocket = await WebSocketTransformer.upgrade(_req)

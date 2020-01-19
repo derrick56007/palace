@@ -149,24 +149,26 @@ message SocketMessage {
         MULLIGAN_TIMER_UPDATE = 25;
         ENABLE_PICK_UP = 26;
         DISABLE_PICK_UP = 27;
+        GAME_END_INFO = 28;
 
         // to server
-        LOGIN = 28;
-        REGISTER = 29;
-        ADD_FRIEND = 30;
-        ACCEPT_FRIEND_REQUEST = 31;
-        SEND_MATCH_INVITE = 32;
-        MATCH_ACCEPT = 33;
-        MATCH_DECLINE = 34;
-        USER_PLAY = 35;
-        HANDSWAP_CHOICE = 36;
-        TOPSWAP_CHOICE = 37;
-        HIGHERLOWER_CHOICE = 38;
-        DECLINE_FRIEND_REQUEST = 39;
-        START = 40;
-        REQUEST_PICK_UP = 41;
-        QUICK_JOIN = 42;
-        LEAVE_GAME = 43;
+        LOGIN = 40;
+        REGISTER = 41;
+        ADD_FRIEND = 42;
+        ACCEPT_FRIEND_REQUEST = 43;
+        SEND_MATCH_INVITE = 44;
+        MATCH_ACCEPT = 45;
+        MATCH_DECLINE = 46;
+        USER_PLAY = 47;
+        HANDSWAP_CHOICE = 48;
+        TOPSWAP_CHOICE = 49;
+        HIGHERLOWER_CHOICE = 50;
+        DECLINE_FRIEND_REQUEST = 51;
+        START = 52;
+        REQUEST_PICK_UP = 53;
+        QUICK_JOIN = 54;
+        LEAVE_GAME = 55;
+        RANKED_JOIN = 56;
     }
 
     Type type = 1;
@@ -187,4 +189,14 @@ message FriendItemInfo {
 
 message RequestHigherLowerChoiceInfo {
     int32 value = 1;
+}
+
+message GameEndInfo {
+    int32 eloPre = 1;
+    int32 eloChanged = 2;
+    int32 eloPost = 3;
+}
+
+message HandSwapChoiceInfo {
+    repeated CardIDs hands = 1;
 }

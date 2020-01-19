@@ -177,6 +177,28 @@ class MatchManager {
     lobby.acceptInvite(socket);
   }
 
+  void rankedMatch(CommonWebSocket socket) {
+    if (socketInLobby(socket) || socketInMatch(socket)) {
+      // TODO send error
+      return;
+    }
+
+    final players = <CommonWebSocket>[socket];
+
+    // add bots
+    while (players.length < 4) {
+      final botSocket = BotSocket();
+      SocketReceiver.handle(botSocket);
+      players.add(botSocket);
+    }
+    final match = Match(players, true);
+
+    for (var player in players) {
+      _matchBySocket[player] = match;
+    }
+    socket.send(SocketMessage_Type.MATCH_START);
+  }
+
   void quickMatch(CommonWebSocket socket) {
     if (socketInLobby(socket) || socketInMatch(socket)) {
       // TODO send error
@@ -196,7 +218,7 @@ class MatchManager {
       SocketReceiver.handle(botSocket);
       players.add(botSocket);
     }
-    final match = Match(players);
+    final match = Match(players, false);
 
     for (var player in players) {
       _matchBySocket[player] = match;
@@ -226,7 +248,7 @@ class MatchManager {
       players.add(botSocket);
     }
 
-    final match = Match(players);
+    final match = Match(players, false);
 
     for (var socket in lobby.players) {
       _lobbyBySocket.remove(socket);

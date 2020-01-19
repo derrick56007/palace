@@ -19,6 +19,8 @@ part 'logic/match.dart';
 
 part 'logic/bot_socket.dart';
 
+part 'logic/elo_calculation.dart';
+
 part 'managers/database_manager.dart';
 
 part 'managers/friend_manager.dart';

@@ -101,7 +101,8 @@ class LoginManager {
       'userID': userID,
       'passCode': saltWithHash,
       'friends': [],
-      'friend_requests': []
+      'friend_requests': [],
+      'elo': 1200
     };
 
     await DataBaseManager.shared.userDB.insert(userInfo);
@@ -171,6 +172,11 @@ class LoginManager {
     // alert successful login
     socket.send(SocketMessage_Type.LOGIN_SUCCESSFUL);
     print('logged in $userID');
+
+    // load elo
+    socket
+      ..elo = userInfo['elo']
+      ..userID = userInfo['userID'];
 
     // load friends
     await FriendManager.shared.login(socket);

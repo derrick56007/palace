@@ -11,10 +11,13 @@ class BotSocket extends CommonWebSocket {
 
   final hand = <Card>[];
 
+  @override
+  int elo = 1200;
+
   // named send but is actually the receiving end
   @override
   Future<void> send(SocketMessage_Type type,
-      [pb.GeneratedMessage generatedMessage]) async {
+      [pb.GeneratedMessage message]) async {
     // split this into methods
     switch (type) {
       case SocketMessage_Type.MATCH_INVITE:
@@ -22,8 +25,7 @@ class BotSocket extends CommonWebSocket {
         break;
 
       case SocketMessage_Type.SET_MULLIGANABLE_CARDS:
-        await Future.delayed(const Duration(seconds: 8));
-
+        await Future.delayed(Duration(seconds: 6 + rand.nextInt(3)));
         final match = MatchManager.shared.matchFromSocket(this);
 
         if (match == null) break;
@@ -43,14 +45,13 @@ class BotSocket extends CommonWebSocket {
         break;
       case SocketMessage_Type.SET_SELECTABLE_CARDS:
         await Future.delayed(const Duration(milliseconds: 1500));
-
         final match = MatchManager.shared.matchFromSocket(this);
 
         if (match == null) {
           break;
         }
 
-        final selectableDs = generatedMessage as CardIDs;
+        final selectableDs = message as CardIDs;
         final cards = match.cardListFromCardIDList(selectableDs.ids);
 
         final selectedIDs = CardIDs();
@@ -95,11 +96,16 @@ class BotSocket extends CommonWebSocket {
         break;
       case SocketMessage_Type.REQUEST_HIGHERLOWER_CHOICE:
         await Future.delayed(const Duration(milliseconds: 1500));
-
         final match = MatchManager.shared.matchFromSocket(this);
 
+        if (match == null) {
+          break;
+        }
+
+        final boardState = match.resolvePileState();
+
         final higherLowerChoice = HigherLowerChoice()
-          ..choice = rand.nextBool()
+          ..choice = boardState > 5
               ? HigherLowerChoice_Type.HIGHER
               : HigherLowerChoice_Type.LOWER;
 
@@ -107,20 +113,21 @@ class BotSocket extends CommonWebSocket {
         break;
       case SocketMessage_Type.REQUEST_TOPSWAP_CHOICE:
         await Future.delayed(const Duration(milliseconds: 1500));
-
         final match = MatchManager.shared.matchFromSocket(this);
 
-        final selectableCardIDs = generatedMessage as CardIDs;
+        if (match == null) {
+          break;
+        }
+        final selectableCardIDs = message as CardIDs;
 
         final lowCardIDs = CardIDs();
 
-        final random = Random();
-        lowCardIDs.ids.add(selectableCardIDs
-            .ids[random.nextInt(selectableCardIDs.ids.length)]);
+        lowCardIDs.ids.add(
+            selectableCardIDs.ids[rand.nextInt(selectableCardIDs.ids.length)]);
 
-        var nextIndex = random.nextInt(selectableCardIDs.ids.length);
+        var nextIndex = rand.nextInt(selectableCardIDs.ids.length);
         while (lowCardIDs.ids.contains(selectableCardIDs.ids[nextIndex])) {
-          nextIndex = random.nextInt(selectableCardIDs.ids.length);
+          nextIndex = rand.nextInt(selectableCardIDs.ids.length);
         }
         lowCardIDs.ids.add(selectableCardIDs.ids[nextIndex]);
 
@@ -128,16 +135,33 @@ class BotSocket extends CommonWebSocket {
         break;
       case SocketMessage_Type.REQUEST_HANDSWAP_CHOICE:
         await Future.delayed(const Duration(milliseconds: 1500));
-
         final match = MatchManager.shared.matchFromSocket(this);
 
-        final selectableCardIDs = generatedMessage as CardIDs;
+        if (match == null) {
+          break;
+        }
 
         final lowCardIDs = CardIDs();
+        final handSwapChoiceInfo = message as HandSwapChoiceInfo;
 
-        final random = Random();
-        final nextIndex = random.nextInt(selectableCardIDs.ids.length);
-        lowCardIDs.ids.add(selectableCardIDs.ids[nextIndex]);
+        CardIDs minHand;
+
+        for (final hand in handSwapChoiceInfo.hands) {
+          if (minHand == null) {
+            minHand = hand;
+
+            continue;
+          }
+
+          if (hand.ids.length < minHand.ids.length) {
+            minHand = hand;
+          }
+        }
+
+        lowCardIDs.ids.add(minHand.ids.first);
+
+//        print('handswap index ${cardIndex}');
+
         await match.userPlay(this, lowCardIDs);
         break;
       default:

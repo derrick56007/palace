@@ -10,7 +10,7 @@ class Play extends State {
     game.init();
 
     FriendHandler(client);
-    MatchHandler(client);
+    MatchHandler(client, game);
 
     client
       ..on(SocketMessage_Type.FIRST_DEAL_TOWER_INFO, (var json) {
@@ -57,7 +57,12 @@ class Play extends State {
         game.onDiscardInfo(info);
       })
       ..on(SocketMessage_Type.REQUEST_HANDSWAP_CHOICE, (var json) {
-        final cardIDs = CardIDs.fromJson(json);
+        final handSwapChoiceInfo = HandSwapChoiceInfo.fromJson(json);
+
+        final cardIDs = CardIDs();
+        handSwapChoiceInfo.hands
+            .forEach((hand) => cardIDs.ids.addAll(hand.ids));
+
         game.setSelectableCards(cardIDs);
       })
       ..on(SocketMessage_Type.REQUEST_TOPSWAP_CHOICE, (var json) {
@@ -91,6 +96,10 @@ class Play extends State {
       ..on(SocketMessage_Type.MULLIGAN_TIMER_UPDATE, (var json) {
         final mulliganTimerUpdateInfo = SimpleInfo.fromJson(json);
         game.onMulliganTimerUpdate(mulliganTimerUpdateInfo.info);
+      })
+      ..on(SocketMessage_Type.GAME_END_INFO, (var json) {
+        final info = GameEndInfo.fromJson(json);
+        game.onGameEndInfo(info);
       });
   }
 

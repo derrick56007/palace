@@ -2,6 +2,7 @@ import 'dart:html';
 
 import '../../../client_websocket.dart';
 import '../../../common/generated_protos.dart';
+import '../../../game_ui.dart';
 import '../../../toast.dart';
 
 class MatchHandler {
@@ -14,18 +15,33 @@ class MatchHandler {
   final Element quickBtn = querySelector('#quick-btn');
   final Element quickCard = querySelector('#quick-card');
 
+  final Element rankedBtn = querySelector('#ranked-btn');
+  final Element rankedCard = querySelector('#ranked-card');
+
   final Element matchMakingContainer = querySelector('#matchmaking-container');
   final Element inGameContainer = querySelector('#in-game-container');
   final Element exitGameBtn = querySelector('#exit-btn');
 
 //  final Element lobbyCancelBtn = querySelector('#lobby-cancel-btn');
+  final GameUI game;
 
-  MatchHandler(this.client) {
+  MatchHandler(this.client, this.game) {
     quickBtn.onClick.listen((_) {
       if (quickBtn.classes.contains('disabled')) return;
       quickBtn.classes.add('disabled');
 
       client.send(SocketMessage_Type.QUICK_JOIN);
+
+      startMatchMakingLoadingAnimation();
+    });
+
+    rankedBtn.onClick.listen((_) {
+      if (rankedBtn.classes.contains('disabled')) return;
+      rankedBtn.classes.add('disabled');
+
+      client.send(SocketMessage_Type.RANKED_JOIN);
+
+      startMatchMakingLoadingAnimation();
     });
 
     lobbyBtn.onClick.listen((_) {
@@ -50,6 +66,8 @@ class MatchHandler {
       matchMakingContainer.style.display = '';
 
       client.send(SocketMessage_Type.LEAVE_GAME);
+
+      game.hideGame();
     });
 
     client
@@ -65,6 +83,8 @@ class MatchHandler {
         toast('match started!');
 
         (querySelector('#toggle-1') as InputElement).checked = false;
+
+        removeMatchMakingLoadingAnimation();
       })
       ..on(SocketMessage_Type.MATCH_INVITE, (var json) {
         quickCard.style.display = 'none';
@@ -146,5 +166,13 @@ class MatchHandler {
     }
 
     return el;
+  }
+
+  void startMatchMakingLoadingAnimation() {
+
+  }
+
+  void removeMatchMakingLoadingAnimation() {
+
   }
 }

@@ -8,6 +8,8 @@ import 'generated_protos.dart';
 abstract class CommonWebSocket {
   Future done;
 
+  int elo;
+
   static const messageTypeIndex = 0;
   static const valueIndex = 1;
   static const defaultMessageLength = 2;
