@@ -16,34 +16,40 @@ import '../../web/common/regex_rules.dart';
 import '../../web/common/generated_protos.dart';
 
 part 'logic/match.dart';
+
 part 'logic/bot_socket.dart';
 
 part 'managers/database_manager.dart';
+
 part 'managers/friend_manager.dart';
+
 part 'managers/login_manager.dart';
+
 part 'managers/match_manager.dart';
 
 part 'server_websocket.dart';
+
 part 'socket_receiver.dart';
+
 part 'string_validator.dart';
 
-main(List<String> args) async {
+void main(List<String> args) async {
   const defaultPort = 8080;
 
   final port = Platform.environment.containsKey('PORT')
       ? int.parse(Platform.environment['PORT'])
       : defaultPort;
 
-  final defaultPage = new File('build/index.html');
+  final defaultPage = File('build/index.html');
 
-  final staticFiles = new VirtualDirectory('build/');
+  final staticFiles = VirtualDirectory('build/');
   staticFiles
     ..jailRoot = false
     ..allowDirectoryListing = true
     ..directoryHandler = (dir, request) async {
-      final indexUri = new Uri.file(dir.path).resolve('index.html');
+      final indexUri = Uri.file(dir.path).resolve('index.html');
 
-      var file = new File(indexUri.toFilePath());
+      var file = File(indexUri.toFilePath());
 
       if (!(await file.exists())) {
         file = defaultPage;
@@ -60,13 +66,13 @@ main(List<String> args) async {
 
     // handle webSocket connection
     if (WebSocketTransformer.isUpgradeRequest(request)) {
-      final socket = new ServerWebSocket.upgradeRequest(request);
+      final socket = ServerWebSocket.upgradeRequest(request);
 
-      new SocketReceiver.handle(socket);
+      SocketReceiver.handle(socket);
 
       continue;
     }
 
-    staticFiles.serveRequest(request);
+    await staticFiles.serveRequest(request);
   }
 }

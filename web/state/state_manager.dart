@@ -1,7 +1,7 @@
 part of state;
 
 class StateManager {
-  static final shared = new StateManager._internal();
+  static final shared = StateManager._internal();
 
   final _states = <String, State>{};
 
@@ -15,9 +15,9 @@ class StateManager {
 
   Iterable<String> get keys => _states.keys;
 
-  addAll(Map<String, State> states) => _states.addAll(states);
+  void addAll(Map<String, State> states) => _states.addAll(states);
 
-  pushState(String stateName) {
+  void pushState(String stateName) {
     if (!_states.containsKey(stateName)) {
       print('No such state!');
       return;
@@ -26,17 +26,15 @@ class StateManager {
     _showState(stateName);
   }
 
-  _showState(String stateName) {
+  void _showState(String stateName) {
     if (!_states.containsKey(stateName)) {
       print('No such state!');
       return;
     }
 
-    _states.forEach((name, state) {
-      if (stateName != name) {
-        state.hide();
-      }
-    });
+    _states.entries
+        .where((e) => e.key != stateName)
+        .forEach((e) => e.value.hide());
 
     _states[stateName].show();
   }

@@ -13,9 +13,7 @@ class FriendHandler {
   final ClientWebSocket client;
 
   FriendHandler(this.client) {
-    addFriendBtn.onClick.listen((_) {
-      addFriend();
-    });
+    addFriendBtn.onClick.listen((_) => addFriend());
 
     client
       ..on(SocketMessage_Type.FRIEND_REQUEST, (var json) {
@@ -37,8 +35,9 @@ class FriendHandler {
         if (existingFriendItemIndex < 0) {
           friendsList.children.add(el);
         } else {
-          friendsList.children.removeAt(existingFriendItemIndex);
-          friendsList.children.insert(existingFriendItemIndex, el);
+          friendsList.children
+            ..removeAt(existingFriendItemIndex)
+            ..insert(existingFriendItemIndex, el);
         }
       });
   }
@@ -47,7 +46,7 @@ class FriendHandler {
     Element el;
 
     if (info.invitable) {
-      el = new Element.html('''
+      el = Element.html('''
                     <li class="collection-item card">
                         <div class="collection-item-text">
                             <div id="user-id" class="collection-item-friend-header">${info.userID}</div>
@@ -68,7 +67,7 @@ class FriendHandler {
       inviteBtn.onClick.listen((_) {
         if (inviteSent) return;
 
-        final userIDInfo = new SimpleInfo()..info = info.userID;
+        final userIDInfo = SimpleInfo()..info = info.userID;
 
         client.send(SocketMessage_Type.SEND_MATCH_INVITE, userIDInfo);
 
@@ -76,8 +75,8 @@ class FriendHandler {
         inviteBtn.text = 'Sent';
         inviteSent = true;
       });
-    } else if (!info.online){
-      el = new Element.html('''
+    } else if (!info.online) {
+      el = Element.html('''
                     <li class="collection-item card">
                         <div class="collection-item-text">
                             <div id="user-id" class="collection-item-friend-header">${info.userID}</div>
@@ -92,7 +91,7 @@ class FriendHandler {
                     </li>
       ''');
     } else {
-      el = new Element.html('''
+      el = Element.html('''
                     <li class="collection-item card">
                         <div class="collection-item-text">
                             <div id="user-id" class="collection-item-friend-header">${info.userID}</div>
@@ -112,7 +111,7 @@ class FriendHandler {
   }
 
   Element createFriendRequestCard(SimpleInfo userInfo) {
-    final el = new Element.html('''
+    final el = Element.html('''
                      <li class="collection-item card">
                         <div class="collection-item-text">
                             <div class="collection-item-title">Friend Request</div>
@@ -144,7 +143,7 @@ class FriendHandler {
     return el;
   }
 
-  declineFriendRequest(SimpleInfo userInfo) {
+  void declineFriendRequest(SimpleInfo userInfo) {
     if (!client.isConnected()) {
       toast('Not connected');
       return;
@@ -159,7 +158,7 @@ class FriendHandler {
     client.send(SocketMessage_Type.DECLINE_FRIEND_REQUEST, userInfo);
   }
 
-  acceptFriendRequest(SimpleInfo userInfo) {
+  void acceptFriendRequest(SimpleInfo userInfo) {
     if (!client.isConnected()) {
       toast('Not connected');
       return;
@@ -174,7 +173,7 @@ class FriendHandler {
     client.send(SocketMessage_Type.ACCEPT_FRIEND_REQUEST, userInfo);
   }
 
-  addFriend() {
+  void addFriend() {
     if (!client.isConnected()) {
       toast('Not connected');
       return;
@@ -191,7 +190,7 @@ class FriendHandler {
     addFriendUsername.value = '';
 
     // send add
-    final friendIDInfo = new SimpleInfo()..info = username;
+    final friendIDInfo = SimpleInfo()..info = username;
     client.send(SocketMessage_Type.ADD_FRIEND, friendIDInfo);
   }
 }

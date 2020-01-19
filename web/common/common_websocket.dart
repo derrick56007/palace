@@ -12,14 +12,13 @@ abstract class CommonWebSocket {
   static const valueIndex = 1;
   static const defaultMessageLength = 2;
 
-  final messageDispatchers =
-      new List<Function>(SocketMessage_Type.values.length);
+  final messageDispatchers = List<Function>(SocketMessage_Type.values.length);
 
   Future start();
 
   void on(SocketMessage_Type type, Function function) {
     if (messageDispatchers[SocketMessage_Type.values.indexOf(type)] != null) {
-      print("warning: overriding message dispatcher ${type.name}");
+      print('warning: overriding message dispatcher ${type.name}');
     }
 
     messageDispatchers[SocketMessage_Type.values.indexOf(type)] = function;

@@ -8,7 +8,7 @@ class ServerWebSocket extends CommonWebSocket {
   ServerWebSocket.upgradeRequest(this._req);
 
   @override
-  start() async {
+  Future<void> start() async {
     _webSocket = await WebSocketTransformer.upgrade(_req)
       ..listen(onMessageToDispatch);
 
@@ -16,7 +16,7 @@ class ServerWebSocket extends CommonWebSocket {
   }
 
   @override
-  send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) {
+  void send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) {
     if (generatedMessage == null) {
       _webSocket.add(SocketMessage_Type.values.indexOf(type).toString());
     } else {

@@ -24,8 +24,8 @@ class Lobby {
     return readyPlayers;
   }
 
-  addPlayer(CommonWebSocket socket) {
-    final lobbyInfo = new LobbyInfo()
+  void addPlayer(CommonWebSocket socket) {
+    final lobbyInfo = LobbyInfo()
       ..host = LoginManager.shared.userIDFromSocket(host)
       ..canJoin = true
       ..canStart = false;
@@ -34,7 +34,7 @@ class Lobby {
     for (var socket in _invitedPlayersReadyStatus.keys) {
       final playerID = LoginManager.shared.userIDFromSocket(socket);
 
-      final playerEntry = new PlayerEntry()
+      final playerEntry = PlayerEntry()
         ..userID = playerID
         ..ready = _invitedPlayersReadyStatus[socket];
       lobbyInfo.players.add(playerEntry);
@@ -47,13 +47,13 @@ class Lobby {
     _sendInfoToPlayers();
   }
 
-  acceptInvite(CommonWebSocket socket) {
+  void acceptInvite(CommonWebSocket socket) {
     _invitedPlayersReadyStatus[socket] = true;
 
     _sendInfoToPlayers();
   }
 
-  declineInvite(CommonWebSocket socket) {
+  void declineInvite(CommonWebSocket socket) {
     _invitedPlayersReadyStatus.remove(socket);
 
     if (_invitedPlayersReadyStatus.isNotEmpty && socket == host) {
@@ -64,8 +64,8 @@ class Lobby {
     _sendInfoToPlayers();
   }
 
-  _sendInfoToPlayers() {
-    final lobbyInfo = new LobbyInfo()
+  void _sendInfoToPlayers() {
+    final lobbyInfo = LobbyInfo()
       ..host = LoginManager.shared.userIDFromSocket(host)
       ..canStart = false;
 
@@ -73,7 +73,7 @@ class Lobby {
     for (var socket in _invitedPlayersReadyStatus.keys) {
       final playerID = LoginManager.shared.userIDFromSocket(socket);
 
-      final playerEntry = new PlayerEntry()
+      final playerEntry = PlayerEntry()
         ..userID = playerID
         ..ready = _invitedPlayersReadyStatus[socket];
       lobbyInfo.players.add(playerEntry);
@@ -102,8 +102,10 @@ class MatchManager {
 
   bool socketInLobby(CommonWebSocket socket) =>
       _lobbyBySocket.containsKey(socket);
+
   bool socketInMatch(CommonWebSocket socket) =>
       _matchBySocket.containsKey(socket);
+
   bool userIDInvitable(String username) {
     if (!LoginManager.shared.userIDLoggedIn(username)) return false;
 
@@ -115,9 +117,10 @@ class MatchManager {
   }
 
   Lobby lobbyFromSocket(CommonWebSocket socket) => _lobbyBySocket[socket];
+
   Match matchFromSocket(CommonWebSocket socket) => _matchBySocket[socket];
 
-  sendMatchInvite(CommonWebSocket socket, String friendID) async {
+  Future<void> sendMatchInvite(CommonWebSocket socket, String friendID) async {
     if (socketInMatch(socket)) return;
 
     // check for existing lobby
@@ -131,14 +134,14 @@ class MatchManager {
       // can't add more if lobby full
       if (lobby.players.length == Lobby.maxPlayers) return;
     } else {
-      lobby = new Lobby(socket);
+      lobby = Lobby(socket);
     }
 
     _lobbyBySocket[socket] = lobby;
 
     var friendSocket;
     if (friendID == 'bot') {
-      final botSocket = new BotSocket();
+      final botSocket = BotSocket();
       friendSocket = botSocket;
 
       SocketReceiver.handle(botSocket);
@@ -164,7 +167,7 @@ class MatchManager {
     FriendManager.shared.sendFriendStatuses(friendSocket);
   }
 
-  matchAccept(CommonWebSocket socket) {
+  void matchAccept(CommonWebSocket socket) {
     if (!socketInLobby(socket) || socketInMatch(socket)) {
       // TODO send error
       return;
@@ -174,7 +177,7 @@ class MatchManager {
     lobby.acceptInvite(socket);
   }
 
-  quickMatch(CommonWebSocket socket) {
+  void quickMatch(CommonWebSocket socket) {
     if (socketInLobby(socket) || socketInMatch(socket)) {
       // TODO send error
       return;
@@ -189,11 +192,11 @@ class MatchManager {
 
     // add bots
     while (players.length < 4) {
-      final botSocket = new BotSocket();
+      final botSocket = BotSocket();
       SocketReceiver.handle(botSocket);
       players.add(botSocket);
     }
-    final match = new Match(players);
+    final match = Match(players);
 
     for (var player in players) {
       _matchBySocket[player] = match;
@@ -202,7 +205,7 @@ class MatchManager {
 //    }
   }
 
-  startMatch(CommonWebSocket socket) {
+  void startMatch(CommonWebSocket socket) {
     if (!socketInLobby(socket) || socketInMatch(socket)) {
       // TODO send error
       return;
@@ -218,12 +221,12 @@ class MatchManager {
 
     // add bots
     while (players.length < 4) {
-      final botSocket = new BotSocket();
+      final botSocket = BotSocket();
       SocketReceiver.handle(botSocket);
       players.add(botSocket);
     }
 
-    final match = new Match(players);
+    final match = Match(players);
 
     for (var socket in lobby.players) {
       _lobbyBySocket.remove(socket);
@@ -240,7 +243,7 @@ class MatchManager {
     _lobbyBySocket.remove(lobby);
   }
 
-  matchDecline(CommonWebSocket socket) {
+  void matchDecline(CommonWebSocket socket) {
     // check if in lobby and in not in a match
     if (!socketInLobby(socket) || socketInMatch(socket)) {
       // TODO send error
@@ -252,7 +255,7 @@ class MatchManager {
     _lobbyBySocket.remove(socket);
   }
 
-  logout(CommonWebSocket socket) {
+  void logout(CommonWebSocket socket) {
     // remove from lobby if exists
     if (socketInLobby(socket)) {
       final lobby = lobbyFromSocket(socket);
@@ -266,8 +269,7 @@ class MatchManager {
       _matchBySocket.remove(socket);
 
       // if there is currently 2 players, and replacing one with bot
-      if (match.players.where((socket) => socket is ServerWebSocket).length <=
-          1) {
+      if (match.players.whereType<ServerWebSocket>().length <= 1) {
         // close game, no more players
         match.gameEnded = true;
         _matchBySocket.removeWhere((ws, _match) => _match == match);
@@ -275,7 +277,7 @@ class MatchManager {
         return;
       }
 
-      final botSocket = new BotSocket();
+      final botSocket = BotSocket();
       SocketReceiver.handle(botSocket);
       _matchBySocket[botSocket] = match;
 

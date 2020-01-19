@@ -1,9 +1,9 @@
 part of server;
 
 class StringValidator {
-  static final _lobbyNameRegex = new RegExp(RegexRules.lobbyName);
+  static final _lobbyNameRegex = RegExp(RegexRules.lobbyName);
 
-  static final _usernameRegex = new RegExp(RegexRules.username);
+  static final _usernameRegex = RegExp(RegexRules.username);
 
   static bool isValidLobbyName(String lobbyName) {
     final lobbyMatches = _lobbyNameRegex.firstMatch(lobbyName);

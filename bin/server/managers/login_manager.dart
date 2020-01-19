@@ -2,10 +2,10 @@ part of server;
 
 class LoginManager {
   // shared instance
-  static final shared = new LoginManager._internal();
+  static final shared = LoginManager._internal();
 
   // PBKDF2 generator
-  static final _pbkdf2 = new PBKDF2();
+  static final _pbkdf2 = PBKDF2();
 
   // default login error string
   static final _defaultLoginErrorString = SimpleInfo()
@@ -49,18 +49,19 @@ class LoginManager {
   }
 
   // get all sockets
-  getSockets() => _socketForUserID.keys;
+  Iterable<ServerWebSocket> getSockets() => _socketForUserID.keys;
 
   // get all lobbies
-  getMatches() => _matches.values;
+  Iterable<Match> getMatches() => _matches.values;
 
   // get all userIDs
-  getUserIDs() => _socketForUserID.values;
+  Iterable<String> getUserIDs() => _socketForUserID.values;
 
   // register user
-  register(ServerWebSocket socket, String userID, String passCode) async {
+  Future<void> register(
+      ServerWebSocket socket, String userID, String passCode) async {
     // logout socket if previously logged in
-    logout(socket);
+    await logout(socket);
 
     // validate username
     if (userID == null ||
@@ -91,7 +92,7 @@ class LoginManager {
     final saltLength = 24;
     final salt = Salt.generateAsBase64String(saltLength);
     final hash = _pbkdf2.generateKey(passCode, salt, 1000, 32);
-    final hashString = new String.fromCharCodes(hash);
+    final hashString = String.fromCharCodes(hash);
 
     // salt prepended to hash
     final saltWithHash = '$salt$hashString';
@@ -103,18 +104,18 @@ class LoginManager {
       'friend_requests': []
     };
 
-    DataBaseManager.shared.userDB
-      ..insert(userInfo)
-      ..tidy();
+    await DataBaseManager.shared.userDB.insert(userInfo);
+    await DataBaseManager.shared.userDB.tidy();
 
     print('registered $userID');
 
     // automatically login user
-    login(socket, userID, passCode);
+    await login(socket, userID, passCode);
   }
 
   // logs in socket with username
-  login(ServerWebSocket socket, String userID, String passCode) async {
+  Future<void> login(
+      ServerWebSocket socket, String userID, String passCode) async {
     if (socketLoggedIn(socket)) return;
 
     // validate username
@@ -129,7 +130,7 @@ class LoginManager {
     // close old socket with same username
     if (userIDLoggedIn(userID)) {
       final oldSocket = socketFromUserID(userID);
-      logout(oldSocket);
+      await logout(oldSocket);
     }
 
     final userIdSearchResults =
@@ -155,7 +156,7 @@ class LoginManager {
     final saltStringLength = 32;
     final salt = hashedPassCode.substring(0, saltStringLength);
     final hash = _pbkdf2.generateKey(passCode, salt, 1000, saltStringLength);
-    final hashString = new String.fromCharCodes(hash);
+    final hashString = String.fromCharCodes(hash);
 
     // check if hashed passCode matches
     if (hashString != hashedPassCode.substring(saltStringLength)) {
@@ -172,11 +173,11 @@ class LoginManager {
     print('logged in $userID');
 
     // load friends
-    FriendManager.shared.login(socket);
+    await FriendManager.shared.login(socket);
   }
 
   // logs out socket
-  logout(ServerWebSocket socket) async {
+  Future<void> logout(ServerWebSocket socket) async {
     // check if socket is logged in
     if (!socketLoggedIn(socket)) return;
 

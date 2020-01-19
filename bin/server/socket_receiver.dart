@@ -10,14 +10,14 @@ class SocketReceiver {
   SocketReceiver._internal(this._socket);
 
   factory SocketReceiver.handle(CommonWebSocket socket) {
-    final sr = new SocketReceiver._internal(socket);
+    final sr = SocketReceiver._internal(socket);
 
     sr._init();
 
     return sr;
   }
 
-  _init() async {
+  Future<void> _init() async {
     await _socket.start();
 
     _onStart();
@@ -27,7 +27,7 @@ class SocketReceiver {
     _onClose();
   }
 
-  _onStart() {
+  void _onStart() {
     _socket
       ..on(SocketMessage_Type.REGISTER, _register)
       ..on(SocketMessage_Type.LOGIN, _login)
@@ -45,76 +45,76 @@ class SocketReceiver {
       ..on(SocketMessage_Type.LEAVE_GAME, _leaveGame);
   }
 
-  _onClose() {
+  void _onClose() {
     _matchManager.logout(_socket);
     _loginManager.logout(_socket);
   }
 
-  _register(String json) {
-    final loginInfo = new LoginCredentials.fromJson(json);
+  void _register(String json) {
+    final loginInfo = LoginCredentials.fromJson(json);
     _loginManager.register(_socket, loginInfo.userID, loginInfo.passCode);
   }
 
-  _login(String json) {
-    final loginInfo = new LoginCredentials.fromJson(json);
+  void _login(String json) {
+    final loginInfo = LoginCredentials.fromJson(json);
     _loginManager.login(_socket, loginInfo.userID, loginInfo.passCode);
   }
 
-  _addFriend(String json) {
-    final friendID = new SimpleInfo.fromJson(json);
+  void _addFriend(String json) {
+    final friendID = SimpleInfo.fromJson(json);
     _friendManager.addFriend(_socket, friendID.info);
   }
 
-  _acceptFriendRequest(String json) {
-    final friendID = new SimpleInfo.fromJson(json);
+  void _acceptFriendRequest(String json) {
+    final friendID = SimpleInfo.fromJson(json);
     _friendManager.acceptFriendRequest(_socket, friendID.info);
   }
 
-  _declineFriendRequest(String json) {
-    final friendID = new SimpleInfo.fromJson(json);
+  void _declineFriendRequest(String json) {
+    final friendID = SimpleInfo.fromJson(json);
     _friendManager.declineFriendRequest(_socket, friendID.info);
   }
 
-  _sendMatchInvite(String json) {
-    final friendID = new SimpleInfo.fromJson(json);
+  void _sendMatchInvite(String json) {
+    final friendID = SimpleInfo.fromJson(json);
 
     _matchManager.sendMatchInvite(_socket, friendID.info);
   }
 
-  _matchAccept() {
+  void _matchAccept() {
     _matchManager.matchAccept(_socket);
   }
 
-  _startMatch() {
+  void _startMatch() {
     _matchManager.startMatch(_socket);
   }
 
-  _matchDecline() {
+  void _matchDecline() {
     _matchManager.matchDecline(_socket);
   }
 
-  _userPlay(String json) {
+  void _userPlay(String json) {
 
     if (!_matchManager.socketInMatch(_socket)) return;
 
-    final userPlay = new CardIDs.fromJson(json);
+    final userPlay = CardIDs.fromJson(json);
 
     final match = _matchManager.matchFromSocket(_socket);
 
     match.userPlay(_socket, userPlay);
   }
 
-  _higherLowerChoice(String json) {
+  void _higherLowerChoice(String json) {
     if (!_matchManager.socketInMatch(_socket)) return;
 
-    final higherLowerChoice = new HigherLowerChoice.fromJson(json);
+    final higherLowerChoice = HigherLowerChoice.fromJson(json);
 
     final match = _matchManager.matchFromSocket(_socket);
 
     match.onHigherLowerChoice(_socket, higherLowerChoice);
   }
 
-  _requestPickUp() {
+  void _requestPickUp() {
     if (!_matchManager.socketInMatch(_socket)) return;
 
     final match = _matchManager.matchFromSocket(_socket);
@@ -122,11 +122,11 @@ class SocketReceiver {
     match.onRequestPickup(_socket);
   }
 
-  _quickJoinMatch() {
+  void _quickJoinMatch() {
     _matchManager.quickMatch(_socket);
   }
 
-  _leaveGame() {
+  void _leaveGame() {
     _matchManager.logout(_socket);
   }
 }

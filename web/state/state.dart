@@ -21,6 +21,6 @@ abstract class State {
 
   State(this.client);
 
-  show();
-  hide();
+  void show();
+  void hide();
 }

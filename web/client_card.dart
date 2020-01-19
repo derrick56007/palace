@@ -11,42 +11,38 @@ class ClientCard extends Sprite {
   Card _card;
 
   Bitmap front;
-  final back = new Bitmap(GameUI.textureAtlas.getBitmapData("CARD_BACK"));
+  final back = Bitmap(GameUI.textureAtlas.getBitmapData('CARD_BACK'));
   Bitmap crossOut;
 
   bool draggable = false;
   bool interactable = false;
 
-  isMobileDevice() =>
+  bool isMobileDevice() =>
       window.orientation != null ||
       window.navigator.userAgent.contains('IEMobile');
 
   final GameUI gameUI;
 
   ClientCard(this.gameUI) {
-    crossOut = new Bitmap(new BitmapData(cardWidth, cardHeight, Color.Green));
+    crossOut = Bitmap(BitmapData(cardWidth, cardHeight, Color.Green));
     crossOut.alpha = 50;
-    crossOut.userData = "crossOut";
+    crossOut.userData = 'crossOut';
 
     addChild(back);
 
     if (!isMobileDevice()) {
-      filters = [new DropShadowFilter(1)];
+      filters = [DropShadowFilter(1)];
     }
 
     pivotX = cardWidth / 2;
     pivotY = cardHeight / 2;
 
-    onMouseClick.listen((_) {
-      _onClick();
-    });
+    onMouseClick.listen((_) => _onClick());
 
-    onTouchBegin.listen((_) {
-      _onClick();
-    });
+    onTouchBegin.listen((_) => _onClick());
   }
-  
-  _onClick() {
+
+  void _onClick() {
     if (selectable && _card != null && _card.id != null) {
       // deselect
       if (SelectableManager.shared.selectedIDs.contains(_card.id)) {
@@ -57,7 +53,6 @@ class ClientCard extends Sprite {
         if (SelectableManager.shared.selectedIDs.isEmpty) {
           gameUI.sendButton3D.filters.clear();
         }
-
       } else {
         // select
         SelectableManager.shared.selectedIDs.add(_card.id);
@@ -74,17 +69,16 @@ class ClientCard extends Sprite {
 
     if (card.type != null) {
       if (card.type == Card_Type.BASIC && card.value != null) {
-        front = new Bitmap(GameUI.textureAtlas
-            .getBitmapData("${card.type.name}${card.value}"));
+        front = Bitmap(GameUI.textureAtlas
+            .getBitmapData('${card.type.name}${card.value}'));
       }
 
       if (card.type != Card_Type.BASIC) {
-        front = new Bitmap(
-            GameUI.textureAtlas.getBitmapData("${card.type.name}"));
+        front = Bitmap(GameUI.textureAtlas.getBitmapData('${card.type.name}'));
       }
     }
 
-    this.hidden = card.hidden;
+    hidden = card.hidden;
   }
 
   Card get cardInfo => _card;
@@ -95,7 +89,7 @@ class ClientCard extends Sprite {
     _card.hidden = h;
 
     children.removeLast();
-    if (this.hidden) {
+    if (hidden) {
       children.add(back);
     } else {
       children.add(front);
@@ -104,8 +98,8 @@ class ClientCard extends Sprite {
 
   bool _selectable = false;
 
-  final glowFilter = new GlowFilter(Color.LimeGreen, 15, 15, 2);
-  final glowFilter2 = new GlowFilter(Color.LimeGreen, 15, 15, 2);
+  final glowFilter = GlowFilter(Color.LimeGreen, 15, 15, 2);
+  final glowFilter2 = GlowFilter(Color.LimeGreen, 15, 15, 2);
 
   set selectable(bool s) {
     _selectable = s;

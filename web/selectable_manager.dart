@@ -1,5 +1,5 @@
 class SelectableManager {
-  static final shared = new SelectableManager._internal();
+  static final shared = SelectableManager._internal();
 
   final selectedIDs = <String>[];
 

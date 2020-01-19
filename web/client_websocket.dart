@@ -13,7 +13,7 @@ class ClientWebSocket extends CommonWebSocket {
 
   bool _connected = false;
 
-  isConnected() => _connected;
+  bool isConnected() => _connected;
 
   Stream<Event> onOpen, onClose, onError;
 
@@ -39,9 +39,9 @@ class ClientWebSocket extends CommonWebSocket {
     toast('connecting to $host');
     _webSocket = WebSocket('wss://$host/');
 
-    _scheduleReconnect() {
+    void _scheduleReconnect() {
       if (!reconnectScheduled) {
-        new Timer(Duration(seconds: retrySeconds),
+        Timer(Duration(seconds: retrySeconds),
             () async => await start(retrySeconds * double));
       }
       reconnectScheduled = true;
@@ -76,7 +76,7 @@ class ClientWebSocket extends CommonWebSocket {
   }
 
   @override
-  send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) {
+  void send(SocketMessage_Type type, [pb.GeneratedMessage generatedMessage]) {
     if (generatedMessage == null) {
       _webSocket.send(SocketMessage_Type.values.indexOf(type).toString());
     } else {

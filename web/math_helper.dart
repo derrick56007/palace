@@ -9,6 +9,6 @@ class Vector2 {
 }
 
 Vector2 lerp(Vector2 v1, Vector2 v2, num by) =>
-    new Vector2(_lerp(v1.x, v2.x, by), _lerp(v1.y, v2.y, by));
+    Vector2(_lerp(v1.x, v2.x, by), _lerp(v1.y, v2.y, by));
 
-toRadians(num n) => n * pi / 180;
+num toRadians(num n) => n * pi / 180;

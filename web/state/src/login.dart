@@ -9,29 +9,26 @@ class Login extends State {
   StreamSubscription submitSub;
 
   Login(ClientWebSocket client) : super(client) {
-    client.onClose.listen((_) {
-      _logoutSuccessful();
-    });
+    client.onClose.listen((_) => _logoutSuccessful());
 
     client
       ..on(SocketMessage_Type.LOGIN_SUCCESSFUL, _loginSuccessful)
       ..on(SocketMessage_Type.LOGOUT_SUCCESSFUL, _logoutSuccessful);
 
-    querySelector('#login-btn').onClick.listen((_) {
-      submitLogin();
-    });
+    querySelector('#login-btn').onClick.listen((_) => submitLogin());
 
-    querySelector('#sign-up-btn').onClick.listen((_) {
-      StateManager.shared.pushState('register');
-    });
+    querySelector('#sign-up-btn')
+        .onClick
+        .listen((_) => StateManager.shared.pushState('register'));
   }
 
   @override
-  show() {
+  void show() {
     loginCard.style.display = '';
 
-    loginUsernameEl.autofocus = true;
-    loginUsernameEl.select();
+    loginUsernameEl
+      ..autofocus = true
+      ..select();
 
     submitSub = window.onKeyPress.listen((KeyboardEvent e) {
       if (e.keyCode == KeyCode.ENTER) {
@@ -41,12 +38,12 @@ class Login extends State {
   }
 
   @override
-  hide() {
+  void hide() {
     loginCard.style.display = 'none';
     submitSub?.cancel();
   }
 
-  submitLogin() {
+  void submitLogin() {
     if (!client.isConnected()) {
       toast('Not connected');
       return;
@@ -64,11 +61,11 @@ class Login extends State {
     client.send(SocketMessage_Type.LOGIN, loginInfo);
   }
 
-  _loginSuccessful() {
+  void _loginSuccessful() {
     StateManager.shared.pushState('play');
   }
 
-  _logoutSuccessful() {
+  void _logoutSuccessful() {
     StateManager.shared.pushState('login');
 
     querySelector('#friends-list').children.clear();

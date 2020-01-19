@@ -1,6 +1,6 @@
 import 'dart:js' as js;
 
-toast(String message, [int duration = 2500]) {
+void toast(String message, [int duration = 2500]) {
   print(message);
 
   final options = js.JsObject(js.context['Object']);

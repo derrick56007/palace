@@ -25,7 +25,7 @@ class GameUI {
   static const cardWidth = 140;
   static const cardHeight = 200;
 
-  static const midPoint = const Vector2(gameWidth / 2, gameHeight / 2);
+  static const midPoint = Vector2(gameWidth / 2, gameHeight / 2);
 
   static const defaultDeckLength = 56;
 
@@ -35,7 +35,7 @@ class GameUI {
 
   static TextureAtlas textureAtlas;
 
-  final options = new StageOptions()
+  final options = StageOptions()
     ..backgroundColor = Color.Transparent
     ..transparent = true
     ..renderEngine = RenderEngine.WebGL;
@@ -48,7 +48,7 @@ class GameUI {
   Bitmap currentPlayerToken;
 
   final Bitmap blackOverlay =
-      new Bitmap(new BitmapData(gameWidth * 2, gameHeight * 2, Color.Black));
+      Bitmap(BitmapData(gameWidth * 2, gameHeight * 2, Color.Black));
 
   Sprite higherChoice;
   Sprite lowerChoice;
@@ -56,9 +56,9 @@ class GameUI {
   Sprite cardsLeftHoverSprite;
 
   final Bitmap playedCardsHoverBitmap =
-      new Bitmap(new BitmapData(cardHeight, cardHeight, Color.Transparent));
+      Bitmap(BitmapData(cardHeight, cardHeight, Color.Transparent));
   final Bitmap cardsLeftHoverBitmap =
-      new Bitmap(new BitmapData(cardWidth, cardHeight, Color.Transparent));
+      Bitmap(BitmapData(cardWidth, cardHeight, Color.Transparent));
 
   Bitmap higher;
   Bitmap lower;
@@ -75,17 +75,17 @@ class GameUI {
   static final cardsInDeckEl = html.querySelector('#cards-in-deck');
   static final cardsInPileEl = html.querySelector('#cards-in-pile');
 
-  final cardsInDeckToolTip = new HtmlObject(cardsInDeckEl);
-  final cardsInPileToolTip = new HtmlObject(cardsInPileEl);
+  final cardsInDeckToolTip = HtmlObject(cardsInDeckEl);
+  final cardsInPileToolTip = HtmlObject(cardsInPileEl);
 
-  final greenGlowFilter = new GlowFilter(Color.LimeGreen, 15, 15, 2);
+  final greenGlowFilter = GlowFilter(Color.LimeGreen, 15, 15, 2);
 
   Sprite3D sendButton3D;
 
   Bitmap sendButtonFrontBitmap;
   Bitmap sendButtonBackBitmap;
 
-  init() async {
+  Future<void> init() async {
     cardsInDeckToolTip
       ..x = midPoint.x - cardWidth - 170 - cardWidth / 2
       ..y = midPoint.y - cardHeight / 2 - 50;
@@ -130,69 +130,69 @@ class GameUI {
       fullscreen = !fullscreen;
     });
 
-    stage = new Stage(canvas,
-        width: gameWidth, height: gameHeight, options: options);
+    stage =
+        Stage(canvas, width: gameWidth, height: gameHeight, options: options);
 
     blackOverlay.pivotX = blackOverlay.width / 2;
     blackOverlay.pivotY = blackOverlay.height / 2;
     blackOverlay.x = gameWidth / 2;
     blackOverlay.y = gameHeight / 2;
 
-    final renderLoop = new RenderLoop();
+    final renderLoop = RenderLoop();
     renderLoop.addStage(stage);
 
-    final resourceManager = new ResourceManager();
+    final resourceManager = ResourceManager();
     resourceManager.addTextureAtlas(
         'spritesheet', 'images/spritesheet.json', TextureAtlasFormat.JSONARRAY);
     await resourceManager.load();
 
     textureAtlas = resourceManager.getTextureAtlas('spritesheet');
 
-    lower = new Bitmap(textureAtlas.getBitmapData("LOWER"));
-    higher = new Bitmap(textureAtlas.getBitmapData("HIGHER"));
+    lower = Bitmap(textureAtlas.getBitmapData('LOWER'));
+    higher = Bitmap(textureAtlas.getBitmapData('HIGHER'));
 
-    currentPlayerToken = new Bitmap(textureAtlas.getBitmapData("CROWN"));
+    currentPlayerToken = Bitmap(textureAtlas.getBitmapData('CROWN'));
     currentPlayerToken.x = midPoint.x;
     currentPlayerToken.y = midPoint.y;
     currentPlayerToken.pivotX = currentPlayerToken.width / 2;
     currentPlayerToken.pivotY = currentPlayerToken.height / 2;
     stage.addChild(currentPlayerToken);
 
-    lowerChoice = new Sprite();
+    lowerChoice = Sprite();
     lowerChoice.children
-        .add(new Bitmap(textureAtlas.getBitmapData("LOWER_CHOICE")));
+        .add(Bitmap(textureAtlas.getBitmapData('LOWER_CHOICE')));
     lowerChoice.pivotX = lowerChoice.width / 2;
     lowerChoice.pivotY = lowerChoice.height / 2;
     lowerChoice.x = midPoint.x - lowerChoice.width / 2 - 100;
     lowerChoice.y = midPoint.y;
     lowerChoice.mouseCursor = MouseCursor.POINTER;
     lowerChoice.filters = [
-      new DropShadowFilter(1),
-      new GlowFilter(Color.LimeGreen, 15, 15, 2),
-      new GlowFilter(Color.LimeGreen, 15, 15, 2)
+      DropShadowFilter(1),
+      GlowFilter(Color.LimeGreen, 15, 15, 2),
+      GlowFilter(Color.LimeGreen, 15, 15, 2)
     ];
     lowerChoice.onMouseClick.listen((_) {
       chooseHigherLower(HigherLowerChoice_Type.LOWER);
     });
 
-    higherChoice = new Sprite();
+    higherChoice = Sprite();
     higherChoice.children
-        .add(new Bitmap(textureAtlas.getBitmapData("HIGHER_CHOICE")));
+        .add(Bitmap(textureAtlas.getBitmapData('HIGHER_CHOICE')));
     higherChoice.pivotX = higherChoice.width / 2;
     higherChoice.pivotY = higherChoice.height / 2;
     higherChoice.x = midPoint.x + higherChoice.width / 2 + 100;
     higherChoice.y = midPoint.y;
     higherChoice.mouseCursor = MouseCursor.POINTER;
     higherChoice.filters = [
-      new DropShadowFilter(1),
-      new GlowFilter(Color.LimeGreen, 15, 15, 2),
-      new GlowFilter(Color.LimeGreen, 15, 15, 2)
+      DropShadowFilter(1),
+      GlowFilter(Color.LimeGreen, 15, 15, 2),
+      GlowFilter(Color.LimeGreen, 15, 15, 2)
     ];
     higherChoice.onMouseClick.listen((_) {
       chooseHigherLower(HigherLowerChoice_Type.HIGHER);
     });
 
-    playedCardsHoverSprite = new Sprite();
+    playedCardsHoverSprite = Sprite();
     playedCardsHoverSprite
       ..children.add(playedCardsHoverBitmap)
       ..pivotX = cardHeight / 2
@@ -201,7 +201,7 @@ class GameUI {
       ..y = midPoint.y;
     stage.addChild(playedCardsHoverSprite);
 
-    cardsLeftHoverSprite = new Sprite();
+    cardsLeftHoverSprite = Sprite();
     cardsLeftHoverSprite
       ..children.add(cardsLeftHoverBitmap)
       ..pivotX = cardWidth / 2
@@ -210,13 +210,12 @@ class GameUI {
       ..y = midPoint.y;
     stage.addChild(cardsLeftHoverSprite);
 
-    final textFormat = new TextFormat('Cardenio', 50, Color.White,
+    final textFormat = TextFormat('Cardenio', 50, Color.White,
         weight: 500, strokeColor: Color.Black, strokeWidth: 3);
 
-    sendButtonFrontBitmap =
-        new Bitmap(textureAtlas.getBitmapData("SEND_BUTTON"));
-    sendButtonBackBitmap = new Bitmap(textureAtlas.getBitmapData("SEND_BACK"));
-    sendButton3D = new Sprite3D()
+    sendButtonFrontBitmap = Bitmap(textureAtlas.getBitmapData('SEND_BUTTON'));
+    sendButtonBackBitmap = Bitmap(textureAtlas.getBitmapData('SEND_BACK'));
+    sendButton3D = Sprite3D()
       ..addChild(sendButtonBackBitmap)
       ..x = midPoint.x + 280
       ..y = midPoint.y + 190
@@ -236,7 +235,7 @@ class GameUI {
     sendButton3D.userData = sendButton3D.pivotY;
     stage.addChild(sendButton3D);
 
-    pickUpButton = new TextField('Pick Up', textFormat);
+    pickUpButton = TextField('Pick Up', textFormat);
     pickUpButton
       ..x = midPoint.x + 200
       ..y = midPoint.y
@@ -256,11 +255,11 @@ class GameUI {
       });
     stage.addChild(pickUpButton);
 
-    final mulliganTimerTextFormat = new TextFormat('Cardenio', 50, Color.White,
+    final mulliganTimerTextFormat = TextFormat('Cardenio', 50, Color.White,
         align: TextFormatAlign.CENTER,
         strokeColor: Color.Black,
         strokeWidth: 3);
-    mulliganTimerTextField = new TextField('', mulliganTimerTextFormat)
+    mulliganTimerTextField = TextField('', mulliganTimerTextFormat)
       ..height = 60
       ..width = 500;
     mulliganTimerTextField
@@ -269,31 +268,29 @@ class GameUI {
       ..x = midPoint.x
       ..y = midPoint.y + 120;
 
-    final mulliganTitleTextFormat = new TextFormat('Cardenio', 75, Color.White,
+    final mulliganTitleTextFormat = TextFormat('Cardenio', 75, Color.White,
         weight: 500,
         align: TextFormatAlign.CENTER,
         strokeColor: Color.Black,
         strokeWidth: 5);
-    mulliganTitleTextField =
-        new TextField('Tower Cards', mulliganTitleTextFormat)
-          ..height = 100
-          ..width = 300;
+    mulliganTitleTextField = TextField('Tower Cards', mulliganTitleTextFormat)
+      ..height = 100
+      ..width = 300;
     mulliganTitleTextField
       ..pivotX = mulliganTitleTextField.width / 2
       ..pivotY = mulliganTitleTextField.height / 2
       ..x = midPoint.x
       ..y = midPoint.y - 70
-      ..filters = [new GlowFilter(Color.Gold, 15, 15, 2)];
+      ..filters = [GlowFilter(Color.Gold, 15, 15, 2)];
 
-    final mulliganSubtitleTextFormat = new TextFormat(
-        'Cardenio', 50, Color.White,
+    final mulliganSubtitleTextFormat = TextFormat('Cardenio', 50, Color.White,
         weight: 500,
         align: TextFormatAlign.CENTER,
         strokeColor: Color.Black,
         strokeWidth: 3);
 
     mulliganSubtitleTextField =
-        new TextField('Keep or Replace Cards', mulliganSubtitleTextFormat)
+        TextField('Keep or Replace Cards', mulliganSubtitleTextFormat)
           ..height = 100
           ..width = 400;
     mulliganSubtitleTextField
@@ -301,14 +298,14 @@ class GameUI {
       ..pivotY = mulliganSubtitleTextField.height / 2
       ..x = midPoint.x
       ..y = midPoint.y + 20
-      ..filters = [new GlowFilter(Color.Gold, 15, 15, 2)];
+      ..filters = [GlowFilter(Color.Gold, 15, 15, 2)];
 
-    var cardHovered = null;
+    var cardHovered;
     var pileHovered = false;
     var deckHovered = false;
 
     stage.onMouseMove.listen((MouseEvent e) {
-      final objects = stage.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
+      final objects = stage.getObjectsUnderPoint(Point(e.stageX, e.stageY));
 
       // check if mouse is hovering over played cards pile
       if (objects.contains(playedCardsHoverBitmap)) {
@@ -400,18 +397,17 @@ class GameUI {
       }
     });
 
-    mask =
-        new AlphaMaskFilter(new BitmapData(gameWidth, gameHeight, Color.Black));
+    mask = AlphaMaskFilter(BitmapData(gameWidth, gameHeight, Color.Black));
     mask.matrix.scale(0, 0);
 
     hideGame();
   }
 
-  createDeck() {
+  void createDeck() {
     final cardsToRemove = <DisplayObject>[];
 
     stage.children
-        .where((child) => child is ClientCard)
+        .whereType<ClientCard>()
         .forEach((card) => cardsToRemove.add(card));
 
     for (var card in cardsToRemove) {
@@ -420,7 +416,7 @@ class GameUI {
 
     deck.clear();
     for (var i = 0; i < defaultDeckLength; i++) {
-      final cardSprite = new ClientCard(this);
+      final cardSprite = ClientCard(this);
       cardSprite.x = midPoint.x - cardWidth - 170;
       cardSprite.y = midPoint.y;
 
@@ -429,7 +425,7 @@ class GameUI {
     }
   }
 
-  updatePileToolTip() {
+  void updatePileToolTip() {
     final count = <String, int>{
       '0': 0,
       '1': 0,
@@ -530,23 +526,21 @@ class GameUI {
     return newCard;
   }
 
-  sendSelectedCards() {
+  void sendSelectedCards() {
     if (SelectableManager.shared.selectedIDs.isEmpty) return;
 
-    final cardIDs = new CardIDs()
-      ..ids.addAll(SelectableManager.shared.selectedIDs);
+    final cardIDs = CardIDs()..ids.addAll(SelectableManager.shared.selectedIDs);
 
     socket.send(SocketMessage_Type.USER_PLAY, cardIDs);
 
     clearSelectableCards();
-
 
     animateCardsInHand(0, .75, Transition.easeOutQuintic, hands.first.length);
 
     SelectableManager.shared.selectedIDs.clear();
   }
 
-  onDealTowerInfo(DealTowerInfo info) async {
+  Future<void> onDealTowerInfo(DealTowerInfo info) async {
     revealGame();
 
     hands.clear();
@@ -559,15 +553,15 @@ class GameUI {
 
     for (var i = 0; i < usersLength; i++) {
       hands.add([]);
-      topTowers.add(new List<ClientCard>(towerLength));
-      botTowers.add(new List<ClientCard>(towerLength));
+      topTowers.add(List<ClientCard>(towerLength));
+      botTowers.add(List<ClientCard>(towerLength));
     }
     for (var cardIndex = 0; cardIndex < towerLength; cardIndex++) {
       for (var userIndex = 0; userIndex < usersLength; userIndex++) {
         final newCard =
             drawFromDeck(info.bottomTowers[userIndex].cards[cardIndex]);
         dealTowerAnim(newCard, botTowers, userIndex, cardIndex, .6);
-        await new Future.delayed(const Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
       }
     }
 
@@ -577,12 +571,12 @@ class GameUI {
             drawFromDeck(info.topTowers[userIndex].cards[cardIndex]);
         newCard.hidden = false;
         dealTowerAnim(newCard, topTowers, userIndex, cardIndex, .6);
-        await new Future.delayed(const Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
       }
     }
   }
 
-  onTowerCardsToHand(TowerCardsToHandInfo info) async {
+  Future<void> onTowerCardsToHand(TowerCardsToHandInfo info) async {
     final newCards = <ClientCard>[];
 
     final initialHandLength = hands[info.userIndex].length;
@@ -615,11 +609,11 @@ class GameUI {
 
     for (var card in newCards) {
       animateCardToHand(card, info.userIndex, 1, Transition.easeInOutCubic);
-      await new Future.delayed(const Duration(milliseconds: 150));
+      await Future.delayed(const Duration(milliseconds: 150));
     }
   }
 
-  secondTowerDealInfo(SecondDealTowerInfo info) async {
+  Future<void> secondTowerDealInfo(SecondDealTowerInfo info) async {
     mulliganTitleTextField.removeFromParent();
     mulliganSubtitleTextField.removeFromParent();
     mulliganTimerTextField.removeFromParent();
@@ -636,14 +630,14 @@ class GameUI {
         final emptyCardIndex =
             topTowers[userIndex].indexWhere((cCard) => cCard == null);
         dealTowerAnim(newCard, topTowers, userIndex, emptyCardIndex, 1);
-        await new Future.delayed(const Duration(milliseconds: 150));
+        await Future.delayed(const Duration(milliseconds: 150));
       }
     }
 
     bringHandCardsToTop();
   }
 
-  onFinalDealInfo(FinalDealInfo info) async {
+  Future<void> onFinalDealInfo(FinalDealInfo info) async {
     for (var userIndex = 0; userIndex < info.hands.length; userIndex++) {
       final newCards = <ClientCard>[];
 
@@ -662,14 +656,14 @@ class GameUI {
       for (var card in newCards) {
         stage.setChildIndex(card, stage.children.length - 1);
         animateCardToHand(card, userIndex, 1, Transition.easeOutQuintic);
-        await new Future.delayed(const Duration(milliseconds: 150));
+        await Future.delayed(const Duration(milliseconds: 150));
       }
     }
   }
 
-  final rand = new Random();
+  final rand = Random();
 
-  onPlayFromHandInfo(PlayFromHandInfo info) async {
+  Future<void> onPlayFromHandInfo(PlayFromHandInfo info) async {
     final revealedCards = <ClientCard>[];
 
     for (var card in info.cards) {
@@ -707,11 +701,11 @@ class GameUI {
 
       stage.setChildIndex(revealedCard, stage.children.length - 1);
 
-      await new Future.delayed(const Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
     }
   }
 
-  onPickUpPileInfo(PickUpPileInfo info) async {
+  Future<void> onPickUpPileInfo(PickUpPileInfo info) async {
     final pickedUpCards = <ClientCard>[];
 
     final initialHandLength = hands[info.userIndex].length;
@@ -733,7 +727,7 @@ class GameUI {
     for (var pickedUpCard in pickedUpCards) {
       animateCardToHand(
           pickedUpCard, info.userIndex, 1, Transition.easeInOutCubic);
-      await new Future.delayed(const Duration(milliseconds: 125));
+      await Future.delayed(const Duration(milliseconds: 125));
     }
 
     for (var card in playedCards) {
@@ -747,7 +741,7 @@ class GameUI {
     bringHandCardsToTop();
   }
 
-  onDiscardInfo(DiscardInfo info) {
+  void onDiscardInfo(DiscardInfo info) {
     for (var cardInfo in info.cards) {
       final discardedCard = cardRegistry[cardInfo.id];
       discardedCard.cardInfo = cardInfo;
@@ -790,7 +784,7 @@ class GameUI {
     updatePileToolTip();
   }
 
-  clearSelectableCards() {
+  void clearSelectableCards() {
     for (var cardID in selectableCardIDs) {
       if (cardRegistry.containsKey(cardID)) {
         final card = cardRegistry[cardID];
@@ -805,7 +799,7 @@ class GameUI {
 
   bool sendButtonEnabled = false;
 
-  animateSendButton(bool enable) {
+  void animateSendButton(bool enable) {
     if (sendButtonEnabled == enable) return;
 
     stage.setChildIndex(sendButton3D, stage.children.length - 1);
@@ -836,7 +830,7 @@ class GameUI {
     };
   }
 
-  setMulliganableCards(CardIDs cardIDs) async {
+  Future<void> setMulliganableCards(CardIDs cardIDs) async {
     displayBlackOverlay();
 
     stage
@@ -858,12 +852,12 @@ class GameUI {
 
     stage.setChildIndex(sendButton3D, stage.children.length - 1);
 
-    await new Future.delayed(const Duration(milliseconds: 400));
+    await Future.delayed(const Duration(milliseconds: 400));
 
     animateSendButton(true);
   }
 
-  setSelectableCards(CardIDs cardIDs) async {
+  Future<void> setSelectableCards(CardIDs cardIDs) async {
     for (var id in cardIDs.ids) {
       if (cardRegistry.containsKey(id)) {
         final card = cardRegistry[id];
@@ -873,12 +867,12 @@ class GameUI {
       }
     }
 
-    await new Future.delayed(const Duration(milliseconds: 400));
+    await Future.delayed(const Duration(milliseconds: 400));
 
     animateSendButton(true);
   }
 
-  onDrawInfo(DrawInfo info) async {
+  Future<void> onDrawInfo(DrawInfo info) async {
     final newCards = <ClientCard>[];
 
     final initialHandLength = hands[info.userIndex].length;
@@ -892,13 +886,13 @@ class GameUI {
 
     animateCardsInHand(
         info.userIndex, .75, Transition.easeOutQuintic, initialHandLength);
-    await new Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 500));
 
     for (var cCard in newCards) {
       stage.setChildIndex(cCard, stage.children.length - 1);
 
       animateCardToHand(cCard, info.userIndex, 1, Transition.easeInOutCubic);
-      await new Future.delayed(const Duration(milliseconds: 150));
+      await Future.delayed(const Duration(milliseconds: 150));
     }
   }
 
@@ -913,10 +907,10 @@ class GameUI {
   }
 
   static const range = 1.5708 / 3;
-  static const leftCorner = const Vector2(0, cardHeight * .9);
-  static const rightCorner = const Vector2(cardWidth, cardHeight * .9);
+  static const leftCorner = Vector2(0, cardHeight * .9);
+  static const rightCorner = Vector2(cardWidth, cardHeight * .9);
 
-  animateCardToHand(
+  void animateCardToHand(
       ClientCard cCard, int handIndex, num duration, var transition) {
     final hand = hands[handIndex];
 
@@ -960,7 +954,8 @@ class GameUI {
     };
   }
 
-  animateCardsInHand(int handIndex, num duration, var transition, int cards) {
+  void animateCardsInHand(
+      int handIndex, num duration, var transition, int cards) {
     final hand = hands[handIndex];
 
     final increment = range / hand.length;
@@ -1002,7 +997,7 @@ class GameUI {
     }
   }
 
-  bringHandCardsToTop() {
+  void bringHandCardsToTop() {
     for (var hand in hands.reversed) {
       for (var card in hand) {
         stage.setChildIndex(card, stage.children.length - 1);
@@ -1010,7 +1005,7 @@ class GameUI {
     }
   }
 
-  setActivePlayerIndex(int index) {
+  void setActivePlayerIndex(int index) {
     num y = gameHeight - cardHeight - 75;
     final x = midPoint.x - cardWidth;
 
@@ -1034,10 +1029,10 @@ class GameUI {
     final sn = sin(radians);
     final nx = (cs * (x - cx)) + (sn * (y - cy)) + cx;
     final ny = (cs * (y - cy)) - (sn * (x - cx)) + cy;
-    return new Point(nx, ny);
+    return Point(nx, ny);
   }
 
-  displayBlackOverlay() {
+  void displayBlackOverlay() {
     blackOverlay.alpha = 0;
 
     stage.addChild(blackOverlay);
@@ -1048,7 +1043,7 @@ class GameUI {
     tween.animate.alpha.to(.75);
   }
 
-  hideBlackOverlay() {
+  void hideBlackOverlay() {
     if (blackOverlay.parent == null) return;
 
     final tween =
@@ -1059,7 +1054,7 @@ class GameUI {
     };
   }
 
-  onRequest_HigherLowerChoice(int value) {
+  void onRequest_HigherLowerChoice(int value) {
     displayBlackOverlay();
 
     higherChoice.alpha = 0;
@@ -1077,7 +1072,7 @@ class GameUI {
         stage.juggler.addTween(lowerChoice, .5, Transition.easeOutQuintic);
     tween3.animate.alpha.to(1);
     tween3.onComplete = () {
-      final cardInfo = new Card()
+      final cardInfo = Card()
         ..type = Card_Type.BASIC
         ..value = value
         ..id = playedCards.last.cardInfo.id;
@@ -1091,28 +1086,26 @@ class GameUI {
     };
 
     stage.setChildIndex(playedCards.last, stage.children.length - 1);
-    playedCards.last.filters.addAll([
-      new GlowFilter(Color.Gold, 15, 15, 2),
-      new GlowFilter(Color.Gold, 15, 15, 2)
-    ]);
+    playedCards.last.filters.addAll(
+        [GlowFilter(Color.Gold, 15, 15, 2), GlowFilter(Color.Gold, 15, 15, 2)]);
   }
 
-  chooseHigherLower(HigherLowerChoice_Type type) {
+  void chooseHigherLower(HigherLowerChoice_Type type) {
     hideBlackOverlay();
     lowerChoice.removeFromParent();
     higherChoice.removeFromParent();
 
-    final higherLowerChoice = new HigherLowerChoice()..choice = type;
+    final higherLowerChoice = HigherLowerChoice()..choice = type;
     socket.send(SocketMessage_Type.HIGHERLOWER_CHOICE, higherLowerChoice);
 
     playedCards.last.filters.removeWhere((filter) => filter is GlowFilter);
   }
 
-  onHigherLowerChoice(HigherLowerChoice choice) {
+  void onHigherLowerChoice(HigherLowerChoice choice) {
     final card = playedCards.last;
     card.front.removeFromParent();
     card.front =
-        new Bitmap(GameUI.textureAtlas.getBitmapData("BASIC${choice.value}"));
+        Bitmap(GameUI.textureAtlas.getBitmapData('BASIC${choice.value}'));
     card.addChild(card.front);
 
     if (choice.choice == HigherLowerChoice_Type.HIGHER) {

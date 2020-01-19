@@ -10,10 +10,10 @@ class MatchHandler {
   final UListElement lobbyList = querySelector('#lobby-list');
   final Element lobbyBtn = querySelector('#lobby-btn');
   final Element lobbyCard = querySelector('#lobby-card');
-  
+
   final Element quickBtn = querySelector('#quick-btn');
   final Element quickCard = querySelector('#quick-card');
-  
+
   final Element matchMakingContainer = querySelector('#matchmaking-container');
   final Element inGameContainer = querySelector('#in-game-container');
   final Element exitGameBtn = querySelector('#exit-btn');
@@ -41,14 +41,14 @@ class MatchHandler {
         client.send(SocketMessage_Type.MATCH_ACCEPT);
       }
     });
-    
+
     exitGameBtn.onClick.listen((_) {
       if (exitGameBtn.classes.contains('disabled')) return;
-      
+
       exitGameBtn.classes.add('disabled');
       inGameContainer.style.display = 'none';
       matchMakingContainer.style.display = '';
-      
+
       client.send(SocketMessage_Type.LEAVE_GAME);
     });
 
@@ -70,19 +70,21 @@ class MatchHandler {
         quickCard.style.display = 'none';
         lobbyCard.style.display = '';
 
-        final matchInvite = new LobbyInfo.fromJson(json);
+        final matchInvite = LobbyInfo.fromJson(json);
         toast('match invite');
 
-        lobbyList.children.clear();
-        lobbyList.children.add(createLobbyListItem(matchInvite.host, true));
+        lobbyList.children
+          ..clear()
+          ..add(createLobbyListItem(matchInvite.host, true));
 
         for (var playerEntry in matchInvite.players) {
           lobbyList.children
               .add(createLobbyListItem(playerEntry.userID, playerEntry.ready));
         }
 
-        lobbyBtn.text = 'Join';
-        lobbyBtn.classes.remove('disabled');
+        lobbyBtn
+          ..text = 'Join'
+          ..classes.remove('disabled');
 
         (querySelector('#toggle-1') as InputElement).checked = true;
       })
@@ -95,11 +97,11 @@ class MatchHandler {
         quickCard.style.display = 'none';
         lobbyCard.style.display = '';
 
-        final lobbyInfo = new LobbyInfo.fromJson(json);
+        final lobbyInfo = LobbyInfo.fromJson(json);
 
-        lobbyList.children.clear();
-
-        lobbyList.children.add(createLobbyListItem(lobbyInfo.host, true));
+        lobbyList.children
+          ..clear()
+          ..add(createLobbyListItem(lobbyInfo.host, true));
 
         for (var playerEntry in lobbyInfo.players) {
           lobbyList.children
@@ -107,8 +109,9 @@ class MatchHandler {
         }
 
         if (lobbyInfo.canStart) {
-          lobbyBtn.text = 'Start!';
-          lobbyBtn.classes.remove('disabled');
+          lobbyBtn
+            ..text = 'Start!'
+            ..classes.remove('disabled');
         }
 
         (querySelector('#toggle-1') as InputElement).checked = true;
@@ -119,7 +122,7 @@ class MatchHandler {
     Element el;
 
     if (ready) {
-      el = new Element.html('''
+      el = Element.html('''
                     <li class="lobby-item collection-item z-depth-1">
                         <div class="lobby-item-text">
                             ${userID}
@@ -130,7 +133,7 @@ class MatchHandler {
                     </li>
       ''');
     } else {
-      el = new Element.html('''
+      el = Element.html('''
                     <li class="lobby-item collection-item z-depth-1">
                         <div class="lobby-item-text">
                             ${userID}

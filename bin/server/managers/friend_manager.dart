@@ -4,17 +4,17 @@ class FriendManager {
   static final shared = FriendManager._internal();
 
   static final defaultAddFriendErrorString = SimpleInfo()
-    ..info = "Invalid userID";
+    ..info = 'Invalid userID';
 
   final _friendIDsFromSocket = <ServerWebSocket, List<String>>{};
 
-  FriendManager._internal() {}
+  FriendManager._internal();
 
-  login(ServerWebSocket socket) async {
+  Future<void> login(ServerWebSocket socket) async {
     final userID = LoginManager.shared.userIDFromSocket(socket);
 
     final userIDSearchResults =
-    await DataBaseManager.shared.userDB.find({'userID': userID});
+        await DataBaseManager.shared.userDB.find({'userID': userID});
 
     if (userIDSearchResults.isEmpty) {
       // TODO send error msg
@@ -29,7 +29,7 @@ class FriendManager {
     sendFriendStatuses(socket);
   }
 
-  logout(ServerWebSocket socket) {
+  void logout(ServerWebSocket socket) {
     for (var friendID in _friendIDsFromSocket[socket]) {
       if (!LoginManager.shared.userIDLoggedIn(friendID)) continue;
 
@@ -41,7 +41,7 @@ class FriendManager {
     _friendIDsFromSocket.remove(socket);
   }
 
-  addFriend(ServerWebSocket socket, friendID) async {
+  Future<void> addFriend(ServerWebSocket socket, friendID) async {
     // check if userId is valid
     if (friendID == null ||
         friendID.trim().isEmpty ||
@@ -87,13 +87,13 @@ class FriendManager {
     existingFriendRequests.add(userID);
 
     // save friendRequest to messages
-    DataBaseManager.shared.userDB
-      ..update(
-          {'userID': friendID}, {'friend_requests': existingFriendRequests})
-      ..tidy();
+    await DataBaseManager.shared.userDB.update(
+        {'userID': friendID}, {'friend_requests': existingFriendRequests});
+    await DataBaseManager.shared.userDB.tidy();
   }
 
-  static sendAllExistingFriendRequests(ServerWebSocket socket) async {
+  static Future<void> sendAllExistingFriendRequests(
+      ServerWebSocket socket) async {
     final userID = LoginManager.shared.userIDFromSocket(socket);
 
     // search for userID
@@ -109,12 +109,13 @@ class FriendManager {
         userIDSearchResults.first['friend_requests'] as List;
 
     for (var friendID in userFriendRequests) {
-      final info = new SimpleInfo()..info = friendID;
+      final info = SimpleInfo()..info = friendID;
       socket.send(SocketMessage_Type.FRIEND_REQUEST, info);
     }
   }
 
-  declineFriendRequest(ServerWebSocket socket, String notFriendID) async {
+  Future<void> declineFriendRequest(
+      ServerWebSocket socket, String notFriendID) async {
     final userID = LoginManager.shared.userIDFromSocket(socket);
 
     // search for userID
@@ -142,12 +143,13 @@ class FriendManager {
 
     userFriendRequests.remove(notFriendID);
 
-    DataBaseManager.shared.userDB
-      ..update({'userID': userID}, {'friend_requests': userFriendRequests})
-      ..tidy();
+    await DataBaseManager.shared.userDB
+        .update({'userID': userID}, {'friend_requests': userFriendRequests});
+    await DataBaseManager.shared.userDB.tidy();
   }
 
-  acceptFriendRequest(ServerWebSocket socket, String friendID) async {
+  Future<void> acceptFriendRequest(
+      ServerWebSocket socket, String friendID) async {
     final userID = LoginManager.shared.userIDFromSocket(socket);
 
     // search for userID
@@ -188,27 +190,25 @@ class FriendManager {
     friendExistingFriends.add(userID);
 
     // save friendRequest to messages
-    DataBaseManager.shared.userDB
-      ..update({
-        'userID': userID
-      }, {
-        'friends': userExistingFriends,
-        'friend_requests': userFriendRequests
-      })
-      ..update({
-        'userID': friendID
-      }, {
-        'friends': friendExistingFriends,
-        'friend_requests': friendFriendRequests
-      })
-      ..tidy();
+    await DataBaseManager.shared.userDB.update({
+      'userID': userID
+    }, {
+      'friends': userExistingFriends,
+      'friend_requests': userFriendRequests
+    });
+    await DataBaseManager.shared.userDB.update({
+      'userID': friendID
+    }, {
+      'friends': friendExistingFriends,
+      'friend_requests': friendFriendRequests
+    });
+    await DataBaseManager.shared.userDB.tidy();
 
     _friendIDsFromSocket[socket].add(friendID);
 
     if (LoginManager.shared.userIDLoggedIn(friendID)) {
       final friendSocket = LoginManager.shared.socketFromUserID(friendID);
       _friendIDsFromSocket[friendSocket].add(userID);
-
     }
 
     print('new friends $userID & $friendID');
@@ -225,7 +225,7 @@ class FriendManager {
     // send friends list to user
     for (var friendID in _friendIDsFromSocket[socket]) {
       if (LoginManager.shared.socketLoggedIn(socket)) {
-        final friendItemInfo = new FriendItemInfo()
+        final friendItemInfo = FriendItemInfo()
           ..userID = friendID
           ..online = LoginManager.shared.userIDLoggedIn(friendID)
           ..invitable = MatchManager.shared.userIDInvitable(friendID);
@@ -237,7 +237,7 @@ class FriendManager {
       if (LoginManager.shared.userIDLoggedIn(friendID)) {
         final friendSocket = LoginManager.shared.socketFromUserID(friendID);
 
-        final selfInfo = new FriendItemInfo()
+        final selfInfo = FriendItemInfo()
           ..userID = userID
           ..online = LoginManager.shared.userIDLoggedIn(userID)
           ..invitable = MatchManager.shared.userIDInvitable(userID);

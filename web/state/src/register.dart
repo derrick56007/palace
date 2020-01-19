@@ -5,27 +5,26 @@ class Register extends State {
 
   final InputElement registerUsernameEl = querySelector('#register_user_name');
   final InputElement registerPassword =
-  document.querySelector('#register_password');
+      document.querySelector('#register_password');
   final InputElement registerPasswordRetype =
-  document.querySelector('#register_password_retype');
+      document.querySelector('#register_password_retype');
 
   StreamSubscription submitSub;
 
   Register(ClientWebSocket client) : super(client) {
-    querySelector('#register-btn').onClick.listen((_) {
-      submitRegister();
-    });
-    querySelector('#back-to-login-btn').onClick.listen((_) {
-      StateManager.shared.pushState('login');
-    });
+    querySelector('#register-btn').onClick.listen((_) => submitRegister());
+    querySelector('#back-to-login-btn')
+        .onClick
+        .listen((_) => StateManager.shared.pushState('login'));
   }
 
   @override
-  show() {
+  void show() {
     registerCard.style.display = '';
 
-    registerUsernameEl.autofocus = true;
-    registerUsernameEl.select();
+    registerUsernameEl
+      ..autofocus = true
+      ..select();
 
     submitSub = window.onKeyPress.listen((KeyboardEvent e) {
       if (e.keyCode == KeyCode.ENTER) {
@@ -35,12 +34,12 @@ class Register extends State {
   }
 
   @override
-  hide() {
+  void hide() {
     registerCard.style.display = 'none';
     submitSub?.cancel();
   }
 
-  submitRegister() {
+  void submitRegister() {
     if (!client.isConnected()) {
       toast('Not connected');
       return;
