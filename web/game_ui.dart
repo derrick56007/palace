@@ -133,10 +133,11 @@ class GameUI {
     stage =
         Stage(canvas, width: gameWidth, height: gameHeight, options: options);
 
-    blackOverlay.pivotX = blackOverlay.width / 2;
-    blackOverlay.pivotY = blackOverlay.height / 2;
-    blackOverlay.x = gameWidth / 2;
-    blackOverlay.y = gameHeight / 2;
+    blackOverlay
+      ..pivotX = blackOverlay.width / 2
+      ..pivotY = blackOverlay.height / 2
+      ..x = gameWidth / 2
+      ..y = gameHeight / 2;
 
     final renderLoop = RenderLoop();
     renderLoop.addStage(stage);
@@ -152,45 +153,48 @@ class GameUI {
     higher = Bitmap(textureAtlas.getBitmapData('HIGHER'));
 
     currentPlayerToken = Bitmap(textureAtlas.getBitmapData('CROWN'));
-    currentPlayerToken.x = midPoint.x;
-    currentPlayerToken.y = midPoint.y;
-    currentPlayerToken.pivotX = currentPlayerToken.width / 2;
-    currentPlayerToken.pivotY = currentPlayerToken.height / 2;
+    currentPlayerToken
+      ..x = midPoint.x
+      ..y = midPoint.y
+      ..pivotX = currentPlayerToken.width / 2
+      ..pivotY = currentPlayerToken.height / 2;
     stage.addChild(currentPlayerToken);
 
     lowerChoice = Sprite();
     lowerChoice.children
         .add(Bitmap(textureAtlas.getBitmapData('LOWER_CHOICE')));
-    lowerChoice.pivotX = lowerChoice.width / 2;
-    lowerChoice.pivotY = lowerChoice.height / 2;
-    lowerChoice.x = midPoint.x - lowerChoice.width / 2 - 100;
-    lowerChoice.y = midPoint.y;
-    lowerChoice.mouseCursor = MouseCursor.POINTER;
-    lowerChoice.filters = [
-      DropShadowFilter(1),
-      GlowFilter(Color.LimeGreen, 15, 15, 2),
-      GlowFilter(Color.LimeGreen, 15, 15, 2)
-    ];
-    lowerChoice.onMouseClick.listen((_) {
-      chooseHigherLower(HigherLowerChoice_Type.LOWER);
-    });
+    lowerChoice
+      ..pivotX = lowerChoice.width / 2
+      ..pivotY = lowerChoice.height / 2
+      ..x = midPoint.x - lowerChoice.width / 2 - 100
+      ..y = midPoint.y
+      ..mouseCursor = MouseCursor.POINTER
+      ..filters = [
+        DropShadowFilter(1),
+        GlowFilter(Color.LimeGreen, 15, 15, 2),
+        GlowFilter(Color.LimeGreen, 15, 15, 2)
+      ]
+      ..onMouseClick.listen((_) {
+        chooseHigherLower(HigherLowerChoice_Type.LOWER);
+      });
 
     higherChoice = Sprite();
     higherChoice.children
         .add(Bitmap(textureAtlas.getBitmapData('HIGHER_CHOICE')));
-    higherChoice.pivotX = higherChoice.width / 2;
-    higherChoice.pivotY = higherChoice.height / 2;
-    higherChoice.x = midPoint.x + higherChoice.width / 2 + 100;
-    higherChoice.y = midPoint.y;
-    higherChoice.mouseCursor = MouseCursor.POINTER;
-    higherChoice.filters = [
-      DropShadowFilter(1),
-      GlowFilter(Color.LimeGreen, 15, 15, 2),
-      GlowFilter(Color.LimeGreen, 15, 15, 2)
-    ];
-    higherChoice.onMouseClick.listen((_) {
-      chooseHigherLower(HigherLowerChoice_Type.HIGHER);
-    });
+    higherChoice
+      ..pivotX = higherChoice.width / 2
+      ..pivotY = higherChoice.height / 2
+      ..x = midPoint.x + higherChoice.width / 2 + 100
+      ..y = midPoint.y
+      ..mouseCursor = MouseCursor.POINTER
+      ..filters = [
+        DropShadowFilter(1),
+        GlowFilter(Color.LimeGreen, 15, 15, 2),
+        GlowFilter(Color.LimeGreen, 15, 15, 2)
+      ]
+      ..onMouseClick.listen((_) {
+        chooseHigherLower(HigherLowerChoice_Type.HIGHER);
+      });
 
     playedCardsHoverSprite = Sprite();
     playedCardsHoverSprite
@@ -760,18 +764,20 @@ class GameUI {
         cardHand.remove(discardedCard);
         final tween =
             stage.juggler.addTween(discardedCard, 2, Transition.easeOutQuintic);
-        tween.animate.alpha.to(0);
-        tween.animate.pivotY.by(250);
-        tween.onComplete = () {
-          discardedCard.removeFromParent();
-        };
+        tween
+          ..animate.alpha.to(0)
+          ..animate.pivotY.by(250)
+          ..onComplete = () {
+            discardedCard.removeFromParent();
+          };
       } else {
         final tween =
             stage.juggler.addTween(discardedCard, 1, Transition.easeOutQuintic);
-        tween.animate.alpha.to(0);
-        tween.onComplete = () {
-          discardedCard.removeFromParent();
-        };
+        tween
+          ..animate.alpha.to(0)
+          ..onComplete = () {
+            discardedCard.removeFromParent();
+          };
       }
 
       cardRegistry.remove(cardInfo.id);
@@ -818,8 +824,9 @@ class GameUI {
       if (enable) {
         sendButton3D.children.add(sendButtonFrontBitmap);
       } else {
-        sendButton3D.children.add(sendButtonBackBitmap);
-        sendButton3D.filters.clear();
+        sendButton3D
+          ..children.add(sendButtonBackBitmap)
+          ..filters.clear();
       }
 
       stage.juggler.addTween(sendButton3D, 0.2)
@@ -1018,9 +1025,10 @@ class GameUI {
 
     final rotatedPoint = rotatePoint(midPoint.x, midPoint.y, x, y, index * -90);
 
-    tween.animate.x.to(rotatedPoint.x);
-    tween.animate.y.to(rotatedPoint.y);
-    tween.animate.rotation.to(index * pi / 2);
+    tween.animate
+      ..x.to(rotatedPoint.x)
+      ..y.to(rotatedPoint.y)
+      ..rotation.to(index * pi / 2);
   }
 
   Point<num> rotatePoint(num cx, num cy, num x, num y, num angle) {
@@ -1035,8 +1043,9 @@ class GameUI {
   void displayBlackOverlay() {
     blackOverlay.alpha = 0;
 
-    stage.addChild(blackOverlay);
-    stage.setChildIndex(blackOverlay, stage.children.length - 1);
+    stage
+      ..addChild(blackOverlay)
+      ..setChildIndex(blackOverlay, stage.children.length - 1);
 
     final tween =
         stage.juggler.addTween(blackOverlay, .5, Transition.easeOutQuintic);
@@ -1048,10 +1057,11 @@ class GameUI {
 
     final tween =
         stage.juggler.addTween(blackOverlay, .5, Transition.easeOutQuintic);
-    tween.animate.alpha.to(0);
-    tween.onComplete = () {
-      blackOverlay.removeFromParent();
-    };
+    tween
+      ..animate.alpha.to(0)
+      ..onComplete = () {
+        blackOverlay.removeFromParent();
+      };
   }
 
   void onRequest_HigherLowerChoice(int value) {
@@ -1059,10 +1069,11 @@ class GameUI {
 
     higherChoice.alpha = 0;
     lowerChoice.alpha = 0;
-    stage.addChild(higherChoice);
-    stage.addChild(lowerChoice);
-    stage.setChildIndex(higherChoice, stage.children.length - 1);
-    stage.setChildIndex(lowerChoice, stage.children.length - 1);
+    stage
+      ..addChild(higherChoice)
+      ..addChild(lowerChoice)
+      ..setChildIndex(higherChoice, stage.children.length - 1)
+      ..setChildIndex(lowerChoice, stage.children.length - 1);
 
     final tween2 =
         stage.juggler.addTween(higherChoice, .5, Transition.easeOutQuintic);
@@ -1070,20 +1081,22 @@ class GameUI {
 
     final tween3 =
         stage.juggler.addTween(lowerChoice, .5, Transition.easeOutQuintic);
-    tween3.animate.alpha.to(1);
-    tween3.onComplete = () {
-      final cardInfo = Card()
-        ..type = Card_Type.BASIC
-        ..value = value
-        ..id = playedCards.last.cardInfo.id;
-      playedCards.last.cardInfo = cardInfo;
+    tween3
+      ..animate.alpha.to(1)
+      ..onComplete = () {
+        final cardInfo = Card()
+          ..type = Card_Type.BASIC
+          ..value = value
+          ..id = playedCards.last.cardInfo.id;
+        playedCards.last.cardInfo = cardInfo;
 
-      final tween4 = stage.juggler
-          .addTween(playedCards.last, .5, Transition.easeOutQuintic);
-      tween4.animate.rotation.to(0);
-      tween4.animate.x.to(gameWidth / 2);
-      tween4.animate.y.to(gameHeight / 2);
-    };
+        final tween4 = stage.juggler
+            .addTween(playedCards.last, .5, Transition.easeOutQuintic);
+        tween4.animate
+          ..rotation.to(0)
+          ..x.to(gameWidth / 2)
+          ..y.to(gameHeight / 2);
+      };
 
     stage.setChildIndex(playedCards.last, stage.children.length - 1);
     playedCards.last.filters.addAll(
@@ -1132,11 +1145,13 @@ class GameUI {
       revealedCard.cardInfo = card;
 
       if (handSwapInfo.userIndex1 == 0) {
-        revealedCard.interactable = true;
-        revealedCard.hidden = false;
+        revealedCard
+          ..interactable = true
+          ..hidden = false;
       } else {
-        revealedCard.interactable = false;
-        revealedCard.hidden = true;
+        revealedCard
+          ..interactable = false
+          ..hidden = true;
       }
 
       revealedCards1.add(revealedCard);
@@ -1151,11 +1166,13 @@ class GameUI {
       revealedCard.cardInfo = card;
 
       if (handSwapInfo.userIndex2 == 0) {
-        revealedCard.interactable = true;
-        revealedCard.hidden = false;
+        revealedCard
+          ..interactable = true
+          ..hidden = false;
       } else {
-        revealedCard.interactable = false;
-        revealedCard.hidden = true;
+        revealedCard
+          ..interactable = false
+          ..hidden = true;
       }
 
       revealedCards2.add(revealedCard);
@@ -1186,22 +1203,30 @@ class GameUI {
 
     int card1TowerIndex;
     List<List<ClientCard>> card1Towers;
-    if (topTowers.where((tower) => tower.contains(card1)).isNotEmpty) {
+    if (topTowers.singleWhere((tower) => tower.contains(card1),
+            orElse: () => null) !=
+        null) {
       card1TowerIndex = topTowers.indexWhere((tower) => tower.contains(card1));
       card1Towers = topTowers;
     }
-    if (botTowers.where((tower) => tower.contains(card1)).isNotEmpty) {
+    if (botTowers.singleWhere((tower) => tower.contains(card1),
+            orElse: () => null) !=
+        null) {
       card1TowerIndex = botTowers.indexWhere((tower) => tower.contains(card1));
       card1Towers = botTowers;
     }
 
     int card2TowerIndex;
     List<List<ClientCard>> card2Towers;
-    if (topTowers.where((tower) => tower.contains(card2)).isNotEmpty) {
+    if (topTowers.singleWhere((tower) => tower.contains(card2),
+            orElse: () => null) !=
+        null) {
       card2TowerIndex = topTowers.indexWhere((tower) => tower.contains(card2));
       card2Towers = topTowers;
     }
-    if (botTowers.where((tower) => tower.contains(card2)).isNotEmpty) {
+    if (botTowers.singleWhere((tower) => tower.contains(card2),
+            orElse: () => null) !=
+        null) {
       card2TowerIndex = botTowers.indexWhere((tower) => tower.contains(card2));
       card2Towers = botTowers;
     }
