@@ -552,7 +552,7 @@ class GameUI {
     topTowers.clear();
     botTowers.clear();
     playedCards.clear();
-    
+
     updatePileToolTip();
 
     createDeck();
