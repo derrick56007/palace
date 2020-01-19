@@ -390,7 +390,7 @@ class Match {
     if (ranked) {
       final eloMatch = EloMatch();
       for (final s in players) {
-        eloMatch.addPlayer(s, s == socket ? 1 : 2, socket.elo);
+        eloMatch.addPlayer(s, s == socket ? 1 : 2, s.elo);
       }
       eloMatch.calculate();
 
@@ -406,11 +406,12 @@ class Match {
         await DataBaseManager.shared.userDB.update(
             {'userID': (p.socket as ServerWebSocket).userID},
             {'elo': p.eloPost});
-        await DataBaseManager.shared.userDB.tidy();
 
         // update elo
         p.socket.elo = p.eloPost;
       }
+
+      await DataBaseManager.shared.userDB.tidy();
     }
 
     await Future.delayed(const Duration(seconds: 3));
@@ -1406,6 +1407,12 @@ class Match {
       playedCards.add(higherLowerChoice.choice);
 
       higherLowerChoice.value = resolvePileState();
+
+      // there is no other card other than the HL card, therefore use the
+      // median value
+      if (playedCards.length == 1) {
+        higherLowerChoice.value == 5;
+      }
 
       for (var socket in players) {
         socket.send(SocketMessage_Type.HIGHERLOWER_CHOICE, higherLowerChoice);
