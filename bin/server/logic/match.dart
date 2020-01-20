@@ -1408,9 +1408,21 @@ class Match {
 
       higherLowerChoice.value = resolvePileState();
 
+      const specialCards = [
+        Card_Type.REVERSE,
+        Card_Type.BOMB,
+        Card_Type.HIGHER_LOWER,
+        Card_Type.WILD,
+        Card_Type.HAND_SWAP,
+        Card_Type.TOP_SWAP
+      ];
+
       // there is no other card other than the HL card, therefore use the
       // median value
-      if (playedCards.length == 1) {
+      if (playedCards.length == 1 ||
+          playedCards.every((card) =>
+              card is HigherLowerChoice ||
+              card is Card && specialCards.contains(card.type))) {
         higherLowerChoice.value == 5;
       }
 
