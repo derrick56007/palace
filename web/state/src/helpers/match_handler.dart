@@ -79,6 +79,7 @@ class MatchHandler {
         inGameContainer.style.display = '';
         exitGameBtn.classes.remove('disabled');
         quickBtn.classes.remove('disabled');
+        rankedBtn.classes.remove('disabled');
 
         toast('match started!');
 
@@ -168,11 +169,7 @@ class MatchHandler {
     return el;
   }
 
-  void startMatchMakingLoadingAnimation() {
+  void startMatchMakingLoadingAnimation() {}
 
-  }
-
-  void removeMatchMakingLoadingAnimation() {
-
-  }
+  void removeMatchMakingLoadingAnimation() {}
 }
