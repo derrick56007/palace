@@ -3,8 +3,11 @@ part of server;
 class FriendManager {
   static final shared = FriendManager._internal();
 
-  static final defaultAddFriendErrorString = SimpleInfo()
+  final defaultAddFriendErrorString = SimpleInfo() //
     ..info = 'Invalid userID';
+
+  final defaultLoginErrorString = SimpleInfo() //
+    ..info = 'Invalid login credentials';
 
   final _friendIDsFromSocket = <ServerWebSocket, List<String>>{};
 
@@ -17,7 +20,7 @@ class FriendManager {
         await DataBaseManager.shared.userDB.find({'userID': userID});
 
     if (userIDSearchResults.isEmpty) {
-      // TODO send error msg
+      socket.send(SocketMessage_Type.ERROR, defaultLoginErrorString);
       return null;
     }
 
