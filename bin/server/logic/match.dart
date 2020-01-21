@@ -803,7 +803,6 @@ class Match {
         playedCards.last.type == Card_Type.HAND_SWAP &&
         playedCards.last.playerIndex == players.indexOf(socket) &&
         !playedCards.last.activated) {
-      print(getCardIDsInOtherHands(socket).expand((i) => i).toList());
       return getCardIDsInOtherHands(socket).expand((i) => i).toList();
     }
 
@@ -1272,11 +1271,6 @@ class Match {
 
       tower1[indexOfCard1] = card2;
       tower2[indexOfCard2] = card1;
-
-      if (!card1.hidden || !card2.hidden) {
-        card1.hidden = false;
-        card2.hidden = false;
-      }
 
       for (var socketToSendTo in players) {
         final topSwapInfo = TopSwapInfo()
