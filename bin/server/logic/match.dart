@@ -1434,12 +1434,7 @@ class Match {
       final last = playedCards.last;
       if (getSelectableCardIDs(socket).isNotEmpty && playedCards.isNotEmpty) {
         // deny picking up immediately after playing
-        if (last is Card &&
-            last.playerIndex == players.indexOf(socket) &&
-            (last.type == Card_Type.HAND_SWAP ||
-                last.type == Card_Type.TOP_SWAP ||
-                last.type == Card_Type.DISCARD_OR_ROCK ||
-                last.type == Card_Type.WILD)) {
+        if (last is Card && last.playerIndex == players.indexOf(socket)) {
           sendSelectableCards(socket);
           return;
         }
