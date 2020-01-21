@@ -1438,7 +1438,8 @@ class Match {
             last.playerIndex == players.indexOf(socket) &&
             (last.type == Card_Type.HAND_SWAP ||
                 last.type == Card_Type.TOP_SWAP ||
-                last.type == Card_Type.DISCARD_OR_ROCK)) {
+                last.type == Card_Type.DISCARD_OR_ROCK ||
+                last.type == Card_Type.WILD)) {
           sendSelectableCards(socket);
           return;
         }
