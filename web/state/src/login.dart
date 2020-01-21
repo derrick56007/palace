@@ -53,9 +53,13 @@ class Login extends State {
       ..userID = loginUsernameEl.value.trim()
       ..passCode = loginPassword.value.trim();
 
-    if (loginInfo.userID.isEmpty || loginInfo.passCode.isEmpty) {
+    if (loginInfo.userID.isEmpty) {
       toast('Not a valid username');
       return;
+    }
+
+    if (loginInfo.passCode.isEmpty) {
+      toast('Not a valid password');
     }
 
     client.send(SocketMessage_Type.LOGIN, loginInfo);
