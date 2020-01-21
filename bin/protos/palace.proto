@@ -169,6 +169,7 @@ message SocketMessage {
         QUICK_JOIN = 54;
         LEAVE_GAME = 55;
         RANKED_JOIN = 56;
+        KEEP_ALIVE = 57;
     }
 
     Type type = 1;

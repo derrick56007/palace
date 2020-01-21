@@ -43,7 +43,8 @@ class SocketReceiver {
       ..on(SocketMessage_Type.REQUEST_PICK_UP, _requestPickUp)
       ..on(SocketMessage_Type.QUICK_JOIN, _quickJoinMatch)
       ..on(SocketMessage_Type.LEAVE_GAME, _leaveGame)
-      ..on(SocketMessage_Type.RANKED_JOIN, _rankedJoinMatch);
+      ..on(SocketMessage_Type.RANKED_JOIN, _rankedJoinMatch)
+      ..on(SocketMessage_Type.KEEP_ALIVE, _keepAlive);
   }
 
   void _onClose() {
@@ -133,4 +134,6 @@ class SocketReceiver {
   void _rankedJoinMatch() {
     _matchManager.rankedMatch(_socket);
   }
+
+  void _keepAlive() {}
 }

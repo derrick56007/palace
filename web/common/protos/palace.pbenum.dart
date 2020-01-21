@@ -98,6 +98,7 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
   static const SocketMessage_Type QUICK_JOIN = SocketMessage_Type._(54, 'QUICK_JOIN');
   static const SocketMessage_Type LEAVE_GAME = SocketMessage_Type._(55, 'LEAVE_GAME');
   static const SocketMessage_Type RANKED_JOIN = SocketMessage_Type._(56, 'RANKED_JOIN');
+  static const SocketMessage_Type KEEP_ALIVE = SocketMessage_Type._(57, 'KEEP_ALIVE');
 
   static const $core.List<SocketMessage_Type> values = <SocketMessage_Type> [
     ERROR,
@@ -146,6 +147,7 @@ class SocketMessage_Type extends $pb.ProtobufEnum {
     QUICK_JOIN,
     LEAVE_GAME,
     RANKED_JOIN,
+    KEEP_ALIVE,
   ];
 
   static final $core.Map<$core.int, SocketMessage_Type> _byValue = $pb.ProtobufEnum.initByValue(values);
