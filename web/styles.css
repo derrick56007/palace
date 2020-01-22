@@ -282,6 +282,10 @@ html {
     margin-right: 5px;
 }
 
+#fullscreen-icon {
+    font-size: 1.9em;
+}
+
 html {
     background-color: #448aff;
 }
