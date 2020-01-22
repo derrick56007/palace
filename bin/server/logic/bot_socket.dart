@@ -126,7 +126,7 @@ class BotSocket extends CommonWebSocket {
     final boardState = match.resolvePileState();
 
     final higherLowerChoice = HigherLowerChoice()
-      ..choice = boardState > 5
+      ..choice = boardState >= 5
           ? HigherLowerChoice_Type.HIGHER
           : HigherLowerChoice_Type.LOWER;
 
