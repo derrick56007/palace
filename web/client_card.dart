@@ -24,9 +24,10 @@ class ClientCard extends Sprite {
   final GameUI gameUI;
 
   ClientCard(this.gameUI) {
-    crossOut = Bitmap(BitmapData(cardWidth, cardHeight, Color.Green));
-    crossOut.alpha = 50;
-    crossOut.userData = 'crossOut';
+    crossOut = Bitmap(BitmapData(cardWidth, cardHeight, 0xFF48B748))
+      ..alpha = .6
+      ..userData = 'crossOut'
+      ..blendMode = BlendMode.ABOVE;
 
     addChild(back);
 
@@ -38,7 +39,6 @@ class ClientCard extends Sprite {
     pivotY = cardHeight / 2;
 
     onMouseClick.listen((_) => _onClick());
-
     onTouchBegin.listen((_) => _onClick());
   }
 
