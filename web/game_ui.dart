@@ -421,9 +421,9 @@ class GameUI {
 
     deck.clear();
     for (var i = 0; i < defaultDeckLength; i++) {
-      final cardSprite = ClientCard(this);
-      cardSprite.x = midPoint.x - cardWidth - 170;
-      cardSprite.y = midPoint.y;
+      final cardSprite = ClientCard(this)
+        ..x = midPoint.x - cardWidth - 170 - i * .2
+        ..y = midPoint.y - i * .5;
 
       stage.children.add(cardSprite);
       deck.add(cardSprite);
@@ -914,6 +914,9 @@ class GameUI {
 
     cardsInDeckEl.text =
         '${deck.length} ${deck.length == 1 ? 'Card' : 'Cards'} Left';
+    cardsInDeckToolTip
+      ..x = midPoint.x - cardWidth - 170 - cardWidth / 2 - deck.length * .2
+      ..y = midPoint.y - cardHeight / 2 - 50 - deck.length * .5;
 
     return cCard;
   }
