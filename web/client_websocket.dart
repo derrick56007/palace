@@ -28,12 +28,6 @@ class ClientWebSocket extends CommonWebSocket {
       host =
           'localhost:8080'; // replace this with your custom port for the server
     }
-
-    Timer.periodic(const Duration(seconds: 2), (_) {
-      if (_connected) {
-        send(SocketMessage_Type.KEEP_ALIVE);
-      }
-    });
   }
 
   static const defaultRetrySeconds = 2;

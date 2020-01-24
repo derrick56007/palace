@@ -247,7 +247,6 @@ const SocketMessage_Type$json = const {
     const {'1': 'QUICK_JOIN', '2': 54},
     const {'1': 'LEAVE_GAME', '2': 55},
     const {'1': 'RANKED_JOIN', '2': 56},
-    const {'1': 'KEEP_ALIVE', '2': 57},
   ],
 };
 
