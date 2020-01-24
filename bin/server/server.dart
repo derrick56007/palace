@@ -60,6 +60,7 @@ void main(List<String> args) async {
     };
 
   final server = await HttpServer.bind('0.0.0.0', port);
+  server.idleTimeout = null; // disables timeout
 
   print('server started at ${server.address.address}:${server.port}');
 
