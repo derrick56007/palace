@@ -34,13 +34,13 @@ class ClientWebSocket extends CommonWebSocket {
   static const double = 2;
 
   @override
-  Future start([int retrySeconds = defaultRetrySeconds]) {
+  Future start([int retrySeconds = defaultRetrySeconds, bool insecure_ws]) {
     final completer = Completer();
 
     var reconnectScheduled = false;
 
-    toast('connecting to $host, devMode: $devMode');
-    if (devMode) {
+    toast('connecting to $host, devMode: $insecure_ws');
+    if (insecure_ws) {
       _webSocket = WebSocket('ws://$host/');
     } else {
       _webSocket = WebSocket('wss://$host/');
@@ -48,14 +48,14 @@ class ClientWebSocket extends CommonWebSocket {
 
     void _scheduleReconnect() {
       if (!reconnectScheduled) {
+        // this is for debugging purposes;
+        // if a reconnect is scheduled, then devMode is toggled to see if insecure websocket is available (ws)
+        devMode = !devMode;
+        
         Timer(Duration(seconds: retrySeconds),
-            () async => await start(retrySeconds * double));
+            () async => await start(retrySeconds * double, devMode));
       }
       reconnectScheduled = true;
-      
-      // this is for debugging purposes;
-      // if a reconnect is scheduled, then devMode is toggled to see if insecure websocket is available (ws)
-      devMode = !devMode;
     }
 
     _webSocket
