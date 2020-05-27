@@ -19,6 +19,7 @@ void main() async {
   });
   
   client.onOpen.listen((_) {
+    print('login');
     StateManager.shared.pushState('login');  
   });
   
