@@ -53,8 +53,8 @@ class ClientWebSocket extends CommonWebSocket {
       }
       reconnectScheduled = true;
       
-      # this is for debugging purposes;
-      # if a reconnect is scheduled, then devMode is toggled to see if insecure websocket is available (ws)
+      // this is for debugging purposes;
+      // if a reconnect is scheduled, then devMode is toggled to see if insecure websocket is available (ws)
       devMode = !devMode;
     }
 
