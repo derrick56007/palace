@@ -18,7 +18,7 @@ void main() async {
     'play': Play(client)
   });
   
-  client.onOpen.listen((Event e) {
+  client.onOpen.listen((_) {
     StateManager.shared.pushState('login');  
   });
   
