@@ -40,17 +40,17 @@ class ClientWebSocket extends CommonWebSocket {
     var reconnectScheduled = false;
 
 //     toast('connecting to $host, devMode: $insecure_ws');
-    if (insecure_ws) {
+    if (devMode) {
       _webSocket = WebSocket('ws://$host/');
     } else {
-      _webSocket = WebSocket('wss://$host/');
+      _webSocket = WebSocket('ws://$host/');
     }
 
     void _scheduleReconnect() {
       if (!reconnectScheduled) {
         // this is for debugging purposes;
         // if a reconnect is scheduled, then devMode is toggled to see if insecure websocket is available (ws)
-        devMode = !devMode;
+        // devMode = !devMode;
         
         Timer(Duration(seconds: retrySeconds),
             () async => await start(retrySeconds * double, devMode));
