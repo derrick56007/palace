@@ -34,7 +34,7 @@ class ClientWebSocket extends CommonWebSocket {
   static const double = 2;
 
   @override
-  Future start([int retrySeconds = defaultRetrySeconds, bool insecure_ws]) {
+  Future start([int retrySeconds = defaultRetrySeconds, bool insecure_ws = false]) {
     final completer = Completer();
 
     var reconnectScheduled = false;
