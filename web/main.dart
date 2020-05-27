@@ -18,7 +18,7 @@ void main() async {
     'play': Play(client)
   });
   
-
+  print('login');
   StateManager.shared.pushState('login');  
   
 }
