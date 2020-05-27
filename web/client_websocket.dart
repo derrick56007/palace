@@ -52,6 +52,10 @@ class ClientWebSocket extends CommonWebSocket {
             () async => await start(retrySeconds * double));
       }
       reconnectScheduled = true;
+      
+      # this is for debugging purposes;
+      # if a reconnect is scheduled, then devMode is toggled to see if insecure websocket is available (ws)
+      devMode = !devMode;
     }
 
     _webSocket
