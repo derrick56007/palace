@@ -39,7 +39,7 @@ class ClientWebSocket extends CommonWebSocket {
 
     var reconnectScheduled = false;
 
-    toast('connecting to $host, devMode: $insecure_ws');
+//     toast('connecting to $host, devMode: $insecure_ws');
     if (insecure_ws) {
       _webSocket = WebSocket('ws://$host/');
     } else {
@@ -69,12 +69,12 @@ class ClientWebSocket extends CommonWebSocket {
         onMessageToDispatch(e.data);
       })
       ..onClose.listen((Event e) {
-        toast('disconnected');
+//         toast('disconnected');
         _connected = false;
         _scheduleReconnect();
       })
       ..onError.listen((Event e) {
-        toast('error ${e.type}');
+//         toast('error ${e.type}');
         _connected = false;
         _scheduleReconnect();
       });
