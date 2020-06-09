@@ -34,7 +34,7 @@ class ClientWebSocket extends CommonWebSocket {
   static const double = 2;
 
   @override
-  Future start([int retrySeconds = defaultRetrySeconds, bool insecure_ws = false]) {
+  Future start([int retrySeconds = defaultRetrySeconds]) {
     final completer = Completer();
 
     var reconnectScheduled = false;
@@ -53,7 +53,7 @@ class ClientWebSocket extends CommonWebSocket {
         // devMode = !devMode;
         
         Timer(Duration(seconds: retrySeconds),
-            () async => await start(retrySeconds * double, devMode));
+            () async => await start(retrySeconds * double));
       }
       reconnectScheduled = true;
     }
