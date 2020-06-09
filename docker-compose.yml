@@ -1,0 +1,11 @@
+version: "3"
+services:
+  web:  
+    image: derrick56007/palace:latest
+  serveo:
+    image: jacobtomlinson/serveo
+    environment:
+      LOCAL_HOST: web
+      LOCAL_PORT: 8080
+      DOMAIN: palaceonline
+

@@ -31,3 +31,4 @@ bin/protos/
 bin/compile_protos.bat
 Dockerfile
 Procfile
+docker-compose.yml

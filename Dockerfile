@@ -22,3 +22,5 @@ COPY databases/  databases/
 
 CMD []
 ENTRYPOINT ["/server"]
+
+EXPOSE 8080
