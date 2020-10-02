@@ -1,3 +1,8 @@
+
+
+
+########
+
 FROM google/dart:2.8 AS dart-runtime
 
 RUN apt-get update
@@ -23,4 +28,4 @@ COPY databases/  databases/
 CMD []
 ENTRYPOINT ["/server"]
 
-ENV PORT=8080
+EXPOSE 8080
