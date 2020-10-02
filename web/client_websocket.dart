@@ -41,9 +41,9 @@ class ClientWebSocket extends CommonWebSocket {
 
 //     toast('connecting to $host, devMode: $insecure_ws');
     if (devMode) {
-      _webSocket = WebSocket('ws://$host/');
+      _webSocket = WebSocket('wss://$host/');
     } else {
-      _webSocket = WebSocket('ws://$host/');
+      _webSocket = WebSocket('wss://$host/');
     }
 
     void _scheduleReconnect() {
